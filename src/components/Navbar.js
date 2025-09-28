@@ -1,229 +1,331 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('about-us');
+  const location = useLocation();
 
+  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-      
-      // Update active section based on scroll position
-      const sections = ['about-us', 'who-we-serve', 'who-we-are', 'what-we-do', 'our-thinking', 'career', 'contact-us'];
-      const scrollPosition = window.scrollY + 150;
-      
-      for (let section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const offsetTop = element.offsetTop;
-          const height = element.offsetHeight;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + height) {
-            setActiveSection(section);
-            break;
-          }
-        }
-      }
+      setIsScrolled(window.scrollY > 10);
     };
-    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setIsMobileMenuOpen(false);
-    }
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setIsMobileMenuOpen(false);
-  };
-
   const styles = {
     navbar: {
+      background: isScrolled ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(12px)',
+      borderBottom: isScrolled ? '1px solid rgba(0, 0, 0, 0.08)' : '1px solid rgba(0, 0, 0, 0.05)',
       position: 'fixed',
       top: 0,
       left: 0,
       right: 0,
-      background: isScrolled ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.95)',
-      backdropFilter: 'blur(15px)',
       zIndex: 1000,
-      transition: 'all 0.3s ease',
-      padding: isScrolled ? '8px 0' : '12px 0',
-      boxShadow: isScrolled ? '0 4px 25px rgba(0, 0, 0, 0.08)' : '0 2px 10px rgba(0, 0, 0, 0.05)',
-      borderBottom: '1px solid rgba(0, 120, 212, 0.1)'
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      boxShadow: isScrolled ? '0 2px 20px rgba(0, 0, 0, 0.08)' : 'none'
     },
-    container: {
+    navContainer: {
       maxWidth: '1400px',
       margin: '0 auto',
+      padding: '0 32px',
       display: 'flex',
-      alignItems: 'center',
       justifyContent: 'space-between',
-      padding: '0 30px'
+      alignItems: 'center',
+      height: '72px'
     },
-    logo: {
+    logoContainer: {
       display: 'flex',
       alignItems: 'center',
-      color: '#0078d4',
-      fontSize: '1.6rem',
-      fontWeight: '800',
-      transition: 'transform 0.3s ease',
-      cursor: 'pointer',
-      letterSpacing: '-0.5px'
-    },
-    logoIcon: {
-      width: '45px',
-      height: '45px',
-      marginRight: '12px',
-      background: 'linear-gradient(135deg, #0078d4, #00a8ff)',
-      borderRadius: '12px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      fontWeight: 'bold',
-      fontSize: '18px',
-      boxShadow: '0 4px 15px rgba(0, 120, 212, 0.3)'
-    },
-    logoText: {
-      background: 'linear-gradient(135deg, #0078d4, #00a8ff)',
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      backgroundClip: 'text'
-    },
-    menu: {
-      display: window.innerWidth <= 768 ? (isMobileMenuOpen ? 'flex' : 'none') : 'flex',
-      alignItems: 'center',
-      gap: '35px',
-      position: window.innerWidth <= 768 ? 'fixed' : 'static',
-      top: window.innerWidth <= 768 ? '70px' : 'auto',
-      left: window.innerWidth <= 768 ? '0' : 'auto',
-      right: window.innerWidth <= 768 ? '0' : 'auto',
-      background: window.innerWidth <= 768 ? 'white' : 'transparent',
-      flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
-      padding: window.innerWidth <= 768 ? '30px' : '0',
-      boxShadow: window.innerWidth <= 768 ? '0 8px 25px rgba(0, 0, 0, 0.1)' : 'none'
-    },
-    menuItem: {
-      color: '#2c3e50',
-      fontWeight: '600',
-      fontSize: '0.95rem',
-      position: 'relative',
-      transition: 'all 0.3s ease',
-      padding: '12px 18px',
-      borderRadius: '8px',
-      cursor: 'pointer',
       textDecoration: 'none',
-      letterSpacing: '0.3px'
+      transition: 'transform 0.2s ease'
     },
-    activeItem: {
-      color: '#0078d4',
-      background: 'rgba(0, 120, 212, 0.08)',
-      transform: 'translateY(-1px)'
+    logoImg: {
+      height: '42px',
+      width: 'auto',
+      transition: 'all 0.2s ease'
     },
-    contactBtn: {
-      background: 'linear-gradient(135deg, #0078d4, #00a8ff)',
+    navLinks: {
+      display: window.innerWidth <= 1024 ? 'none' : 'flex',
+      alignItems: 'center',
+      gap: '40px',
+      listStyle: 'none',
+      margin: 0,
+      padding: 0
+    },
+    navLink: {
+      textDecoration: 'none',
+      color: '#374151',
+      fontWeight: '500',
+      fontSize: '15px',
+      fontFamily: "'Inter', system-ui, sans-serif",
+      letterSpacing: '0.01em',
+      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+      padding: '8px 0',
+      position: 'relative',
+      whiteSpace: 'nowrap'
+    },
+    activeLink: {
+      color: '#1e293b',
+      fontWeight: '600'
+    },
+    navLinkHover: {
+      color: '#1e293b'
+    },
+    contactButton: {
+      background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
       color: 'white',
-      borderRadius: '30px',
-      padding: '12px 25px',
-      transition: 'all 0.3s ease',
+      padding: '12px 24px',
+      borderRadius: '8px',
+      textDecoration: 'none',
       fontWeight: '600',
-      fontSize: '0.95rem',
-      marginTop: window.innerWidth <= 768 ? '15px' : '0',
+      fontSize: '14px',
+      fontFamily: "'Inter', system-ui, sans-serif",
+      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+      border: 'none',
       cursor: 'pointer',
-      boxShadow: '0 4px 15px rgba(0, 120, 212, 0.3)',
-      letterSpacing: '0.5px'
+      letterSpacing: '0.025em',
+      boxShadow: '0 2px 8px rgba(30, 41, 59, 0.15)'
     },
-    mobileToggle: {
-      display: window.innerWidth <= 768 ? 'flex' : 'none',
+    
+    // Mobile Menu
+    mobileMenuButton: {
+      display: window.innerWidth <= 1024 ? 'flex' : 'none',
       flexDirection: 'column',
+      justifyContent: 'space-around',
+      width: '24px',
+      height: '24px',
+      background: 'transparent',
+      border: 'none',
       cursor: 'pointer',
-      padding: '8px'
+      padding: '0'
     },
-    toggleSpan: {
-      width: '28px',
-      height: '3px',
-      background: '#0078d4',
-      margin: '3px 0',
-      transition: 'all 0.3s ease',
-      borderRadius: '3px'
+    hamburgerLine: {
+      width: '24px',
+      height: '2px',
+      background: '#374151',
+      borderRadius: '1px',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      transformOrigin: '1px'
+    },
+    mobileMenu: {
+      position: 'absolute',
+      top: '100%',
+      left: 0,
+      right: 0,
+      background: 'rgba(255, 255, 255, 0.98)',
+      backdropFilter: 'blur(12px)',
+      borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+      transform: isMenuOpen ? 'translateY(0)' : 'translateY(-100%)',
+      opacity: isMenuOpen ? 1 : 0,
+      visibility: isMenuOpen ? 'visible' : 'hidden',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      zIndex: -1
+    },
+    mobileNavLinks: {
+      padding: '24px 32px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '20px'
+    },
+    mobileNavLink: {
+      textDecoration: 'none',
+      color: '#374151',
+      fontWeight: '500',
+      fontSize: '16px',
+      fontFamily: "'Inter', system-ui, sans-serif",
+      padding: '12px 0',
+      borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+      transition: 'color 0.2s ease'
+    },
+    mobileContactButton: {
+      background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
+      color: 'white',
+      padding: '16px 24px',
+      borderRadius: '8px',
+      textDecoration: 'none',
+      fontWeight: '600',
+      fontSize: '16px',
+      textAlign: 'center',
+      marginTop: '8px',
+      transition: 'all 0.2s ease'
     }
   };
 
-  const menuItems = [
-    { key: 'about-us', label: 'About Us' },
-    { key: 'who-we-serve', label: 'Who We Serve' },
-    { key: 'who-we-are', label: 'Who We Are' },
-    { key: 'what-we-do', label: 'What We Do' },
-    { key: 'our-thinking', label: 'Our Thinking' },
-    { key: 'career', label: 'Career' }
+  const navItems = [
+    { name: 'About Us', path: '/about' },
+    { name: 'Who We Serve', path: '/who-we-serve' },
+    { name: 'Who We Are', path: '/who-we-are' },
+    { name: 'What We Do', path: '/what-we-do' },
+    { name: 'Our Thinking', path: '/our-thinking' },
+    { name: 'Research', path: '/research' },
+    { name: 'Projects', path: '/projects' },
+    { name: 'Career', path: '/career' }
   ];
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  // Add CSS for underline animation
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .nav-link-underline::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      .nav-link-underline:hover::after,
+      .nav-link-underline.active::after {
+        width: 100%;
+      }
+      
+      .nav-link-underline.active::after {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      if (document.head.contains(style)) {
+        document.head.removeChild(style);
+      }
+    };
+  }, []);
 
   return (
     <nav style={styles.navbar}>
-      <div style={styles.container}>
-        <div 
-          style={styles.logo} 
-          onClick={scrollToTop}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+      <div style={styles.navContainer}>
+        {/* Logo Only */}
+        <Link 
+          to="/" 
+          style={styles.logoContainer}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.02)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
         >
-          <div style={styles.logoIcon}>T</div>
-          <span style={styles.logoText}>TRINIX</span>
-        </div>
-        
-        <div style={styles.menu}>
-          {menuItems.map((item) => (
-            <span 
-              key={item.key}
-              style={{
-                ...styles.menuItem, 
-                ...(activeSection === item.key ? styles.activeItem : {})
-              }}
-              onClick={() => scrollToSection(item.key)}
+          <img 
+            src="/logo.jpg" 
+            alt="Trinix" 
+            style={styles.logoImg}
+          />
+        </Link>
+
+        {/* Desktop Navigation */}
+        <ul style={styles.navLinks}>
+          {navItems.map((item) => (
+            <li key={item.path}>
+              <Link
+                to={item.path}
+                className={`nav-link-underline ${location.pathname === item.path ? 'active' : ''}`}
+                style={{
+                  ...styles.navLink,
+                  ...(location.pathname === item.path ? styles.activeLink : {})
+                }}
+                onMouseEnter={(e) => {
+                  if (location.pathname !== item.path) {
+                    e.target.style.color = '#1e293b';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (location.pathname !== item.path) {
+                    e.target.style.color = '#374151';
+                  }
+                }}
+              >
+                {item.name}
+              </Link>
+            </li>
+          ))}
+          <li>
+            <Link 
+              to="/contact" 
+              style={styles.contactButton}
               onMouseEnter={(e) => {
-                if (activeSection !== item.key) {
-                  e.target.style.color = '#0078d4';
-                  e.target.style.background = 'rgba(0, 120, 212, 0.05)';
-                }
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 4px 16px rgba(30, 41, 59, 0.25)';
+                e.target.style.background = 'linear-gradient(135deg, #334155 0%, #475569 100%)';
               }}
               onMouseLeave={(e) => {
-                if (activeSection !== item.key) {
-                  e.target.style.color = '#2c3e50';
-                  e.target.style.background = 'transparent';
-                }
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 8px rgba(30, 41, 59, 0.15)';
+                e.target.style.background = 'linear-gradient(135deg, #1e293b 0%, #334155 100%)';
               }}
             >
-              {item.label}
-            </span>
-          ))}
-          <span 
-            style={styles.contactBtn} 
-            onClick={() => scrollToSection('contact-us')}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 6px 20px rgba(0, 120, 212, 0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 15px rgba(0, 120, 212, 0.3)';
-            }}
-          >
-            Contact Us
-          </span>
-        </div>
+              Contact Us
+            </Link>
+          </li>
+        </ul>
 
-        <div 
-          style={styles.mobileToggle}
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          <span style={styles.toggleSpan}></span>
-          <span style={styles.toggleSpan}></span>
-          <span style={styles.toggleSpan}></span>
+        {/* Mobile Menu Button */}
+        <button style={styles.mobileMenuButton} onClick={toggleMenu}>
+          <div style={{
+            ...styles.hamburgerLine,
+            transform: isMenuOpen ? 'rotate(45deg)' : 'rotate(0)',
+            transformOrigin: '1px'
+          }}></div>
+          <div style={{
+            ...styles.hamburgerLine,
+            opacity: isMenuOpen ? 0 : 1,
+            transform: isMenuOpen ? 'translateX(20px)' : 'translateX(0)'
+          }}></div>
+          <div style={{
+            ...styles.hamburgerLine,
+            transform: isMenuOpen ? 'rotate(-45deg)' : 'rotate(0)',
+            transformOrigin: '1px'
+          }}></div>
+        </button>
+
+        {/* Mobile Menu */}
+        <div style={styles.mobileMenu}>
+          <div style={styles.mobileNavLinks}>
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                style={{
+                  ...styles.mobileNavLink,
+                  ...(location.pathname === item.path ? { color: '#1e293b', fontWeight: '600' } : {})
+                }}
+                onClick={() => setIsMenuOpen(false)}
+                onMouseEnter={(e) => e.target.style.color = '#1e293b'}
+                onMouseLeave={(e) => {
+                  if (location.pathname !== item.path) {
+                    e.target.style.color = '#374151';
+                  }
+                }}
+              >
+                {item.name}
+              </Link>
+            ))}
+            <Link 
+              to="/contact" 
+              style={styles.mobileContactButton}
+              onClick={() => setIsMenuOpen(false)}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'linear-gradient(135deg, #334155 0%, #475569 100%)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'linear-gradient(135deg, #1e293b 0%, #334155 100%)';
+              }}
+            >
+              Contact Us
+            </Link>
+          </div>
         </div>
       </div>
     </nav>
