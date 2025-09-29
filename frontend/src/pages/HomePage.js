@@ -378,6 +378,164 @@ const HomePage = () => {
             fontSize: '0.875rem',
             color: '#64748b',
             fontWeight: '500'
+        },
+
+        // Footer styles
+        footer: {
+            background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)',
+            color: '#e2e8f0',
+            padding: '100px 0 0',
+            borderTop: '1px solid rgba(99, 102, 241, 0.2)',
+            position: 'relative',
+            overflow: 'hidden',
+            width: '100%',
+            margin: '0',
+            boxSizing: 'border-box'
+        },
+        footerOverlay: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: `
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 50%)
+            `,
+            zIndex: 1
+        },
+        footerContainer: {
+            maxWidth: '1200px',
+            margin: '0 auto',
+            padding: '0 40px',
+            position: 'relative',
+            zIndex: 2,
+            width: '100%',
+            boxSizing: 'border-box'
+        },
+        footerGrid: {
+            display: 'grid',
+            gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(4, 1fr)',
+            gap: '60px',
+            marginBottom: '80px'
+        },
+        footerSection: {
+            display: 'flex',
+            flexDirection: 'column'
+        },
+        footerTitle: {
+            fontSize: '1.25rem',
+            fontWeight: '700',
+            color: 'white',
+            marginBottom: '24px',
+            position: 'relative',
+            paddingBottom: '12px'
+        },
+        footerTitleAccent: {
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '40px',
+            height: '3px',
+            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+            borderRadius: '2px'
+        },
+        footerLink: {
+            color: '#cbd5e1',
+            textDecoration: 'none',
+            marginBottom: '16px',
+            fontSize: '0.9375rem',
+            transition: 'all 0.3s ease',
+            cursor: 'pointer',
+            position: 'relative',
+            paddingLeft: '0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+        },
+        footerLinkIcon: {
+            fontSize: '0.75rem',
+            opacity: 0,
+            transition: 'opacity 0.3s ease',
+            color: '#6366f1'
+        },
+        footerBottom: {
+            background: 'rgba(15, 23, 42, 0.9)',
+            backdropFilter: 'blur(10px)',
+            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+            padding: '40px 0',
+            margin: '0',
+            width: '100%',
+            boxSizing: 'border-box'
+        },
+        footerBottomContent: {
+            maxWidth: '1200px',
+            margin: '0 auto',
+            padding: '0 40px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '24px'
+        },
+        footerLogo: {
+            fontSize: '1.75rem',
+            fontWeight: '800',
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+        },
+        footerLogoIcon: {
+            width: '48px',
+            height: '48px',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '1.5rem',
+            fontWeight: '700',
+            color: 'white',
+            boxShadow: '0 4px 20px rgba(99, 102, 241, 0.3)'
+        },
+        footerBottomLinks: {
+            display: 'flex',
+            gap: '32px',
+            flexWrap: 'wrap',
+            alignItems: 'center'
+        },
+        footerBottomLink: {
+            color: '#94a3b8',
+            textDecoration: 'none',
+            fontSize: '0.9375rem',
+            transition: 'color 0.3s ease',
+            fontWeight: '500'
+        },
+        copyrightText: {
+            color: '#64748b',
+            fontSize: '0.9375rem',
+            fontWeight: '500'
+        },
+        companyDescription: {
+            color: '#94a3b8',
+            marginBottom: '32px',
+            lineHeight: '1.7',
+            fontSize: '1rem'
+        },
+        contactInfo: {
+            color: '#cbd5e1',
+            marginBottom: '12px',
+            fontSize: '0.9375rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            padding: '8px 0'
+        },
+        contactIcon: {
+            fontSize: '1rem',
+            color: '#6366f1'
         }
     };
 
@@ -1419,60 +1577,182 @@ const HomePage = () => {
             </section>
 
 
-            {/* CTA Section */}
-            <section style={{
-                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                color: 'white',
-                padding: '100px 0',
-                textAlign: 'center',
-                position: 'relative'
-            }}>
-                <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 10 }}>
-                    <h2 style={{
-                        fontSize: window.innerWidth <= 768 ? '2.5rem' : '3rem',
-                        fontWeight: '700',
-                        marginBottom: '24px',
-                        lineHeight: '1.2'
-                    }}>
-                        Ready to Transform Your Business?
-                    </h2>
-                    <p style={{
-                        fontSize: '1.25rem',
-                        marginBottom: '48px',
-                        opacity: 0.95,
-                        lineHeight: '1.6'
-                    }}>
-                        Let's start a conversation about your next project and explore how we can help you achieve your technological goals.
-                    </p>
-                    <Link
-                        to="/contact"
-                        style={{
-                            background: 'white',
-                            color: '#6366f1',
-                            padding: '18px 36px',
-                            borderRadius: '12px',
-                            border: 'none',
-                            fontSize: '1.1rem',
-                            fontWeight: '600',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            textDecoration: 'none',
-                            display: 'inline-block',
-                            boxShadow: '0 4px 14px 0 rgba(255, 255, 255, 0.2)'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.target.style.transform = 'translateY(-3px)';
-                            e.target.style.boxShadow = '0 8px 25px 0 rgba(255, 255, 255, 0.3)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.transform = 'translateY(0)';
-                            e.target.style.boxShadow = '0 4px 14px 0 rgba(255, 255, 255, 0.2)';
-                        }}
-                    >
-                        Get Started Today
-                    </Link>
+            {/* Footer */}
+            <footer style={styles.footer}>
+                <div style={styles.footerContainer}>
+                    <div style={styles.footerGrid}>
+                        {/* Company Info */}
+                        <div style={styles.footerSection}>
+                            <h3 style={styles.footerTitle}>Trinix</h3>
+                            <p style={{ color: '#94a3b8', marginBottom: '20px', lineHeight: '1.6' }}>
+                                Empowering businesses through innovative technology solutions and digital transformation.
+                            </p>
+                        </div>
+
+                        {/* Services */}
+                        <div style={styles.footerSection}>
+                            <h3 style={styles.footerTitle}>Services</h3>
+                            <Link
+                                to="/what-we-do"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                Web Development
+                            </Link>
+                            <Link
+                                to="/what-we-do"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                Mobile Apps
+                            </Link>
+                            <Link
+                                to="/what-we-do"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                Cloud Solutions
+                            </Link>
+                            <Link
+                                to="/what-we-do"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                AI & ML
+                            </Link>
+                            <Link
+                                to="/what-we-do"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                Consulting
+                            </Link>
+                        </div>
+
+                        {/* Company */}
+                        <div style={styles.footerSection}>
+                            <h3 style={styles.footerTitle}>Company</h3>
+                            <Link
+                                to="/about"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                About Us
+                            </Link>
+                            <Link
+                                to="/who-we-are"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                Our Team
+                            </Link>
+                            <Link
+                                to="/career"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                Careers
+                            </Link>
+                            <Link
+                                to="/our-thinking"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                Blog
+                            </Link>
+                            <Link
+                                to="/research"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                Research
+                            </Link>
+                        </div>
+
+                        {/* Contact & Legal */}
+                        <div style={styles.footerSection}>
+                            <h3 style={styles.footerTitle}>Contact</h3>
+                            <Link
+                                to="/contact"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                Get in Touch
+                            </Link>
+                            <Link
+                                to="/projects"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                Our Work
+                            </Link>
+                            <a
+                                href="mailto:hello@trinix.com"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                hello@trinix.com
+                            </a>
+                            <a
+                                href="tel:+91-555-123-4567"
+                                style={styles.footerLink}
+                                onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                            >
+                                +1 (555) 123-4567
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Footer Bottom */}
+                    <div style={styles.footerBottom}>
+                        <div style={styles.footerBottomContent}>
+                            <div style={styles.footerBottomLinks}>
+                                <a
+                                    href="#"
+                                    style={styles.footerBottomLink}
+                                    onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                    onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                                >
+                                    Privacy Policy
+                                </a>
+                                <a
+                                    href="#"
+                                    style={styles.footerBottomLink}
+                                    onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                    onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                                >
+                                    Terms of Service
+                                </a>
+                                <a
+                                    href="#"
+                                    style={styles.footerBottomLink}
+                                    onMouseEnter={(e) => e.target.style.color = '#6366f1'}
+                                    onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                                >
+                                    Cookie Policy
+                                </a>
+                                <span style={styles.copyrightText}>
+                                    © 2025 Trinix. All rights reserved.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </section>
+            </footer>
         </div>
     );
 };

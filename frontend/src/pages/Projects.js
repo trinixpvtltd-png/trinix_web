@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 const Projects = () => {
   const [isVisible, setIsVisible] = useState({});
+  const [imageLoading, setImageLoading] = useState({});
 
   useEffect(() => {
     const observerOptions = {
@@ -97,14 +98,43 @@ const Projects = () => {
     },
     projectImage: {
       height: '280px',
-      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+      position: 'relative',
+      overflow: 'hidden',
+      background: 'linear-gradient(135deg, #f1f5f9, #e2e8f0)'
+    },
+    projectImg: {
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      transition: 'transform 0.4s ease'
+    },
+    projectImageOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'linear-gradient(45deg, rgba(99, 102, 241, 0.85), rgba(139, 92, 246, 0.85))',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       fontSize: '4rem',
       color: 'white',
-      position: 'relative',
-      overflow: 'hidden'
+      opacity: 0,
+      transition: 'opacity 0.3s ease'
+    },
+    imageLoader: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'linear-gradient(135deg, #f1f5f9, #e2e8f0)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '2rem',
+      color: '#64748b'
     },
     projectContent: {
       padding: '40px 32px'
@@ -134,29 +164,6 @@ const Projects = () => {
       lineHeight: '1.6',
       fontSize: '1rem',
       marginBottom: '24px'
-    },
-    techStack: {
-      marginBottom: '24px'
-    },
-    techTitle: {
-      fontSize: '1rem',
-      fontWeight: '600',
-      color: '#1e293b',
-      marginBottom: '12px'
-    },
-    techTags: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: '8px'
-    },
-    techTag: {
-      background: '#f8fafc',
-      color: '#475569',
-      padding: '4px 10px',
-      borderRadius: '6px',
-      fontSize: '0.8125rem',
-      fontWeight: '500',
-      border: '1px solid #f1f5f9'
     },
     projectFeatures: {
       marginBottom: '32px'
@@ -233,8 +240,8 @@ const Projects = () => {
       title: 'Eventify Platform',
       description: 'Comprehensive event management platform featuring multi-user roles (owners, managers, agents), venue search functionality, booking management, and real-time dashboard analytics. Built with modern React architecture and scalable backend infrastructure.',
       icon: '🎪',
+      image: 'https://cdn.pixabay.com/photo/2017/07/21/23/57/concert-2527495_1280.jpg',
       status: 'Live',
-      technologies: ['React', 'Node.js', 'MongoDB', 'Express.js', 'Socket.io', 'Redux', 'Material-UI', 'AWS'],
       features: [
         'Multi-role user management system',
         'Advanced venue search & filtering',
@@ -246,58 +253,58 @@ const Projects = () => {
         'Admin panel with full control'
       ],
       liveUrl: 'https://eventify-demo.trinix.com',
-      githubUrl: 'https://github.com/trinix/eventify'
+     
     },
     {
       id: 2,
-      category: 'Productivity Tools',
-      title: 'Job Application Tracker',
-      description: 'Full-stack application designed to organize and streamline the job search process. Features comprehensive tracking of applications, company information, interview schedules, and progress analytics with an intuitive user interface.',
-      icon: '💼',
+      category: 'Real Estate',
+      title: 'PropGo Platform',
+      description: 'Digital platform designed to simplify real estate transactions by connecting Property Owners with Property Agents through a secure and efficient interface. Features verified listings, secure interactions, and streamlined experience for all stakeholders.',
+      icon: '🏠',
+      image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center',
       status: 'Live',
-      technologies: ['React', 'Node.js', 'PostgreSQL', 'Express.js', 'JWT', 'Chart.js', 'Bootstrap', 'Heroku'],
       features: [
-        'Application status tracking',
-        'Company database management',
-        'Interview scheduling system',
-        'Progress analytics & charts',
-        'Document upload & storage',
-        'Reminder notifications',
-        'Export data functionality',
-        'Search & filter capabilities'
+        'Verified property listings system',
+        'Direct communication between owners and agents',
+        'Secure property verification process',
+        'Agent subscription management',
+        'Real-time property status updates',
+        'Advanced search and filtering',
+        'Document sharing and storage',
+        'Revenue tracking and analytics'
       ],
-      liveUrl: 'https://job-tracker.trinix.com',
-      githubUrl: 'https://github.com/trinix/job-tracker'
+      liveUrl: 'https://propgo-platform.trinix.com',
+      
     },
     {
       id: 3,
-      category: 'E-commerce',
-      title: 'Smart Retail Dashboard',
-      description: 'Advanced e-commerce management dashboard with inventory tracking, sales analytics, customer management, and automated reporting. Includes AI-powered insights for business optimization and growth strategies.',
-      icon: '🛒',
-      status: 'In Development',
-      technologies: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'TailwindCSS', 'Chart.js', 'Stripe', 'Vercel'],
+      category: 'Emergency Services',
+      title: 'SOS Emergency Network',
+      description: 'Emergency response system ensuring rapid assistance and safety. Comprehensive platform connecting emergency responders, dispatchers, and civilians through real-time communication and location-based services for immediate crisis response.',
+      icon: '�',
+      image: 'https://images.pexels.com/photos/249348/pexels-photo-249348.jpeg',
+      status: 'Live',
       features: [
-        'Real-time inventory management',
-        'Sales performance analytics',
-        'Customer relationship management',
-        'Automated financial reporting',
-        'AI-powered business insights',
-        'Multi-store management',
-        'Integration with payment gateways',
-        'Mobile app companion'
+        'Real-time emergency alert system',
+        'GPS location tracking and mapping',
+        'Multi-channel communication platform',
+        'Emergency responder dispatch system',
+        'Crisis escalation management',
+        'Community safety network',
+        'Emergency contact management',
+        'Incident reporting and analytics'
       ],
-      liveUrl: null,
-      githubUrl: 'https://github.com/trinix/retail-dashboard'
+      liveUrl: 'https://sos-emergency-network.trinix.com',
+     
     },
     {
       id: 4,
       category: 'Healthcare',
-      title: 'MedConnect Telemedicine',
+      title: 'MedGO Healthcare',
       description: 'HIPAA-compliant telemedicine platform enabling secure video consultations, patient record management, prescription handling, and appointment scheduling. Features end-to-end encryption and healthcare provider verification.',
       icon: '🏥',
       status: 'Beta Testing',
-      technologies: ['React Native', 'Node.js', 'MongoDB', 'WebRTC', 'Socket.io', 'JWT', 'AWS S3', 'Twilio'],
+      image: 'https://media.istockphoto.com/id/1354898568/photo/shot-of-an-unrecognisable-businesswoman-using-a-smartphone-in-a-modern-office.jpg?b=1&s=612x612&w=0&k=20&c=DE-DP2A_e4TdReJG6MVHppVSvHa7OcOLsnjeTdly4Rk=',
       features: [
         'HIPAA-compliant video consultations',
         'Secure patient record management',
@@ -309,7 +316,7 @@ const Projects = () => {
         'Mobile app for patients & doctors'
       ],
       liveUrl: 'https://medconnect-beta.trinix.com',
-      githubUrl: null // Private repository
+     
     }
   ];
 
@@ -361,15 +368,46 @@ const Projects = () => {
                   e.currentTarget.style.transform = 'translateY(-12px)';
                   e.currentTarget.style.boxShadow = '0 25px 50px 0 rgba(0, 0, 0, 0.15)';
                   e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)';
+                  
+                  // Scale the image on hover
+                  const img = e.currentTarget.querySelector('img');
+                  if (img) {
+                    img.style.transform = 'scale(1.05)';
+                  }
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.boxShadow = '0 4px 12px 0 rgba(0, 0, 0, 0.05)';
                   e.currentTarget.style.borderColor = '#f1f5f9';
+                  
+                  // Reset image scale
+                  const img = e.currentTarget.querySelector('img');
+                  if (img) {
+                    img.style.transform = 'scale(1)';
+                  }
                 }}
               >
                 <div style={styles.projectImage}>
-                  {project.icon}
+                  {imageLoading[project.id] !== false && (
+                    <div style={styles.imageLoader}>
+                      {project.icon}
+                    </div>
+                  )}
+                  <img 
+                    src={project.image} 
+                    alt={project.title}
+                    style={{
+                      ...styles.projectImg,
+                      opacity: imageLoading[project.id] === false ? 1 : 0
+                    }}
+                    onError={(e) => {
+                      setImageLoading(prev => ({ ...prev, [project.id]: 'error' }));
+                      e.target.style.display = 'none';
+                    }}
+                    onLoad={(e) => {
+                      setImageLoading(prev => ({ ...prev, [project.id]: false }));
+                    }}
+                  />
                   <div style={{
                     position: 'absolute',
                     top: 0,
@@ -393,15 +431,6 @@ const Projects = () => {
                   <h3 style={styles.projectTitle}>{project.title}</h3>
                   <p style={styles.projectDescription}>{project.description}</p>
                   
-                  <div style={styles.techStack}>
-                    <h4 style={styles.techTitle}>Technologies Used:</h4>
-                    <div style={styles.techTags}>
-                      {project.technologies.map((tech, idx) => (
-                        <span key={idx} style={styles.techTag}>{tech}</span>
-                      ))}
-                    </div>
-                  </div>
-
                   <div style={styles.projectFeatures}>
                     <h4 style={styles.techTitle}>Key Features:</h4>
                     <ul style={styles.featuresList}>
@@ -430,7 +459,7 @@ const Projects = () => {
                           e.target.style.boxShadow = 'none';
                         }}
                       >
-                        View Live Demo
+                        Learn More
                       </a>
                     )}
                     {project.githubUrl && (
