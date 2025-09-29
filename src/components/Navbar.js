@@ -35,18 +35,21 @@ const Navbar = () => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      height: '72px'
+      height: '80px'  // Increased from 72px to accommodate larger logo
     },
     logoContainer: {
       display: 'flex',
       alignItems: 'center',
       textDecoration: 'none',
-      transition: 'transform 0.2s ease'
+      transition: 'transform 0.2s ease',
+      padding: '8px 0'  // Added padding for better click area
     },
     logoImg: {
-      height: '42px',
+      height: isScrolled ? '52px' : '56px',  // Bigger logo: 52px when scrolled, 56px normally
       width: 'auto',
-      transition: 'all 0.2s ease'
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      maxWidth: '200px',  // Ensure it doesn't get too wide
+      objectFit: 'contain'  // Maintain aspect ratio
     },
     navLinks: {
       display: window.innerWidth <= 1024 ? 'none' : 'flex',
@@ -71,9 +74,6 @@ const Navbar = () => {
     activeLink: {
       color: '#1e293b',
       fontWeight: '600'
-    },
-    navLinkHover: {
-      color: '#1e293b'
     },
     contactButton: {
       background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
@@ -153,6 +153,13 @@ const Navbar = () => {
       textAlign: 'center',
       marginTop: '8px',
       transition: 'all 0.2s ease'
+    },
+
+    // Mobile logo (for responsive design)
+    mobileLogoImg: {
+      height: '48px',  // Smaller on mobile but still visible
+      width: 'auto',
+      maxWidth: '180px'
     }
   };
 
@@ -194,6 +201,21 @@ const Navbar = () => {
       .nav-link-underline.active::after {
         background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
       }
+
+      /* Responsive logo styles */
+      @media (max-width: 768px) {
+        .navbar-logo {
+          height: 44px !important;
+          max-width: 160px !important;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .navbar-logo {
+          height: 40px !important;
+          max-width: 140px !important;
+        }
+      }
     `;
     document.head.appendChild(style);
 
@@ -207,12 +229,12 @@ const Navbar = () => {
   return (
     <nav style={styles.navbar}>
       <div style={styles.navContainer}>
-        {/* Logo Only */}
+        {/* Enhanced Logo */}
         <Link 
           to="/" 
           style={styles.logoContainer}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'scale(1.02)';
+            e.currentTarget.style.transform = 'scale(1.05)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'scale(1)';
@@ -221,7 +243,12 @@ const Navbar = () => {
           <img 
             src="/logo.jpg" 
             alt="Trinix" 
-            style={styles.logoImg}
+            className="navbar-logo"
+            style={{
+              ...styles.logoImg,
+              // Add subtle shadow for better visibility
+              filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1))'
+            }}
           />
         </Link>
 

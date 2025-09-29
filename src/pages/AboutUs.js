@@ -1,5 +1,5 @@
 import React from 'react';
-import trinixVideo from './Video_Generation_For_Trinix_Company.mp4';
+import trinixVideo from './video.mp4';
 
 const AboutUs = () => {
   const styles = {

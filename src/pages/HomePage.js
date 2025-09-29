@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import trinixVideo from './Video_Generation_For_Trinix_Company.mp4';
+import trinixVideo from './video.mp4';
+
 
 const HomePage = () => {
     const [isVisible, setIsVisible] = useState({});
