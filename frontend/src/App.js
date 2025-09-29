@@ -14,6 +14,7 @@ import OurThinking from './pages/OurThinking';
 import WhatWeDo from './pages/WhatWeDo';
 import WhoWeAre from './pages/WhoWeAre';
 import WhoWeServe from './pages/WhoWeServe';
+import Register from './pages/Register';
 
 function App() {
   return (
@@ -32,6 +33,8 @@ function App() {
           <Route path="/career" element={<Career />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
         <ChatBot />
       </div>
