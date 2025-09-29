@@ -208,6 +208,23 @@ const HomePage = () => {
             animation: 'float8 5.5s ease-in-out infinite'
         },
 
+        // 3D Cube styles
+        cube: {
+            position: 'absolute',
+            width: '60px',
+            height: '60px',
+            transformStyle: 'preserve-3d',
+            zIndex: 1
+        },
+        cubeFace: {
+            position: 'absolute',
+            width: '60px',
+            height: '60px',
+            background: 'rgba(99, 102, 241, 0.1)',
+            border: '1px solid rgba(99, 102, 241, 0.3)',
+            backdropFilter: 'blur(5px)'
+        },
+
         // Subtle overlay
         heroOverlay: {
             position: 'absolute',
@@ -381,7 +398,7 @@ const HomePage = () => {
         }
     };
 
-    // Add CSS animations for floating elements
+    // Add CSS animations for floating elements and cubes
     useEffect(() => {
         const style = document.createElement('style');
         style.textContent = `
@@ -468,6 +485,70 @@ const HomePage = () => {
         }
         50% {
           transform: translateY(-11px);
+        }
+      }
+      
+      @keyframes rotateCube {
+        0% {
+          transform: rotateX(0deg) rotateY(0deg);
+        }
+        100% {
+          transform: rotateX(360deg) rotateY(360deg);
+        }
+      }
+      
+      @keyframes moveCube1 {
+        0%, 100% {
+          top: 20%;
+          left: 10%;
+        }
+        50% {
+          top: 25%;
+          left: 15%;
+        }
+      }
+      
+      @keyframes moveCube2 {
+        0%, 100% {
+          top: 50%;
+          right: 10%;
+        }
+        50% {
+          top: 45%;
+          right: 15%;
+        }
+      }
+      
+      @keyframes moveCube3 {
+        0%, 100% {
+          bottom: 25%;
+          left: 20%;
+        }
+        50% {
+          bottom: 30%;
+          left: 25%;
+        }
+      }
+      
+      @keyframes moveCube4 {
+        0%, 100% {
+          top: 35%;
+          left: 50%;
+        }
+        50% {
+          top: 40%;
+          left: 55%;
+        }
+      }
+      
+      @keyframes moveCube5 {
+        0%, 100% {
+          bottom: 35%;
+          right: 20%;
+        }
+        50% {
+          bottom: 30%;
+          right: 25%;
         }
       }
       
@@ -661,6 +742,52 @@ const HomePage = () => {
                 <div style={styles.decorativeShape6}></div>
                 <div style={styles.decorativeShape7}></div>
                 <div style={styles.decorativeShape8}></div>
+
+                {/* Moving 3D Cubes */}
+                <div style={{ ...styles.cube, animation: 'rotateCube 10s infinite linear, moveCube1 8s ease-in-out infinite' }}>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(0deg) translateZ(30px)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(90deg) translateZ(30px)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(180deg) translateZ(30px)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(-90deg) translateZ(30px)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateX(90deg) translateZ(30px)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateX(-90deg) translateZ(30px)' }}></div>
+                </div>
+
+                <div style={{ ...styles.cube, animation: 'rotateCube 12s infinite linear, moveCube2 9s ease-in-out infinite' }}>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(0deg) translateZ(30px)', background: 'rgba(139, 92, 246, 0.1)', borderColor: 'rgba(139, 92, 246, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(90deg) translateZ(30px)', background: 'rgba(139, 92, 246, 0.1)', borderColor: 'rgba(139, 92, 246, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(180deg) translateZ(30px)', background: 'rgba(139, 92, 246, 0.1)', borderColor: 'rgba(139, 92, 246, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(-90deg) translateZ(30px)', background: 'rgba(139, 92, 246, 0.1)', borderColor: 'rgba(139, 92, 246, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateX(90deg) translateZ(30px)', background: 'rgba(139, 92, 246, 0.1)', borderColor: 'rgba(139, 92, 246, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateX(-90deg) translateZ(30px)', background: 'rgba(139, 92, 246, 0.1)', borderColor: 'rgba(139, 92, 246, 0.3)' }}></div>
+                </div>
+
+                <div style={{ ...styles.cube, animation: 'rotateCube 15s infinite linear, moveCube3 10s ease-in-out infinite' }}>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(0deg) translateZ(30px)', background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(90deg) translateZ(30px)', background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(180deg) translateZ(30px)', background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(-90deg) translateZ(30px)', background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateX(90deg) translateZ(30px)', background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateX(-90deg) translateZ(30px)', background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.3)' }}></div>
+                </div>
+
+                <div style={{ ...styles.cube, width: '50px', height: '50px', animation: 'rotateCube 11s infinite linear, moveCube4 7s ease-in-out infinite' }}>
+                    <div style={{ ...styles.cubeFace, width: '50px', height: '50px', transform: 'rotateY(0deg) translateZ(25px)', background: 'rgba(168, 85, 247, 0.1)', borderColor: 'rgba(168, 85, 247, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, width: '50px', height: '50px', transform: 'rotateY(90deg) translateZ(25px)', background: 'rgba(168, 85, 247, 0.1)', borderColor: 'rgba(168, 85, 247, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, width: '50px', height: '50px', transform: 'rotateY(180deg) translateZ(25px)', background: 'rgba(168, 85, 247, 0.1)', borderColor: 'rgba(168, 85, 247, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, width: '50px', height: '50px', transform: 'rotateY(-90deg) translateZ(25px)', background: 'rgba(168, 85, 247, 0.1)', borderColor: 'rgba(168, 85, 247, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, width: '50px', height: '50px', transform: 'rotateX(90deg) translateZ(25px)', background: 'rgba(168, 85, 247, 0.1)', borderColor: 'rgba(168, 85, 247, 0.3)' }}></div>
+                    <div style={{ ...styles.cubeFace, width: '50px', height: '50px', transform: 'rotateX(-90deg) translateZ(25px)', background: 'rgba(168, 85, 247, 0.1)', borderColor: 'rgba(168, 85, 247, 0.3)' }}></div>
+                </div>
+
+                <div style={{ ...styles.cube, animation: 'rotateCube 13s infinite linear, moveCube5 11s ease-in-out infinite' }}>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(0deg) translateZ(30px)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(90deg) translateZ(30px)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(180deg) translateZ(30px)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateY(-90deg) translateZ(30px)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateX(90deg) translateZ(30px)' }}></div>
+                    <div style={{ ...styles.cubeFace, transform: 'rotateX(-90deg) translateZ(30px)' }}></div>
+                </div>
 
                 <div style={styles.heroContainer}>
                     <h1 style={styles.heroTitle}>
@@ -1025,23 +1152,6 @@ const HomePage = () => {
                             </div>
                         ))}
                     </div>
-
-                    <div style={styles.centerButton}>
-                        <Link
-                            to="/who-we-are"
-                            style={styles.exploreButton}
-                            onMouseEnter={(e) => {
-                                e.target.style.transform = 'translateY(-3px)';
-                                e.target.style.boxShadow = '0 8px 25px 0 rgba(99, 102, 241, 0.4)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 4px 14px 0 rgba(99, 102, 241, 0.3)';
-                            }}
-                        >
-                            Meet Full Team
-                        </Link>
-                    </div>
                 </div>
             </section>
 
@@ -1148,6 +1258,7 @@ const HomePage = () => {
                 </div>
             </section>
 
+            
             {/* Research Section with Paper Cards */}
             <section style={{ ...styles.section, background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)' }}>
                 <div style={styles.container}>
