@@ -427,9 +427,3 @@ const Login = () => {
 };
 
 export default Login;
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> 40389959 (ui changed)

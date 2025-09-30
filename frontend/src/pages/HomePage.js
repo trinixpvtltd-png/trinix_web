@@ -1833,7 +1833,7 @@ const HomePage = () => {
                         <div style={styles.footerBottomContent}>
                             <div style={styles.footerBottomLinks}>
                                 <a
-                                    href="#"
+                                    href="/privacy-policy"
                                     style={styles.footerBottomLink}
                                     onMouseEnter={(e) => e.target.style.color = '#6366f1'}
                                     onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
@@ -1841,7 +1841,7 @@ const HomePage = () => {
                                     Privacy Policy
                                 </a>
                                 <a
-                                    href="#"
+                                    href="/terms-of-service"
                                     style={styles.footerBottomLink}
                                     onMouseEnter={(e) => e.target.style.color = '#6366f1'}
                                     onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
@@ -1849,7 +1849,7 @@ const HomePage = () => {
                                     Terms of Service
                                 </a>
                                 <a
-                                    href="#"
+                                    href="/cookie-policy"
                                     style={styles.footerBottomLink}
                                     onMouseEnter={(e) => e.target.style.color = '#6366f1'}
                                     onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
