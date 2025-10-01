@@ -1,23 +1,10 @@
-import Database from 'better-sqlite3';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+// MongoDB connection using mongoose
+import mongoose from 'mongoose';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const mongoUri = process.env.MONGODB_URI;
 
-const dbFilePath = path.join(__dirname, '../../data/app.db');
-const initSqlPath = path.join(__dirname, 'init.sql');
+mongoose.connect(mongoUri)
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
-// Ensure data directory exists
-const dataDir = path.join(__dirname, '../../data');
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
-
-const db = new Database(dbFilePath);
-const initSql = fs.readFileSync(initSqlPath, 'utf-8');
-db.exec(initSql);
-
-export default db;
-
+export default mongoose;
