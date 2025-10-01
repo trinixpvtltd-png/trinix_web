@@ -3,12 +3,14 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import './models/mongodb.js';
+import mongoose from './models/db.js';    
 
 import authRoutes from './routes/auth.js';
 import projectRoutes from './routes/projects.js';
 import researchRoutes from './routes/researches.js';
 import jobRoutes from './routes/jobs.js';
+
+import dashboardRoutes from './routes/dashboard.js';
 import chatRoutes from './routes/chat.js';
 
 const app = express();
@@ -26,6 +28,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/researches', researchRoutes);
 app.use('/api/jobs', jobRoutes);
+
+app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/chat', chatRoutes);
 
 const PORT = process.env.PORT || 5000;

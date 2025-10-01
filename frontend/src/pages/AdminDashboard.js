@@ -399,32 +399,32 @@ const AdminDashboard = () => {
             <h2 style={styles.contentTitle}>🎛️ Admin Overview</h2>
             <div style={styles.statsGrid}>
               <div style={styles.statCard}>
-                <div style={styles.statCardIcon}>👥</div>
+               
                 <div style={styles.statCardNumber}>{stats.totalUsers}</div>
                 <div style={styles.statCardLabel}>Total Users</div>
               </div>
               <div style={styles.statCard}>
-                <div style={styles.statCardIcon}>🟢</div>
+               
                 <div style={styles.statCardNumber}>{stats.activeUsers}</div>
                 <div style={styles.statCardLabel}>Active Users</div>
               </div>
               <div style={styles.statCard}>
-                <div style={styles.statCardIcon}>💡</div>
+                
                 <div style={styles.statCardNumber}>{stats.totalIdeas}</div>
                 <div style={styles.statCardLabel}>Total Ideas</div>
               </div>
               <div style={styles.statCard}>
-                <div style={styles.statCardIcon}>✅</div>
+                
                 <div style={styles.statCardNumber}>{stats.publishedIdeas}</div>
                 <div style={styles.statCardLabel}>Published Ideas</div>
               </div>
               <div style={styles.statCard}>
-                <div style={styles.statCardIcon}>⏳</div>
+                
                 <div style={styles.statCardNumber}>{stats.pendingIdeas}</div>
                 <div style={styles.statCardLabel}>Pending Review</div>
               </div>
               <div style={styles.statCard}>
-                <div style={styles.statCardIcon}>🔑</div>
+                
                 <div style={styles.statCardNumber}>{stats.todayLogins}</div>
                 <div style={styles.statCardLabel}>Today's Logins</div>
               </div>
@@ -753,7 +753,7 @@ const AdminDashboard = () => {
             <li style={styles.navItem}>
               <Link to="/" style={styles.navLink}>
                 <span>🏠</span>
-                Back to Website
+                Logout
               </Link>
             </li>
           </ul>
