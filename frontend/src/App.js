@@ -8,13 +8,15 @@ import Research from './pages/Research';
 import Projects from './pages/Projects';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
+import UserDashboard from './pages/UserDashboard';
 //i added this
 import Career from './pages/Career';
-import OurThinking from './pages/OurThinking';
-import WhatWeDo from './pages/WhatWeDo';
-import WhoWeAre from './pages/WhoWeAre';
+
+
+
 import WhoWeServe from './pages/WhoWeServe';
 import Register from './pages/Register';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
@@ -24,16 +26,17 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutUs />} />
-          <Route path="/who-we-are" element={<WhoWeAre />} />
+         
           <Route path="/who-we-serve" element={<WhoWeServe />} />
-          <Route path="/what-we-do" element={<WhatWeDo />} />
-          <Route path="/our-thinking" element={<OurThinking />} />
+          
+          
           <Route path="/research" element={<Research />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/career" element={<Career />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<UserDashboard />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/register" element={<Register />} />
         </Routes>
         <ChatBot />

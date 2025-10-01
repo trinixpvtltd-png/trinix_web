@@ -1,15 +1,61 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false
   });
+
+  // Mock user data - in real app, this would come from API
+  const mockUsers = [
+    { email: 'admin@trinix.com', password: 'admin123', role: 'admin' },
+    { email: 'john.doe@company.com', password: 'user123', role: 'user' }
+  ];
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setErrors({});
+
+    // Simulate API call
+    setTimeout(() => {
+      const user = mockUsers.find(u => u.email === formData.email && u.password === formData.password);
+      
+      if (user) {
+        // Store user info in localStorage
+        localStorage.setItem('user', JSON.stringify({
+          email: user.email,
+          role: user.role,
+          name: user.email === 'admin@trinix.com' ? 'Admin User' : 'John Doe'
+        }));
+
+        // Redirect based on role
+        if (user.email === 'admin@trinix.com' && user.password === 'admin123') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
+
+        // Clear form
+        setFormData({
+          email: '',
+          password: '',
+          rememberMe: false
+        });
+      } else {
+        setErrors({
+          login: 'Invalid email or password'
+        });
+      }
+      setIsLoading(false);
+    }, 1000);
+  };
 
   const styles = {
     pageContainer: {
@@ -235,19 +281,6 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) return;
-    
-    setIsLoading(true);
-    
-    setTimeout(() => {
-      setIsLoading(false);
-      alert('Login successful!');
-    }, 2000);
-  };
-
   React.useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
@@ -303,7 +336,12 @@ const Login = () => {
         </div>
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} style={styles.formContainer}>
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          if (validateForm()) {
+            handleLogin(e);
+          }
+        }} style={styles.formContainer}>
           <div style={styles.formGroup}>
             <label htmlFor="email" style={styles.label}>
               Email Address
@@ -361,6 +399,12 @@ const Login = () => {
               <div style={styles.errorMessage}>
                 <span>⚠️</span>
                 <span>{errors.password}</span>
+              </div>
+            )}
+            {errors.login && (
+              <div style={styles.errorMessage}>
+                <span>⚠️</span>
+                <span>{errors.login}</span>
               </div>
             )}
           </div>
@@ -427,3 +471,4 @@ const Login = () => {
 };
 
 export default Login;
+

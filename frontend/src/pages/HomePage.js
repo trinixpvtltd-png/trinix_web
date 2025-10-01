@@ -396,6 +396,78 @@ const HomePage = () => {
             color: '#64748b',
             fontWeight: '500'
         },
+        // Project Section Styles
+        projectsGrid: {
+          display: 'grid',
+          gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(auto-fit, minmax(500px, 1fr))',
+          gap: '40px',
+          marginTop: '80px'
+        },
+        projectCard: {
+          background: 'white',
+          borderRadius: '24px',
+          overflow: 'hidden',
+          border: '1px solid #f1f5f9',
+          transition: 'all 0.4s ease',
+          boxShadow: '0 4px 12px 0 rgba(0, 0, 0, 0.05)',
+          position: 'relative'
+        },
+        projectImage: {
+          height: '280px',
+          position: 'relative',
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, #f1f5f9, #e2e8f0)'
+        },
+        projectImg: {
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          transition: 'transform 0.4s ease'
+        },
+        projectContent: {
+          padding: '40px 32px'
+        },
+        projectCategory: {
+          background: 'linear-gradient(135deg, #f1f5f9, #e2e8f0)',
+          color: '#6366f1',
+          padding: '6px 14px',
+          borderRadius: '8px',
+          fontSize: '0.875rem',
+          fontWeight: '600',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+          display: 'inline-block',
+          marginBottom: '16px',
+          border: '1px solid #e2e8f0'
+        },
+        projectTitle: {
+          fontSize: '1.75rem',
+          color: '#1e293b',
+          marginBottom: '16px',
+          fontWeight: '700',
+          lineHeight: '1.3'
+        },
+        projectDescription: {
+          color: '#64748b',
+          lineHeight: '1.6',
+          fontSize: '1rem',
+          marginBottom: '24px'
+        },
+        projectFeatures: {
+          marginBottom: '32px'
+        },
+        statusBadge: {
+          position: 'absolute',
+          top: '20px',
+          right: '20px',
+          background: 'rgba(16, 185, 129, 0.9)',
+          color: 'white',
+          padding: '6px 12px',
+          borderRadius: '6px',
+          fontSize: '0.75rem',
+          fontWeight: '600',
+          textTransform: 'uppercase'
+        },
 
         // Footer styles
         footer: {
@@ -725,6 +797,49 @@ const HomePage = () => {
     }, []);
 
     // Complete data for all sections
+    const projects = [
+      {
+        id: 1,
+        category: 'Event Management',
+        title: 'Eventify Platform',
+        description: 'Comprehensive event management platform featuring multi-user roles (owners, managers, agents), venue search functionality, booking management, and real-time dashboard analytics. Built with modern React architecture and scalable backend infrastructure.',
+        icon: '🎪',
+        image: 'https://cdn.pixabay.com/photo/2017/07/21/23/57/concert-2527495_1280.jpg',
+        status: 'Live',
+        features: [
+          'Multi-role user management system',
+          'Advanced venue search & filtering',
+          'Real-time booking management',
+          'Interactive dashboard analytics',
+          'Payment gateway integration',
+          'Automated email notifications',
+          'Mobile-responsive design',
+          'Admin panel with full control'
+        ],
+        liveUrl: 'https://eventify-demo.trinix.com'
+      },
+      {
+        id: 2,
+        category: 'Real Estate',
+        title: 'PropGo Platform',
+        description: 'Digital platform designed to simplify real estate transactions by connecting Property Owners with Property Agents through a secure and efficient interface. Features verified listings, secure interactions, and streamlined experience for all stakeholders.',
+        icon: '🏠',
+        image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center',
+        status: 'Live',
+        features: [
+          'Verified property listings system',
+          'Direct communication between owners and agents',
+          'Secure property verification process',
+          'Agent subscription management',
+          'Real-time property status updates',
+          'Advanced search and filtering',
+          'Document sharing and storage',
+          'Revenue tracking and analytics'
+        ],
+        liveUrl: 'https://propgo-platform.trinix.com'
+      }
+    ];
+
     const industries = [
         {
             icon: '🏢',
@@ -1036,79 +1151,7 @@ const HomePage = () => {
                 </div>
             </section>
 
-            {/* Stats Section */}
-            <section style={styles.statsSection}>
-                <div style={styles.statsGrid}>
-                    <div
-                        style={styles.statCard}
-                        data-animate
-                        id="stat1"
-                        className={isVisible.stat1 ? 'visible' : ''}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'translateY(-8px)';
-                            e.currentTarget.style.boxShadow = '0 10px 30px 0 rgba(0, 0, 0, 0.1)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0, 0, 0, 0.04)';
-                        }}
-                    >
-                        <span style={styles.statNumber}>17+</span>
-                        <span style={styles.statLabel}>Years Experience</span>
-                    </div>
-                    <div
-                        style={styles.statCard}
-                        data-animate
-                        id="stat2"
-                        className={isVisible.stat2 ? 'visible' : ''}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'translateY(-8px)';
-                            e.currentTarget.style.boxShadow = '0 10px 30px 0 rgba(0, 0, 0, 0.1)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0, 0, 0, 0.04)';
-                        }}
-                    >
-                        <span style={styles.statNumber}>25+</span>
-                        <span style={styles.statLabel}>Countries Served</span>
-                    </div>
-                    <div
-                        style={styles.statCard}
-                        data-animate
-                        id="stat3"
-                        className={isVisible.stat3 ? 'visible' : ''}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'translateY(-8px)';
-                            e.currentTarget.style.boxShadow = '0 10px 30px 0 rgba(0, 0, 0, 0.1)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0, 0, 0, 0.04)';
-                        }}
-                    >
-                        <span style={styles.statNumber}>100K+</span>
-                        <span style={styles.statLabel}>Active Users</span>
-                    </div>
-                    <div
-                        style={styles.statCard}
-                        data-animate
-                        id="stat4"
-                        className={isVisible.stat4 ? 'visible' : ''}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'translateY(-8px)';
-                            e.currentTarget.style.boxShadow = '0 10px 30px 0 rgba(0, 0, 0, 0.1)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0, 0, 0, 0.04)';
-                        }}
-                    >
-                        <span style={styles.statNumber}>500+</span>
-                        <span style={styles.statLabel}>Projects Delivered</span>
-                    </div>
-                </div>
-            </section>
+           
 
             {/* Who We Serve Section with Industry Cards */}
             <section style={{ ...styles.section, background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)' }}>
@@ -1179,59 +1222,72 @@ const HomePage = () => {
                 </div>
             </section>
 
-            {/* What We Do Section with Service Cards */}
-            <section style={{ ...styles.section, background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)' }}>
+           
+            {/* Featured Projects Section */}
+            <section style={styles.section}>
                 <div style={styles.container}>
-                    <div data-animate id="services" className={isVisible.services ? 'visible' : ''}>
-                        <h2 style={styles.sectionTitle}>What We Do</h2>
+                    <div data-animate id="projects" className={isVisible.projects ? 'visible' : ''}>
+                        <h2 style={styles.sectionTitle}>Featured Projects</h2>
                         <p style={styles.sectionSubtitle}>
-                            Comprehensive technology solutions designed to transform businesses, accelerate digital growth,
-                            and create meaningful impact through innovative approaches and cutting-edge technologies.
+                            Explore our successful implementations and innovative solutions
                         </p>
+                        <div style={styles.projectsGrid}>
+                            {projects.map((project, index) => (
+                                <div 
+                                    key={project.id}
+                                    style={styles.projectCard}
+                                    data-animate 
+                                    id={`project-${index}`}
+                                    className={isVisible[`project-${index}`] ? 'visible' : ''}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(-12px)';
+                                        e.currentTarget.style.boxShadow = '0 25px 50px 0 rgba(0, 0, 0, 0.15)';
+                                        e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)';
+                                        
+                                        const img = e.currentTarget.querySelector('img');
+                                        if (img) {
+                                            img.style.transform = 'scale(1.05)';
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(0)';
+                                        e.currentTarget.style.boxShadow = '0 4px 12px 0 rgba(0, 0, 0, 0.05)';
+                                        e.currentTarget.style.borderColor = '#f1f5f9';
+                                        
+                                        const img = e.currentTarget.querySelector('img');
+                                        if (img) {
+                                            img.style.transform = 'scale(1)';
+                                        }
+                                    }}
+                                >
+                                    <div style={styles.projectImage}>
+                                        <img 
+                                            src={project.image} 
+                                            alt={project.title}
+                                            style={styles.projectImg}
+                                        />
+                                        <div style={{
+                                            ...styles.statusBadge,
+                                            background: project.status === 'Live' ? 'rgba(16, 185, 129, 0.9)' : 
+                                                    project.status === 'Beta Testing' ? 'rgba(251, 191, 36, 0.9)' : 
+                                                    'rgba(59, 130, 246, 0.9)'
+                                        }}>
+                                            {project.status}
+                                        </div>
+                                    </div>
+                                    
+                                    <div style={styles.projectContent}>
+                                        <span style={styles.projectCategory}>{project.category}</span>
+                                        <h3 style={styles.projectTitle}>{project.title}</h3>
+                                        <p style={styles.projectDescription}>{project.description}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-
-                    <div style={styles.cardGrid}>
-                        {services.map((service, index) => (
-                            <div
-                                key={index}
-                                style={styles.card}
-                                data-animate
-                                id={`service-${index}`}
-                                className={isVisible[`service-${index}`] ? 'visible' : ''}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-8px)';
-                                    e.currentTarget.style.boxShadow = '0 10px 30px 0 rgba(0, 0, 0, 0.1)';
-                                    e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0, 0, 0, 0.04)';
-                                    e.currentTarget.style.borderColor = '#f1f5f9';
-                                }}
-                            >
-                                <span style={styles.cardIcon}>{service.icon}</span>
-                                <h3 style={styles.cardTitle}>{service.title}</h3>
-                                <p style={styles.cardDescription}>{service.desc}</p>
-                                <ul style={styles.featuresList}>
-                                    {service.features.map((feature, idx) => (
-                                        <li key={idx} style={styles.featureItem}>
-                                            <span style={{
-                                                position: 'absolute',
-                                                left: '0',
-                                                color: '#6366f1',
-                                                fontWeight: '600'
-                                            }}>•</span>
-                                            {feature}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
-
                     <div style={styles.centerButton}>
                         <Link
-                            to="/what-we-do"
+                            to="/projects"
                             style={styles.exploreButton}
                             onMouseEnter={(e) => {
                                 e.target.style.transform = 'translateY(-3px)';
@@ -1242,179 +1298,15 @@ const HomePage = () => {
                                 e.target.style.boxShadow = '0 4px 14px 0 rgba(99, 102, 241, 0.3)';
                             }}
                         >
-                            Explore All Services
+                            View All Projects
                         </Link>
                     </div>
                 </div>
             </section>
 
-            {/* Who We Are Section with Team Cards */}
-            <section style={{ ...styles.section, background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)' }}>
-                <div style={styles.container}>
-                    <div data-animate id="team" className={isVisible.team ? 'visible' : ''}>
-                        <h2 style={styles.sectionTitle}>Who We Are</h2>
-                        <p style={styles.sectionSubtitle}>
-                            Passionate innovators, leaders, and visionaries driving technological change
-                            and delivering exceptional results for clients worldwide.
-                        </p>
-                    </div>
+          
 
-                    <div style={styles.cardGrid}>
-                        {teamMembers.map((member, index) => (
-                            <div
-                                key={index}
-                                style={styles.card}
-                                data-animate
-                                id={`member-${index}`}
-                                className={isVisible[`member-${index}`] ? 'visible' : ''}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-8px)';
-                                    e.currentTarget.style.boxShadow = '0 10px 30px 0 rgba(0, 0, 0, 0.1)';
-                                    e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0, 0, 0, 0.04)';
-                                    e.currentTarget.style.borderColor = '#f1f5f9';
-                                }}
-                            >
-                                <div style={{
-                                    width: '80px',
-                                    height: '80px',
-                                    borderRadius: '50%',
-                                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                                    margin: '0 auto 20px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '2rem',
-                                    color: 'white',
-                                    fontWeight: '600'
-                                }}>{member.initial}</div>
-                                <h3 style={styles.cardTitle}>{member.name}</h3>
-                                <p style={{ color: '#6366f1', marginBottom: '12px', fontWeight: '500', fontSize: '0.9375rem' }}>{member.role}</p>
-                                <p style={styles.cardDescription}>{member.bio}</p>
-                                <ul style={styles.featuresList}>
-                                    {member.expertise.map((skill, idx) => (
-                                        <li key={idx} style={styles.featureItem}>
-                                            <span style={{
-                                                position: 'absolute',
-                                                left: '0',
-                                                color: '#6366f1',
-                                                fontWeight: '600'
-                                            }}>•</span>
-                                            {skill}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Our Thinking Section with Blog Cards */}
-            <section style={{ ...styles.section, background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)' }}>
-                <div style={styles.container}>
-                    <div data-animate id="thinking" className={isVisible.thinking ? 'visible' : ''}>
-                        <h2 style={styles.sectionTitle}>Our Thinking</h2>
-                        <p style={styles.sectionSubtitle}>
-                            Insights, perspectives, and thought leadership on technology trends shaping the future
-                            of business, innovation, and digital transformation across industries.
-                        </p>
-                    </div>
-
-                    <div style={styles.cardGrid}>
-                        {blogPosts.map((post, index) => (
-                            <div
-                                key={index}
-                                style={styles.card}
-                                data-animate
-                                id={`post-${index}`}
-                                className={isVisible[`post-${index}`] ? 'visible' : ''}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-8px)';
-                                    e.currentTarget.style.boxShadow = '0 10px 30px 0 rgba(0, 0, 0, 0.1)';
-                                    e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0, 0, 0, 0.04)';
-                                    e.currentTarget.style.borderColor = '#f1f5f9';
-                                }}
-                            >
-                                <div style={{
-                                    height: '120px',
-                                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                                    borderRadius: '12px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '3rem',
-                                    color: 'white',
-                                    marginBottom: '20px'
-                                }}>{post.icon}</div>
-                                <span style={{
-                                    background: 'rgba(99, 102, 241, 0.1)',
-                                    color: '#6366f1',
-                                    padding: '4px 12px',
-                                    borderRadius: '12px',
-                                    fontSize: '0.75rem',
-                                    fontWeight: '600',
-                                    textTransform: 'uppercase',
-                                    marginBottom: '16px',
-                                    display: 'inline-block'
-                                }}>{post.category}</span>
-                                <h3 style={styles.cardTitle}>{post.title}</h3>
-                                <p style={styles.cardDescription}>{post.excerpt}</p>
-                                <div style={{ marginBottom: '16px' }}>
-                                    {post.tags.map((tag, idx) => (
-                                        <span key={idx} style={{
-                                            background: '#f1f5f9',
-                                            color: '#64748b',
-                                            padding: '2px 8px',
-                                            borderRadius: '6px',
-                                            fontSize: '0.75rem',
-                                            marginRight: '6px',
-                                            marginBottom: '6px',
-                                            display: 'inline-block'
-                                        }}>#{tag}</span>
-                                    ))}
-                                </div>
-                                <div style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    paddingTop: '16px',
-                                    borderTop: '1px solid #f1f5f9',
-                                    fontSize: '0.875rem',
-                                    color: '#64748b'
-                                }}>
-                                    <span>{post.author} • {post.date}</span>
-                                    <span>{post.readTime}</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div style={styles.centerButton}>
-                        <Link
-                            to="/our-thinking"
-                            style={styles.exploreButton}
-                            onMouseEnter={(e) => {
-                                e.target.style.transform = 'translateY(-3px)';
-                                e.target.style.boxShadow = '0 8px 25px 0 rgba(99, 102, 241, 0.4)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 4px 14px 0 rgba(99, 102, 241, 0.3)';
-                            }}
-                        >
-                            Read All Articles
-                        </Link>
-                    </div>
-                </div>
-            </section>
+           
 
             
             {/* Research Section with Paper Cards */}
@@ -1617,75 +1509,8 @@ const HomePage = () => {
                 </div>
             </section>
 
-            {/* Projects Preview Section */}
-            <section style={{ ...styles.section, background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)' }}>
-                <div style={styles.container}>
-                    <div data-animate id="projects" className={isVisible.projects ? 'visible' : ''}>
-                        <h2 style={styles.sectionTitle}>Featured Projects</h2>
-                        <p style={styles.sectionSubtitle}>
-                            Showcasing our latest innovations and successful implementations across various industries
-                            with cutting-edge technology solutions.
-                        </p>
-                    </div>
+           
 
-                    <div style={styles.cardGrid}>
-                        {[
-                            { icon: '🎪', title: 'Eventify Platform', desc: 'Comprehensive event management with multi-user roles and real-time analytics.', category: 'Event Management' },
-                            { icon: '💼', title: 'Job Application Tracker', desc: 'Full-stack productivity tool for organizing and streamlining job search processes.', category: 'Productivity' },
-                            { icon: '🛒', title: 'Smart Retail Dashboard', desc: 'AI-powered e-commerce management with inventory tracking and sales analytics.', category: 'E-commerce' }
-                        ].map((project, index) => (
-                            <div
-                                key={index}
-                                style={styles.card}
-                                data-animate
-                                id={`project-preview-${index}`}
-                                className={isVisible[`project-preview-${index}`] ? 'visible' : ''}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-8px)';
-                                    e.currentTarget.style.boxShadow = '0 10px 30px 0 rgba(0, 0, 0, 0.1)';
-                                    e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0, 0, 0, 0.04)';
-                                    e.currentTarget.style.borderColor = '#f1f5f9';
-                                }}
-                            >
-                                <span style={styles.cardIcon}>{project.icon}</span>
-                                <span style={{
-                                    background: 'linear-gradient(135deg, #f1f5f9, #e2e8f0)',
-                                    color: '#6366f1',
-                                    padding: '4px 10px',
-                                    borderRadius: '6px',
-                                    fontSize: '0.75rem',
-                                    fontWeight: '600',
-                                    marginBottom: '16px',
-                                    display: 'inline-block'
-                                }}>{project.category}</span>
-                                <h3 style={styles.cardTitle}>{project.title}</h3>
-                                <p style={styles.cardDescription}>{project.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div style={styles.centerButton}>
-                        <Link
-                            to="/projects"
-                            style={styles.exploreButton}
-                            onMouseEnter={(e) => {
-                                e.target.style.transform = 'translateY(-3px)';
-                                e.target.style.boxShadow = '0 8px 25px 0 rgba(99, 102, 241, 0.4)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 4px 14px 0 rgba(99, 102, 241, 0.3)';
-                            }}
-                        >
-                            View All Projects
-                        </Link>
-                    </div>
-                </div>
-            </section>
 
 
             {/* Footer */}
@@ -1833,7 +1658,7 @@ const HomePage = () => {
                         <div style={styles.footerBottomContent}>
                             <div style={styles.footerBottomLinks}>
                                 <a
-                                    href="/privacy-policy"
+                                    href="#"
                                     style={styles.footerBottomLink}
                                     onMouseEnter={(e) => e.target.style.color = '#6366f1'}
                                     onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
@@ -1841,7 +1666,7 @@ const HomePage = () => {
                                     Privacy Policy
                                 </a>
                                 <a
-                                    href="/terms-of-service"
+                                    href="#"
                                     style={styles.footerBottomLink}
                                     onMouseEnter={(e) => e.target.style.color = '#6366f1'}
                                     onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
@@ -1849,7 +1674,7 @@ const HomePage = () => {
                                     Terms of Service
                                 </a>
                                 <a
-                                    href="/cookie-policy"
+                                    href="#"
                                     style={styles.footerBottomLink}
                                     onMouseEnter={(e) => e.target.style.color = '#6366f1'}
                                     onMouseLeave={(e) => e.target.style.color = '#94a3b8'}

@@ -4,10 +4,46 @@ const Career = () => {
   const [activeTab, setActiveTab] = useState('full-time');
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    experience: '',
+    portfolio: '',
+    resume: '',
+    coverLetter: ''
+  });
 
   const handleApplyClick = (role) => {
     setSelectedRole(role);
     setShowApplicationForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    // Here you would typically send the data to your backend
+    console.log('Application submitted:', { role: selectedRole, ...formData });
+    // Reset form
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      experience: '',
+      portfolio: '',
+      resume: '',
+      coverLetter: ''
+    });
+    setShowApplicationForm(false);
+    alert('Application submitted successfully! We will contact you soon.');
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const styles = {
@@ -16,10 +52,12 @@ const Career = () => {
       minHeight: '100vh'
     },
     heroSection: {
-      background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
-      color: 'white',
-      padding: '120px 0 80px',
-      textAlign: 'center'
+      background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 20%, #f1f5f9 100%)',
+      padding: '160px 0 120px',
+      textAlign: 'center',
+      position: 'relative',
+      overflow: 'hidden',
+      minHeight: '60vh'
     },
     container: {
       maxWidth: '1200px',
@@ -27,22 +65,26 @@ const Career = () => {
       padding: '0 24px'
     },
     title: {
-      fontSize: window.innerWidth <= 768 ? '3rem' : '4rem',
+      fontSize: window.innerWidth <= 768 ? '3.5rem' : '4.8rem',
       fontWeight: '800',
-      marginBottom: '24px'
+      marginBottom: '32px',
+      lineHeight: '1.1',
+      letterSpacing: '-0.025em',
+      color: '#1e293b'
     },
     highlight: {
-      background: 'linear-gradient(135deg, #00d9ff, #0099cc)',
+      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text'
     },
     subtitle: {
       fontSize: '1.25rem',
-      maxWidth: '768px',
+      maxWidth: '800px',
       margin: '0 auto 60px',
-      lineHeight: '1.6',
-      opacity: 0.9
+      lineHeight: '1.7',
+      color: '#64748b',
+      fontWeight: '400'
     },
     section: {
       padding: '80px 0'
@@ -55,19 +97,22 @@ const Career = () => {
       flexWrap: 'wrap'
     },
     tabButton: {
-      background: 'rgba(255, 255, 255, 0.1)',
-      color: 'white',
-      padding: '12px 24px',
-      borderRadius: '8px',
-      border: '1px solid rgba(255, 255, 255, 0.2)',
+      background: 'white',
+      color: '#64748b',
+      padding: '14px 28px',
+      borderRadius: '12px',
+      border: '1px solid #e2e8f0',
       fontSize: '1rem',
       fontWeight: '600',
       cursor: 'pointer',
-      transition: 'all 0.2s ease'
+      transition: 'all 0.3s ease',
+      boxShadow: '0 2px 8px 0 rgba(0, 0, 0, 0.04)'
     },
     activeTab: {
       background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-      borderColor: 'transparent'
+      borderColor: 'transparent',
+      color: 'white',
+      boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.3)'
     },
     jobGrid: {
       display: 'grid',
@@ -75,17 +120,18 @@ const Career = () => {
       gap: '32px'
     },
     jobCard: {
-      background: 'rgba(255, 255, 255, 0.05)',
-      borderRadius: '16px',
-      padding: '32px',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      transition: 'all 0.2s ease'
+      background: 'white',
+      borderRadius: '20px',
+      padding: '40px 32px',
+      border: '1px solid #f1f5f9',
+      transition: 'all 0.3s ease',
+      boxShadow: '0 2px 8px 0 rgba(0, 0, 0, 0.04)'
     },
     jobTitle: {
       fontSize: '1.5rem',
-      fontWeight: '600',
+      fontWeight: '700',
       marginBottom: '8px',
-      color: 'white'
+      color: '#1e293b'
     },
     jobType: {
       background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
@@ -98,9 +144,10 @@ const Career = () => {
       marginBottom: '16px'
     },
     jobDescription: {
-      color: 'rgba(255, 255, 255, 0.8)',
+      color: '#64748b',
       lineHeight: '1.6',
-      marginBottom: '24px'
+      marginBottom: '24px',
+      fontSize: '1rem'
     },
     applyButton: {
       background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
@@ -173,8 +220,207 @@ const Career = () => {
     ]
   };
 
+  const applicationFormStyles = {
+    formOverlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      display: showApplicationForm ? 'flex' : 'none',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1000,
+      padding: '20px'
+    },
+    formContainer: {
+      backgroundColor: 'white',
+      borderRadius: '24px',
+      padding: '48px',
+      width: '100%',
+      maxWidth: '800px',
+      maxHeight: '90vh',
+      overflowY: 'auto',
+      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+      position: 'relative'
+    },
+    formTitle: {
+      color: '#1e293b',
+      fontSize: '2rem',
+      fontWeight: '700',
+      marginBottom: '32px',
+      textAlign: 'center',
+      letterSpacing: '-0.025em'
+    },
+    formGroup: {
+      marginBottom: '20px'
+    },
+    label: {
+      display: 'block',
+      color: '#475569',
+      marginBottom: '8px',
+      fontWeight: '500'
+    },
+    input: {
+      width: '100%',
+      padding: '14px',
+      backgroundColor: '#f8fafc',
+      border: '1px solid #e2e8f0',
+      borderRadius: '12px',
+      color: '#1e293b',
+      fontSize: '1rem',
+      transition: 'all 0.3s ease',
+      '&:focus': {
+        borderColor: '#6366f1',
+        boxShadow: '0 0 0 3px rgba(99, 102, 241, 0.1)'
+      }
+    },
+    textarea: {
+      width: '100%',
+      padding: '14px',
+      backgroundColor: '#f8fafc',
+      border: '1px solid #e2e8f0',
+      borderRadius: '12px',
+      color: '#1e293b',
+      fontSize: '1rem',
+      minHeight: '150px',
+      resize: 'vertical',
+      transition: 'all 0.3s ease',
+      '&:focus': {
+        borderColor: '#6366f1',
+        boxShadow: '0 0 0 3px rgba(99, 102, 241, 0.1)'
+      }
+    },
+    submitButton: {
+      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+      color: 'white',
+      padding: '12px 24px',
+      borderRadius: '8px',
+      border: 'none',
+      fontSize: '1rem',
+      fontWeight: '600',
+      cursor: 'pointer',
+      width: '100%',
+      marginTop: '20px'
+    },
+    closeButton: {
+      position: 'absolute',
+      top: '20px',
+      right: '20px',
+      background: 'none',
+      border: 'none',
+      color: 'white',
+      fontSize: '24px',
+      cursor: 'pointer'
+    }
+  };
+
   return (
     <div style={styles.pageContainer}>
+      {/* Application Form */}
+      <div style={applicationFormStyles.formOverlay} onClick={(e) => {
+        if (e.target === e.currentTarget) setShowApplicationForm(false);
+      }}>
+        <div style={applicationFormStyles.formContainer}>
+          <button 
+            style={applicationFormStyles.closeButton}
+            onClick={() => setShowApplicationForm(false)}
+          >
+            ×
+          </button>
+          <h2 style={applicationFormStyles.formTitle}>
+            Apply for {selectedRole?.title}
+          </h2>
+          <form onSubmit={handleFormSubmit}>
+            <div style={applicationFormStyles.formGroup}>
+              <label style={applicationFormStyles.label}>Full Name *</label>
+              <input
+                style={applicationFormStyles.input}
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                placeholder="Enter your full name"
+              />
+            </div>
+            <div style={applicationFormStyles.formGroup}>
+              <label style={applicationFormStyles.label}>Email *</label>
+              <input
+                style={applicationFormStyles.input}
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+                placeholder="Enter your email"
+              />
+            </div>
+            <div style={applicationFormStyles.formGroup}>
+              <label style={applicationFormStyles.label}>Phone Number *</label>
+              <input
+                style={applicationFormStyles.input}
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                required
+                placeholder="Enter your phone number"
+              />
+            </div>
+            <div style={applicationFormStyles.formGroup}>
+              <label style={applicationFormStyles.label}>Years of Experience *</label>
+              <input
+                style={applicationFormStyles.input}
+                type="text"
+                name="experience"
+                value={formData.experience}
+                onChange={handleInputChange}
+                required
+                placeholder="e.g., 3 years"
+              />
+            </div>
+            <div style={applicationFormStyles.formGroup}>
+              <label style={applicationFormStyles.label}>Portfolio URL</label>
+              <input
+                style={applicationFormStyles.input}
+                type="url"
+                name="portfolio"
+                value={formData.portfolio}
+                onChange={handleInputChange}
+                placeholder="https://your-portfolio.com"
+              />
+            </div>
+            <div style={applicationFormStyles.formGroup}>
+              <label style={applicationFormStyles.label}>Resume Link *</label>
+              <input
+                style={applicationFormStyles.input}
+                type="url"
+                name="resume"
+                value={formData.resume}
+                onChange={handleInputChange}
+                required
+                placeholder="Link to your resume (Google Drive, Dropbox, etc.)"
+              />
+            </div>
+            <div style={applicationFormStyles.formGroup}>
+              <label style={applicationFormStyles.label}>Cover Letter</label>
+              <textarea
+                style={applicationFormStyles.textarea}
+                name="coverLetter"
+                value={formData.coverLetter}
+                onChange={handleInputChange}
+                placeholder="Tell us why you'd be a great fit for this position"
+              />
+            </div>
+            <button type="submit" style={applicationFormStyles.submitButton}>
+              Submit Application
+            </button>
+          </form>
+        </div>
+      </div>
+
       {/* Hero Section */}
       <section style={styles.heroSection}>
         <div style={styles.container}>
