@@ -83,8 +83,52 @@ const AdminDashboard = () => {
     totalIdeas: 15,
     publishedIdeas: 10,
     pendingIdeas: 5,
-    todayLogins: 5
+    todayLogins: 5,
+    totalApplications: 8,
+    newApplications: 3
   });
+
+  const [applications] = useState([
+    {
+      id: 1,
+      name: 'Alex Thompson',
+      email: 'alex.t@gmail.com',
+      phone: '+1 (555) 123-4567',
+      position: 'Senior Full Stack Developer',
+      type: 'Full-Time',
+      experience: '5 years',
+      appliedDate: '2024-09-28',
+      status: 'Under Review',
+      resumeLink: 'https://drive.google.com/resume1',
+      portfolio: 'https://alexthompson.dev'
+    },
+    {
+      id: 2,
+      name: 'Emily Chen',
+      email: 'emily.chen@outlook.com',
+      phone: '+1 (555) 987-6543',
+      position: 'Software Engineering Intern',
+      type: 'Internship',
+      experience: '1 year',
+      appliedDate: '2024-09-29',
+      status: 'New',
+      resumeLink: 'https://drive.google.com/resume2',
+      portfolio: 'https://github.com/emilychen'
+    },
+    {
+      id: 3,
+      name: 'Michael Brown',
+      email: 'michael.b@yahoo.com',
+      phone: '+1 (555) 456-7890',
+      position: 'Technical Writer',
+      type: 'Part-Time',
+      experience: '3 years',
+      appliedDate: '2024-09-30',
+      status: 'Shortlisted',
+      resumeLink: 'https://drive.google.com/resume3',
+      portfolio: 'https://michaelbrown.com/portfolio'
+    }
+  ]);
 
   const styles = {
     pageContainer: {
@@ -271,6 +315,22 @@ const AdminDashboard = () => {
       background: '#e0e7ff',
       color: '#3730a3'
     },
+    badgeNew: {
+      background: '#dbeafe',
+      color: '#1e40af'
+    },
+    badgeUnderReview: {
+      background: '#fef3c7',
+      color: '#92400e'
+    },
+    badgeShortlisted: {
+      background: '#d1fae5',
+      color: '#065f46'
+    },
+    badgeRejected: {
+      background: '#fee2e2',
+      color: '#991b1b'
+    },
     actionButton: {
       background: 'transparent',
       border: '1px solid #e2e8f0',
@@ -279,7 +339,7 @@ const AdminDashboard = () => {
       fontSize: '0.8125rem',
       cursor: 'pointer',
       transition: 'all 0.2s ease',
-      marginRight: '8px'
+      marginRight: '12px'
     },
     viewButton: {
       color: '#6366f1',
@@ -453,6 +513,91 @@ const AdminDashboard = () => {
           </div>
         );
 
+      case 'applications':
+        return (
+          <div>
+            <h2 style={styles.contentTitle}>📋 Job Applications</h2>
+            <div style={styles.statsGrid}>
+              <div style={styles.statCard}>
+                <div style={styles.statCardIcon}>📥</div>
+                <div style={styles.statCardNumber}>{stats.totalApplications}</div>
+                <div style={styles.statCardLabel}>Total Applications</div>
+              </div>
+              <div style={styles.statCard}>
+                <div style={styles.statCardIcon}>🆕</div>
+                <div style={styles.statCardNumber}>{stats.newApplications}</div>
+                <div style={styles.statCardLabel}>New Applications</div>
+              </div>
+            </div>
+            <table style={styles.table}>
+              <thead style={styles.tableHeader}>
+                <tr>
+                  <th style={styles.tableHeaderCell}>Applicant</th>
+                  <th style={styles.tableHeaderCell}>Position</th>
+                  <th style={styles.tableHeaderCell}>Type</th>
+                  <th style={styles.tableHeaderCell}>Experience</th>
+                  <th style={styles.tableHeaderCell}>Applied Date</th>
+                  <th style={styles.tableHeaderCell}>Status</th>
+                  <th style={styles.tableHeaderCell}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {applications.map(app => (
+                  <tr key={app.id} style={styles.tableRow} className="table-row">
+                    <td style={styles.tableCell}>
+                      <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                        <div style={{
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontSize: '0.875rem',
+                          fontWeight: '600'
+                        }}>
+                          {app.name.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <div>
+                          <div style={{fontWeight: '500'}}>{app.name}</div>
+                          <div style={{fontSize: '0.8125rem', color: '#64748b'}}>{app.email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style={styles.tableCell}>{app.position}</td>
+                    <td style={styles.tableCell}>{app.type}</td>
+                    <td style={styles.tableCell}>{app.experience}</td>
+                    <td style={styles.tableCell}>{app.appliedDate}</td>
+                    <td style={styles.tableCell}>
+                      <span style={{
+                        ...styles.badge,
+                        ...(app.status === 'New' ? styles.badgeNew :
+                           app.status === 'Under Review' ? styles.badgeUnderReview :
+                           app.status === 'Shortlisted' ? styles.badgeShortlisted :
+                           styles.badgeRejected)
+                      }}>
+                        {app.status}
+                      </span>
+                    </td>
+                    <td style={styles.tableCell}>
+                      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <button style={{...styles.actionButton, ...styles.viewButton}} className="action-button view-button">
+                          View Details
+                        </button>
+                        <button style={{...styles.actionButton, ...styles.editButton}} className="action-button edit-button">
+                          Update Status
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+
       case 'ideas':
         return (
           <div>
@@ -502,15 +647,17 @@ const AdminDashboard = () => {
                     <td style={styles.tableCell}>{idea.date}</td>
                     <td style={styles.tableCell}>{idea.views}</td>
                     <td style={styles.tableCell}>
-                      <button style={{...styles.actionButton, ...styles.viewButton}} className="action-button view-button">
-                        View
-                      </button>
-                      <button style={{...styles.actionButton, ...styles.editButton}} className="action-button edit-button">
-                        {idea.status === 'Published' ? 'Unpublish' : 'Publish'}
-                      </button>
-                      <button style={{...styles.actionButton, ...styles.deleteButton}} className="action-button delete-button">
-                        Delete
-                      </button>
+                      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <button style={{...styles.actionButton, ...styles.viewButton}} className="action-button view-button">
+                          View
+                        </button>
+                        <button style={{...styles.actionButton, ...styles.editButton}} className="action-button edit-button">
+                          {idea.status === 'Published' ? 'Unpublish' : 'Publish'}
+                        </button>
+                        <button style={{...styles.actionButton, ...styles.deleteButton}} className="action-button delete-button">
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -589,6 +736,18 @@ const AdminDashboard = () => {
               >
                 <span>💡</span>
                 Ideas
+              </div>
+            </li>
+            <li style={styles.navItem}>
+              <div
+                style={{
+                  ...styles.navLink,
+                  ...(activeTab === 'applications' ? styles.navLinkActive : {})
+                }}
+                onClick={() => setActiveTab('applications')}
+              >
+                <span>📝</span>
+                Applications
               </div>
             </li>
             <li style={styles.navItem}>
