@@ -1,5 +1,6 @@
 import React from 'react';
 import trinixVideo from './video.mp4';
+import Footer from '../components/Footer';
 
 const AboutUs = () => {
   const styles = {
@@ -85,8 +86,173 @@ const AboutUs = () => {
       fontSize: '0.875rem',
       color: '#6b7280',
       fontWeight: '500'
+    },
+
+    // Updated Timeline Section Styles - Light Theme
+    timelineSection: {
+      background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%)',
+      padding: '100px 0',
+      position: 'relative',
+      overflow: 'hidden'
+    },
+    timelineSectionTitle: {
+      fontSize: window.innerWidth <= 768 ? '2.5rem' : '3.5rem',
+      fontWeight: '800',
+      textAlign: 'center',
+      marginBottom: '16px',
+      color: '#1e293b'
+    },
+    timelineSectionSubtitle: {
+      fontSize: '1.25rem',
+      textAlign: 'center',
+      marginBottom: '80px',
+      color: '#64748b',
+      maxWidth: '600px',
+      margin: '0 auto 80px'
+    },
+    timelineContainer: {
+      position: 'relative',
+      maxWidth: '900px',
+      margin: '0 auto',
+      padding: '0 20px'
+    },
+    timelineLine: {
+      position: 'absolute',
+      left: '50%',
+      top: '0',
+      bottom: '0',
+      width: '4px',
+      background: 'linear-gradient(180deg, #e2e8f0, #6366f1, #e2e8f0)',
+      transform: 'translateX(-50%)',
+      borderRadius: '2px'
+    },
+    timelineItem: {
+      position: 'relative',
+      marginBottom: '100px',
+      display: 'flex',
+      alignItems: 'center',
+      width: '100%'
+    },
+    timelineItemLeft: {
+      justifyContent: 'flex-end'
+    },
+    timelineItemRight: {
+      justifyContent: 'flex-start'
+    },
+    timelineCard: {
+      background: 'white',
+      border: '1px solid #e2e8f0',
+      borderRadius: '20px',
+      padding: '32px',
+      width: '380px',
+      position: 'relative',
+      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+      transition: 'all 0.3s ease'
+    },
+    timelineCardLeft: {
+      marginRight: '80px'
+    },
+    timelineCardRight: {
+      marginLeft: '80px'
+    },
+    timelineDot: {
+      position: 'absolute',
+      left: '50%',
+      width: '3px',
+      height: '30px',
+      background: '#e2e8f0',
+      transform: 'translateX(-50%)',
+      zIndex: 2
+    },
+    timelineYear: {
+      fontSize: '1.5rem',
+      fontWeight: '800',
+      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text',
+      marginBottom: '12px',
+      display: 'block'
+    },
+    timelineTitle: {
+      fontSize: '1.25rem',
+      fontWeight: '700',
+      color: '#1e293b',
+      marginBottom: '12px',
+      lineHeight: '1.3'
+    },
+    timelineDescription: {
+      fontSize: '1rem',
+      color: '#64748b',
+      lineHeight: '1.6'
+    },
+
+    // Mobile Timeline Styles - Light Theme
+    timelineMobile: {
+      display: window.innerWidth <= 768 ? 'block' : 'none'
+    },
+    timelineDesktop: {
+      display: window.innerWidth <= 768 ? 'none' : 'block'
+    },
+    timelineMobileItem: {
+      marginBottom: '40px',
+      paddingLeft: '60px',
+      position: 'relative'
+    },
+    timelineMobileLine: {
+      position: 'absolute',
+      left: '20px',
+      top: '0',
+      bottom: '0',
+      width: '2px',
+      background: '#e2e8f0'
+    },
+    timelineMobileDot: {
+      position: 'absolute',
+      left: '12px',
+      top: '8px',
+      width: '16px',
+      height: '16px',
+      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+      borderRadius: '50%',
+      border: '3px solid white',
+      boxShadow: '0 2px 8px rgba(99, 102, 241, 0.2)'
+    },
+    timelineMobileCard: {
+      background: 'white',
+      border: '1px solid #e2e8f0',
+      borderRadius: '16px',
+      padding: '24px',
+      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)'
     }
   };
+
+  const timelineData = [
+    {
+      year: '2008',
+      title: 'Company Founded',
+      description: 'Trinix was established with a vision to revolutionize digital solutions.',
+      position: 'left'
+    },
+    {
+      year: '2012',
+      title: 'First Major Platform',
+      description: 'Launched our first enterprise platform serving 10,000+ users.',
+      position: 'right'
+    },
+    {
+      year: '2018',
+      title: 'International Expansion',
+      description: 'Expanded operations to 15+ countries across Asia and Europe.',
+      position: 'left'
+    },
+    {
+      year: '2023',
+      title: 'Platform Evolution',
+      description: 'Introduced Eventify, SOS, and MedGo platforms serving 50,000+ users.',
+      position: 'right'
+    }
+  ];
 
   return (
     <div style={styles.pageContainer}>
@@ -134,29 +300,74 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section style={{...styles.section, background: '#f9fafb'}}>
+      {/* Timeline Section - Light Theme */}
+      <section style={styles.timelineSection}>
         <div style={styles.container}>
-          <div style={styles.statsGrid}>
-            <div style={styles.statCard}>
-              <span style={styles.statNumber}>17+</span>
-              <span style={styles.statLabel}>Years Experience</span>
+          <h2 style={styles.timelineSectionTitle}>
+            Our <span style={styles.highlight}>Journey</span>
+          </h2>
+          <p style={styles.timelineSectionSubtitle}>
+            Key milestones that have shaped our growth and success over the years.
+          </p>
+
+          {/* Desktop Timeline */}
+          <div style={styles.timelineDesktop}>
+            <div style={styles.timelineContainer}>
+              <div style={styles.timelineLine}></div>
+              {timelineData.map((item, index) => (
+                <div 
+                  key={index} 
+                  style={{
+                    ...styles.timelineItem,
+                    ...(item.position === 'left' ? styles.timelineItemLeft : styles.timelineItemRight)
+                  }}
+                >
+                  <div 
+                    style={{
+                      ...styles.timelineCard,
+                      ...(item.position === 'left' ? styles.timelineCardLeft : styles.timelineCardRight)
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'translateY(-8px)';
+                      e.target.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.12)';
+                      e.target.style.borderColor = '#6366f1';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
+                      e.target.style.borderColor = '#e2e8f0';
+                    }}
+                  >
+                    <span style={styles.timelineYear}>{item.year}</span>
+                    <h3 style={styles.timelineTitle}>{item.title}</h3>
+                    <p style={styles.timelineDescription}>{item.description}</p>
+                  </div>
+                  <div style={styles.timelineDot}></div>
+                </div>
+              ))}
             </div>
-            <div style={styles.statCard}>
-              <span style={styles.statNumber}>25+</span>
-              <span style={styles.statLabel}>Countries Served</span>
-            </div>
-            <div style={styles.statCard}>
-              <span style={styles.statNumber}>100K+</span>
-              <span style={styles.statLabel}>Active Users</span>
-            </div>
-            <div style={styles.statCard}>
-              <span style={styles.statNumber}>500+</span>
-              <span style={styles.statLabel}>Projects Delivered</span>
+          </div>
+
+          {/* Mobile Timeline */}
+          <div style={styles.timelineMobile}>
+            <div style={styles.timelineContainer}>
+              <div style={styles.timelineMobileLine}></div>
+              {timelineData.map((item, index) => (
+                <div key={index} style={styles.timelineMobileItem}>
+                  <div style={styles.timelineMobileDot}></div>
+                  <div style={styles.timelineMobileCard}>
+                    <span style={styles.timelineYear}>{item.year}</span>
+                    <h3 style={styles.timelineTitle}>{item.title}</h3>
+                    <p style={styles.timelineDescription}>{item.description}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
+         
       </section>
+      <Footer />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import Footer from '../components/Footer';
 // --- Theme and Utility Configuration ---
 // Note: In a real-world app, these would be external theme files or utilities.
 const lightThemeColors = {
@@ -312,6 +312,7 @@ const Contact = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };

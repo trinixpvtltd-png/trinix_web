@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Footer from '../components/Footer';
 
 const Career = () => {
   const [activeTab, setActiveTab] = useState('full-time');
@@ -471,6 +472,7 @@ const Career = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };

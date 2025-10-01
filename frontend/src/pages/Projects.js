@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import Footer from '../components/Footer';
 const Projects = () => {
   const [isVisible, setIsVisible] = useState({});
   const [imageLoading, setImageLoading] = useState({});
@@ -487,6 +487,7 @@ const Projects = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };
