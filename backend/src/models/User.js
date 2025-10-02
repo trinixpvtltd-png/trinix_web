@@ -1,10 +1,58 @@
 import mongoose from './db.js';
 
 const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  password_hash: { type: String, required: true },
-  role: { type: String, enum: ['user', 'admin'], default: 'user' },
-  created_at: { type: Date, default: Date.now }
+  first_name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  last_name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true,
+    lowercase: true,
+    trim: true
+  },
+  password_hash: { 
+    type: String, 
+    required: true 
+  },
+  phone: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  company: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  role: { 
+    type: String, 
+    enum: ['user', 'admin', 'agent'], 
+    default: 'user' 
+  },
+  verified: {
+    type: Boolean,
+    default: false
+  },
+  verification_token: String,
+  reset_password_token: String,
+  reset_password_expires: Date,
+  last_login: Date,
+  created_at: { 
+    type: Date, 
+    default: Date.now 
+  },
+  updated_at: { 
+    type: Date, 
+    default: Date.now 
+  }
 });
 
 export default mongoose.model('User', userSchema);

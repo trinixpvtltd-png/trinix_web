@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 const Projects = () => {
   const [isVisible, setIsVisible] = useState({});
@@ -445,10 +446,14 @@ const Projects = () => {
 
                   <div style={styles.projectActions}>
                     {project.liveUrl && (
-                      <a 
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <Link 
+                        to={
+                          project.title === "Eventify Platform" ? "/projects/eventify" :
+                          project.title === "SOS Emergency Network" ? "/projects/sos" :
+                          project.title === "MedGO Healthcare" ? "/projects/medgo" :
+                          project.title === "PropGo Platform" ? "/projects/propgo" :
+                          project.liveUrl
+                        }
                         style={styles.primaryAction}
                         onMouseEnter={(e) => {
                           e.target.style.transform = 'translateY(-2px)';
@@ -460,7 +465,7 @@ const Projects = () => {
                         }}
                       >
                         Learn More
-                      </a>
+                      </Link>
                     )}
                     {project.githubUrl && (
                       <a 

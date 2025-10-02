@@ -9,9 +9,11 @@ import Projects from './pages/Projects';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
-//i added this
 import Career from './pages/Career';
-
+import EventifyDetails from './pages/EventifyDetails';
+import SOSDetails from './pages/SOSDetails';
+import MedGoDetails from './pages/MedGoDetails';
+import PropGoDetails from './pages/PropGoDetails';
 
 
 import WhoWeServe from './pages/WhoWeServe';
@@ -32,8 +34,13 @@ function App() {
           
           <Route path="/research" element={<Research />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/eventify" element={<EventifyDetails />} />
+          <Route path="/projects/sos" element={<SOSDetails />} />
+          <Route path="/projects/medgo" element={<MedGoDetails />} />
+          <Route path="/projects/propgo" element={<PropGoDetails />} />
           <Route path="/career" element={<Career />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/projects/eventify" element={<EventifyDetails />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<UserDashboard />} />
           <Route path="/admin" element={<AdminDashboard />} />

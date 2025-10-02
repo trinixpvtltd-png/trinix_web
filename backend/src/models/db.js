@@ -1,4 +1,6 @@
 // MongoDB connection using mongoose
+import dotenv from 'dotenv';
+dotenv.config();
 import mongoose from 'mongoose';
 
 const mongoUri = process.env.MONGODB_URI;

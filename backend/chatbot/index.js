@@ -1,7 +1,6 @@
 dotenv.config();
 import express from 'express';
-import mongoose from 'mongoose';
-import fileRoutes from './routes/fileRoutes.js';
+
 import dotenv from 'dotenv';
 import cors from 'cors';
 

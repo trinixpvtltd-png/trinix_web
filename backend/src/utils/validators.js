@@ -1,9 +1,32 @@
 import Joi from 'joi';
 
 export const registerSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().min(8).max(64).required(),
-  role: Joi.string().valid('user', 'admin').default('user')
+  first_name: Joi.string().min(2).max(50).required().trim()
+    .pattern(/^[a-zA-Z\s]*$/)
+    .messages({
+      'string.pattern.base': 'First name can only contain letters and spaces'
+    }),
+  last_name: Joi.string().min(2).max(50).required().trim()
+    .pattern(/^[a-zA-Z\s]*$/)
+    .messages({
+      'string.pattern.base': 'Last name can only contain letters and spaces'
+    }),
+  email: Joi.string().email().required().trim().lowercase(),
+  password: Joi.string().min(8).max(64).required()
+    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+    .messages({
+      'string.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+    }),
+  confirm_password: Joi.string().valid(Joi.ref('password')).required()
+    .messages({
+      'any.only': 'Passwords do not match'
+    }),
+  phone: Joi.string().pattern(/^\d{9,15}$/).required()
+    .messages({
+      'string.pattern.base': 'Please enter a valid phone number (9-15 digits)'
+    }),
+  company: Joi.string().min(2).max(100).required().trim(),
+  role: Joi.string().valid('user', 'admin', 'agent').default('user')
 });
 
 export const loginSchema = Joi.object({
