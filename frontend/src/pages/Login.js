@@ -1,42 +1,33 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false
   });
-
-  // Mock user data - in real app, this would come from API
-  const mockUsers = [
-    { email: 'admin@trinix.com', password: 'admin123', role: 'admin' },
-    { email: 'john.doe@company.com', password: 'user123', role: 'user' }
-  ];
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setErrors({});
 
-    // Simulate API call
-    setTimeout(() => {
-      const user = mockUsers.find(u => u.email === formData.email && u.password === formData.password);
-      
-      if (user) {
-        // Store user info in localStorage
-        localStorage.setItem('user', JSON.stringify({
-          email: user.email,
-          role: user.role,
-          name: user.email === 'admin@trinix.com' ? 'Admin User' : 'John Doe'
-        }));
+    try {
+      const result = await login({
+        email: formData.email,
+        password: formData.password
+      });
 
+      if (result.success) {
         // Redirect based on role
-        if (user.email === 'admin@trinix.com' && user.password === 'admin123') {
+        if (result.user.role === 'admin') {
           navigate('/admin');
         } else {
           navigate('/dashboard');
@@ -50,11 +41,16 @@ const Login = () => {
         });
       } else {
         setErrors({
-          login: 'Invalid email or password'
+          login: result.error || 'Invalid email or password'
         });
       }
+    } catch (error) {
+      setErrors({
+        login: 'Login failed. Please try again.'
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const styles = {

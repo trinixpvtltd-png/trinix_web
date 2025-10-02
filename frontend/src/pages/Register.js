@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Register = () => {
+  const navigate = useNavigate();
+  const { register } = useAuth();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -284,11 +287,26 @@ const Register = () => {
     if (!validateForm()) return;
     
     setIsLoading(true);
+    setErrors({});
     
-    setTimeout(() => {
+    try {
+      const result = await register(formData);
+      
+      if (result.success) {
+        alert('Registration successful! Welcome to Trinix!');
+        navigate('/dashboard');
+      } else {
+        setErrors({
+          submit: result.error || 'Registration failed. Please try again.'
+        });
+      }
+    } catch (error) {
+      setErrors({
+        submit: 'Registration failed. Please try again.'
+      });
+    } finally {
       setIsLoading(false);
-      alert('Registration successful! Please check your email to verify your account.');
-    }, 2000);
+    }
   };
 
   const passwordStrength = getPasswordStrength(formData.password);
@@ -587,6 +605,12 @@ const Register = () => {
               <div style={styles.errorMessage}>
                 <span>⚠️</span>
                 <span>{errors.agreeTerms}</span>
+              </div>
+            )}
+            {errors.submit && (
+              <div style={styles.errorMessage}>
+                <span>⚠️</span>
+                <span>{errors.submit}</span>
               </div>
             )}
           </div>

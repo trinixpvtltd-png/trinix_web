@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import apiService from '../services/api';
 
 const ChatBot = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -38,23 +39,15 @@ const ChatBot = () => {
         setIsTyping(true);
 
         try {
-            // Call the backend API
-            const response = await fetch('/chatbot/api', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    question: currentMessage,
-                    sessionId: 'frontend-session-' + Date.now() // Simple session management
-                })
-            });
-
-            const data = await response.json();
+            // Call the backend API using the API service
+            const data = await apiService.sendChatMessage(
+                currentMessage, 
+                'frontend-session-' + Date.now()
+            );
             
             const botResponse = {
                 id: Date.now() + 1,
-                text: data.answer || data.error || "Sorry, I couldn't process your request. Please try again.",
+                text: data.answer || data.response || "Sorry, I couldn't process your request. Please try again.",
                 sender: 'bot',
                 timestamp: new Date()
             };

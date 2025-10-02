@@ -106,16 +106,100 @@ export async function register(req, res) {
   }
 }
 
-export function login(req, res) {
-  const { error, value } = loginSchema.validate(req.body);
-  if (error) return res.status(400).json({ message: error.message });
-  const { email, password } = value;
-  User.findOne({ email }).then((user) => {
-    if (!user) return res.status(401).json({ message: 'Invalid credentials' });
-    const ok = bcrypt.compareSync(password, user.password_hash);
-    if (!ok) return res.status(401).json({ message: 'Invalid credentials' });
-    const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    return res.json({ token, user: { id: user._id, email: user.email, role: user.role } });
-  }).catch((err) => res.status(500).json({ message: err.message }));
+export async function login(req, res) {
+  try {
+    const { error, value } = loginSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+
+    const { email, password } = value;
+    const user = await User.findOne({ email: email.toLowerCase() });
+    
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials'
+      });
+    }
+
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    if (!isValidPassword) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials'
+      });
+    }
+
+    // Update last login
+    user.last_login = new Date();
+    await user.save();
+
+    const token = jwt.sign(
+      { 
+        id: user._id, 
+        email: user.email, 
+        role: user.role 
+      }, 
+      process.env.JWT_SECRET, 
+      { expiresIn: '7d' }
+    );
+
+    const userResponse = {
+      id: user._id,
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      role: user.role,
+      company: user.company,
+      verified: user.verified
+    };
+
+    return res.json({
+      success: true,
+      token,
+      user: userResponse
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred during login'
+    });
+  }
+}
+
+export async function getCurrentUser(req, res) {
+  try {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
+    const user = await User.findById(userId).select('-password_hash');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({
+      success: true,
+      user: {
+        id: user._id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        role: user.role,
+        company: user.company,
+        phone: user.phone,
+        verified: user.verified,
+        created_at: user.created_at,
+        last_login: user.last_login
+      }
+    });
+  } catch (error) {
+    console.error('Get current user error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 }
 
