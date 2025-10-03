@@ -6,6 +6,7 @@ const Research = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('published'); // 'prelisting' | 'published'
 
   const handleSubmitProposal = () => {
     navigate('/login');
@@ -47,6 +48,36 @@ const Research = () => {
     },
     section: {
       padding: '80px 0'
+    },
+    // New: Status toggle (Prelisting / Published)
+    statusSection: {
+      marginBottom: '24px'
+    },
+    statusButtons: {
+      display: 'flex',
+      justifyContent: 'center',
+      gap: '12px',
+      flexWrap: 'wrap',
+      marginBottom: '12px'
+    },
+    statusButton: {
+      background: 'white',
+      color: '#374151',
+      padding: '10px 20px',
+      borderRadius: '9999px',
+      border: '1px solid #d1d5db',
+      fontSize: '0.9375rem',
+      fontWeight: '500',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.06)'
+    },
+    activeStatusButton: {
+      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+      color: 'white',
+      borderColor: 'transparent',
+      transform: 'translateY(-1px)',
+      boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)'
     },
     searchContainer: {
       display: 'flex',
@@ -314,6 +345,7 @@ const Research = () => {
 
   const researchPapers = [
     {
+      status: 'published',
       category: 'ai',
       categoryLabel: 'AI & Machine Learning',
       title: 'Enhancing Natural Language Processing with Transformer-Based Architectures in Enterprise Applications',
@@ -323,6 +355,7 @@ const Research = () => {
       downloads: 1247
     },
     {
+      status: 'published',
       category: 'security',
       categoryLabel: 'Cybersecurity',
       title: 'Zero-Trust Architecture Implementation: A Comprehensive Framework for Modern Enterprise Security',
@@ -332,6 +365,7 @@ const Research = () => {
       downloads: 892
     },
     {
+      status: 'prelisting',
       category: 'cloud',
       categoryLabel: 'Cloud Computing',
       title: 'Serverless Computing Optimization: Performance Analysis and Cost-Effective Scaling Strategies',
@@ -341,6 +375,7 @@ const Research = () => {
       downloads: 1156
     },
     {
+      status: 'published',
       category: 'data',
       categoryLabel: 'Data Analytics',
       title: 'Real-Time Data Processing at Scale: Advanced Techniques for High-Velocity Data Streams',
@@ -350,6 +385,7 @@ const Research = () => {
       downloads: 743
     },
     {
+      status: 'prelisting',
       category: 'web',
       categoryLabel: 'Web Development',
       title: 'Modern Frontend Architecture: Component-Based Design Patterns for Scalable Web Applications',
@@ -359,6 +395,7 @@ const Research = () => {
       downloads: 1389
     },
     {
+      status: 'published',
       category: 'ai',
       categoryLabel: 'AI & Machine Learning',
       title: 'Cross-Platform Mobile Development: Performance Optimization and User Experience Enhancement',
@@ -380,14 +417,18 @@ const Research = () => {
   };
 
   const filteredPapers = researchPapers.filter(paper => {
+    const matchesStatus = paper.status === statusFilter;
     const matchesCategory = selectedCategory === 'all' || paper.category === selectedCategory;
     const matchesSearch = searchTerm === '' || 
       paper.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       paper.authors.toLowerCase().includes(searchTerm.toLowerCase()) ||
       paper.abstract.toLowerCase().includes(searchTerm.toLowerCase()) ||
       paper.categoryLabel.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return matchesStatus && matchesCategory && matchesSearch;
   });
+
+  const totalForStatus = researchPapers.filter(p => p.status === statusFilter).length;
+  const statusLabel = statusFilter === 'prelisting' ? 'prelisting' : 'published';
 
   return (
     <div style={styles.pageContainer}>
@@ -441,6 +482,60 @@ const Research = () => {
             </button>
           </div>
 
+          {/* Status Toggle */}
+          <div style={styles.statusSection}>
+            <div style={styles.statusButtons}>
+              <button
+                aria-pressed={statusFilter === 'prelisting'}
+                style={{
+                  ...styles.statusButton,
+                  ...(statusFilter === 'prelisting' ? styles.activeStatusButton : {})
+                }}
+                onClick={() => setStatusFilter('prelisting')}
+                onMouseEnter={(e) => {
+                  if (statusFilter !== 'prelisting') {
+                    e.target.style.borderColor = '#6366f1';
+                    e.target.style.color = '#6366f1';
+                    e.target.style.transform = 'translateY(-1px)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (statusFilter !== 'prelisting') {
+                    e.target.style.borderColor = '#d1d5db';
+                    e.target.style.color = '#374151';
+                    e.target.style.transform = 'translateY(0)';
+                  }
+                }}
+              >
+                Prelisting
+              </button>
+              <button
+                aria-pressed={statusFilter === 'published'}
+                style={{
+                  ...styles.statusButton,
+                  ...(statusFilter === 'published' ? styles.activeStatusButton : {})
+                }}
+                onClick={() => setStatusFilter('published')}
+                onMouseEnter={(e) => {
+                  if (statusFilter !== 'published') {
+                    e.target.style.borderColor = '#6366f1';
+                    e.target.style.color = '#6366f1';
+                    e.target.style.transform = 'translateY(-1px)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (statusFilter !== 'published') {
+                    e.target.style.borderColor = '#d1d5db';
+                    e.target.style.color = '#374151';
+                    e.target.style.transform = 'translateY(0)';
+                  }
+                }}
+              >
+                Published
+              </button>
+            </div>
+          </div>
+
           {/* Simplified Category Buttons - No Filter Box */}
           <div style={styles.categorySection}>
             <div style={styles.categoryButtons}>
@@ -476,9 +571,9 @@ const Research = () => {
           {/* Results Count */}
           <div style={styles.resultsCount}>
             {filteredPapers.length === 0 ? (
-              <p>No research papers found matching your criteria.</p>
+              <p>No {statusLabel} research papers found matching your criteria.</p>
             ) : (
-              <p>Showing {filteredPapers.length} of {researchPapers.length} research papers</p>
+              <p>Showing {filteredPapers.length} of {totalForStatus} {statusLabel} research papers</p>
             )}
           </div>
 

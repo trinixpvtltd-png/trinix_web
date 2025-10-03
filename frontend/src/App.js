@@ -1,6 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { useAuth } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import ChatBot from './components/ChatBot';
 import HomePage from './pages/HomePage';
@@ -18,6 +19,20 @@ import PropGoDetails from './pages/PropGoDetails';
 import WhoWeServe from './pages/WhoWeServe';
 import Register from './pages/Register';
 import AdminDashboard from './pages/AdminDashboard';
+
+// Route guards: wait for auth loading to finish before deciding
+const RequireAuth = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return null; // or a spinner component
+  return isAuthenticated() ? children : <Navigate to="/login" replace />;
+};
+
+const RequireAdmin = ({ children }) => {
+  const { isAuthenticated, isAdmin, loading } = useAuth();
+  if (loading) return null;
+  if (!isAuthenticated()) return <Navigate to="/login" replace />;
+  return isAdmin() ? children : <Navigate to="/dashboard" replace />;
+};
 
 function App() {
   return (
@@ -39,8 +54,8 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/projects/eventify" element={<EventifyDetails />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<UserDashboard />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/dashboard" element={<RequireAuth><UserDashboard /></RequireAuth>} />
+            <Route path="/admin" element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
             <Route path="/register" element={<Register />} />
           </Routes>
           <ChatBot />

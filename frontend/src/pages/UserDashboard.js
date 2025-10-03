@@ -1,68 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 const UserDashboard = () => {
+  // Normalize API base URL and ensure it contains /api
+  const RAW_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+  const API_BASE_URL = (() => {
+    const trimmed = RAW_BASE.replace(/\/$/, '');
+    return /\/api(\b|\/)/.test(trimmed) ? trimmed : `${trimmed}/api`;
+  })();
+  const http = axios.create({ baseURL: API_BASE_URL, headers: { Accept: 'application/json' } });
+  const getAuthConfig = () => {
+    const token = localStorage.getItem('token');
+    return {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      }
+    };
+  };
   const [activeTab, setActiveTab] = useState('overview');
-  const [user] = useState({
-    name: 'John Doe',
-    email: 'john.doe@company.com',
-    company: 'Tech Solutions Inc.',
-    joinDate: 'March 2024',
-    totalIdeas: 12,
-    publishedIdeas: 8,
-    pendingIdeas: 4,
-    avatar: 'JD'
-  });
+  const [user, setUser] = useState(null);
+  const [stats, setStats] = useState({ totalIdeas: 0, publishedIdeas: 0, pendingIdeas: 0 });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const [newIdea, setNewIdea] = useState({
     type: 'research',
     title: '',
     description: '',
-    category: '',
+    category: 'Other',
     tags: '',
     priority: 'medium',
     expectedOutcome: '',
     resources: ''
   });
 
-  const [userIdeas, setUserIdeas] = useState([
-    {
-      id: 1,
-      type: 'research',
-      title: 'AI-Powered Healthcare Diagnostics',
-      description: 'Developing machine learning algorithms to assist healthcare professionals in early disease detection and diagnosis through medical imaging analysis.',
-      category: 'Healthcare',
-      status: 'Published',
-      date: '2024-09-15',
-      views: 156,
-      priority: 'high',
-      tags: ['AI', 'Healthcare', 'Machine Learning', 'Medical Imaging']
-    },
-    {
-      id: 2,
-      type: 'project',
-      title: 'Smart City Traffic Optimization',
-      description: 'IoT-based intelligent traffic management system using real-time data analytics and predictive modeling to reduce congestion and improve urban mobility.',
-      category: 'Smart Cities',
-      status: 'Under Review',
-      date: '2024-09-28',
-      views: 23,
-      priority: 'medium',
-      tags: ['IoT', 'Smart Cities', 'Traffic Management', 'Data Analytics']
-    },
-    {
-      id: 3,
-      type: 'research',
-      title: 'Sustainable Energy Storage Solutions',
-      description: 'Research into next-generation battery technologies using nanomaterials for improved energy density and environmental sustainability.',
-      category: 'Sustainability',
-      status: 'Draft',
-      date: '2024-09-30',
-      views: 5,
-      priority: 'high',
-      tags: ['Sustainability', 'Energy', 'Nanotechnology', 'Battery']
+  const [userIdeas, setUserIdeas] = useState([]);
+  const [recentIdeas, setRecentIdeas] = useState([]);
+
+  // Navigation and auth
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } finally {
+      navigate('/login');
     }
-  ]);
+  };
 
   const styles = {
     pageContainer: {
@@ -433,40 +421,95 @@ const UserDashboard = () => {
 
 
   };
+  // Helpers
+  const normalizeIdea = (i) => ({
+    id: i.id || i._id,
+    type: i.type,
+    title: i.title,
+    description: i.description,
+    category: i.category,
+    status: i.status,
+    date: i.date || (i.created_at ? new Date(i.created_at).toISOString().split('T')[0] : ''),
+    views: i.views || 0,
+    priority: i.priority || 'medium',
+    tags: Array.isArray(i.tags) ? i.tags : (typeof i.tags === 'string' ? i.tags.split(',').map(t => t.trim()).filter(Boolean) : [])
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!newIdea.title || !newIdea.description) {
-      alert('Please fill in all required fields');
-      return;
+  // Load user profile, stats, and ideas from /api/users endpoints (via axios)
+  useEffect(() => {
+    let isMounted = true;
+    async function load() {
+      try {
+        const dashRes = await http.get('/users/dashboard', getAuthConfig());
+        const dash = dashRes?.data || {};
+        if (!isMounted) return;
+
+        const u = dash.user || {};
+        const fullName = [u.first_name, u.last_name].filter(Boolean).join(' ') || 'User';
+        const avatar = (u.first_name?.[0] || '') + (u.last_name?.[0] || '');
+        setUser({
+          name: fullName,
+          email: u.email,
+          company: u.company || '—',
+          joinDate: u.created_at ? new Date(u.created_at).toLocaleString('en-US', { month: 'long', year: 'numeric' }) : '—',
+          avatar: avatar || 'U'
+        });
+
+        const s = dash.stats || {};
+        setStats({
+          totalIdeas: s.totalIdeas || 0,
+          publishedIdeas: s.publishedIdeas || 0,
+          pendingIdeas: s.pendingIdeas || 0
+        });
+
+        const r = Array.isArray(dash.recentIdeas) ? dash.recentIdeas : [];
+        setRecentIdeas(r.map(normalizeIdea));
+
+        // Fetch full list of user's ideas
+        const mineRes = await http.get('/users/ideas/mine', getAuthConfig());
+        const mine = mineRes?.data || {};
+        const ideas = Array.isArray(mine.ideas) ? mine.ideas : (Array.isArray(mine?.data?.ideas) ? mine.data.ideas : []);
+        setUserIdeas(ideas.map(normalizeIdea));
+      } catch (e) {
+        // If dashboard route is not found, try to at least load user info from /auth/me
+        if (e?.response?.status === 404) {
+          try {
+            const meRes = await http.get('/auth/me', getAuthConfig());
+            const u = meRes?.data?.user || meRes?.data || {};
+            const fullName = [u.first_name, u.last_name].filter(Boolean).join(' ') || 'User';
+            const avatar = (u.first_name?.[0] || '') + (u.last_name?.[0] || '');
+            setUser({
+              name: fullName,
+              email: u.email,
+              company: u.company || '—',
+              joinDate: u.created_at ? new Date(u.created_at).toLocaleString('en-US', { month: 'long', year: 'numeric' }) : '—',
+              avatar: avatar || 'U'
+            });
+            setStats({ totalIdeas: 0, publishedIdeas: 0, pendingIdeas: 0 });
+            setRecentIdeas([]);
+            // Try to load user ideas (may still 404 depending on backend), ignore on error
+            try {
+              const mineRes = await http.get('/users/ideas/mine', getAuthConfig());
+              const mine = mineRes?.data || {};
+              const ideas = Array.isArray(mine.ideas) ? mine.ideas : (Array.isArray(mine?.data?.ideas) ? mine.data.ideas : []);
+              setUserIdeas(ideas.map(normalizeIdea));
+            } catch (_) {}
+            setError('');
+          } catch (innerErr) {
+            setError(innerErr?.message || 'Failed to load dashboard');
+          }
+        } else {
+          setError(e.message || 'Failed to load dashboard');
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
     }
-    
-    const ideaToAdd = {
-      id: userIdeas.length + 1,
-      ...newIdea,
-      status: 'Under Review',
-      date: new Date().toISOString().split('T')[0],
-      views: 0,
-      tags: newIdea.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
-    };
-    
-    setUserIdeas([ideaToAdd, ...userIdeas]);
-    setNewIdea({
-      type: 'research',
-      title: '',
-      description: '',
-      category: '',
-      tags: '',
-      priority: 'medium',
-      expectedOutcome: '',
-      resources: ''
-    });
-    
-    alert('Idea submitted successfully! 🎉');
-    setActiveTab('my-ideas');
-  };
+    load();
+    return () => { isMounted = false; };
+  }, []);
 
-  // Add CSS
+  // Add CSS (must be declared before any early returns to satisfy hooks rules)
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
@@ -532,6 +575,96 @@ const UserDashboard = () => {
     };
   }, []);
 
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+        <span>Loading dashboard…</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', color: '#b91c1c' }}>
+        <span>Failed to load: {error}</span>
+      </div>
+    );
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Basic client-side validation aligned with backend Joi schema
+    const title = (newIdea.title || '').trim();
+    const description = (newIdea.description || '').trim();
+    const category = (newIdea.category || '').trim();
+    if (!title || !description || !category || !newIdea.type) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    if (title.length < 2) {
+      alert('Title must be at least 2 characters long');
+      return;
+    }
+    if (description.length < 10) {
+      alert('Description must be at least 10 characters long');
+      return;
+    }
+    const allowedCategories = ['AI & ML','Healthcare','Fintech','Education','Smart Cities','Sustainability','Blockchain','IoT','Other'];
+    if (!allowedCategories.includes(category)) {
+      alert('Please select a valid category');
+      return;
+    }
+    try {
+      await http.post('/users/ideas', {
+        type: newIdea.type,
+        title,
+        description,
+        category,
+        tags: typeof newIdea.tags === 'string' ? newIdea.tags.trim() : newIdea.tags,
+        priority: newIdea.priority,
+        expected_outcome: (newIdea.expectedOutcome || '').trim(),
+        resources: (newIdea.resources || '').trim()
+      }, getAuthConfig());
+
+      // Refresh dashboard summary and ideas
+      const dashRes = await http.get('/users/dashboard', getAuthConfig());
+      const dash = dashRes?.data || {};
+      const s = dash.stats || {};
+      setStats({
+        totalIdeas: s.totalIdeas || 0,
+        publishedIdeas: s.publishedIdeas || 0,
+        pendingIdeas: s.pendingIdeas || 0
+      });
+      const r = Array.isArray(dash.recentIdeas) ? dash.recentIdeas : [];
+      setRecentIdeas(r.map(normalizeIdea));
+
+      const mineRes = await http.get('/users/ideas/mine', getAuthConfig());
+      const mine = mineRes?.data || {};
+      const ideas = Array.isArray(mine.ideas) ? mine.ideas : (Array.isArray(mine?.data?.ideas) ? mine.data.ideas : []);
+      setUserIdeas(ideas.map(normalizeIdea));
+
+      setNewIdea({
+        type: 'research',
+        title: '',
+        description: '',
+        category: 'Other',
+        tags: '',
+        priority: 'medium',
+        expectedOutcome: '',
+        resources: ''
+      });
+      alert('Idea submitted successfully! 🎉');
+      setActiveTab('my-ideas');
+    } catch (err) {
+      const msg = err?.response?.data?.message
+        || (Array.isArray(err?.response?.data?.errors) && err.response.data.errors[0]?.message)
+        || err?.message
+        || 'Failed to submit idea';
+      alert(msg);
+    }
+  };
+
+
   const renderContent = () => {
     switch (activeTab) {
       case 'overview':
@@ -564,7 +697,7 @@ const UserDashboard = () => {
               </h3>
               
               <div style={styles.ideasGrid}>
-                {userIdeas.slice(0, 2).map(idea => (
+                {recentIdeas.slice(0, 2).map(idea => (
                   <div key={idea.id} style={styles.ideaCard} className="idea-card">
                     <div style={styles.ideaCardHeader}>
                       <div style={{flex: 1}}>
@@ -587,8 +720,8 @@ const UserDashboard = () => {
                       <span>{idea.date} • {idea.category}</span>
                       <span style={{
                         ...styles.statusBadge,
-                        ...(idea.status === 'Published' ? styles.statusPublished : 
-                            idea.status === 'Under Review' ? styles.statusPending : styles.statusDraft)
+            ...(idea.status === 'Published' ? styles.statusPublished : 
+              idea.status === 'Prelisted' ? styles.statusPending : styles.statusDraft)
                       }}>
                         {idea.status}
                       </span>
@@ -819,8 +952,8 @@ const UserDashboard = () => {
                     <span>{idea.date} • {idea.category}</span>
                     <span style={{
                       ...styles.statusBadge,
-                      ...(idea.status === 'Published' ? styles.statusPublished : 
-                          idea.status === 'Under Review' ? styles.statusPending : styles.statusDraft)
+            ...(idea.status === 'Published' ? styles.statusPublished : 
+              idea.status === 'Prelisted' ? styles.statusPending : styles.statusDraft)
                     }}>
                       {idea.status}
                     </span>
@@ -867,28 +1000,28 @@ const UserDashboard = () => {
       {/* Enhanced Header */}
       <div style={styles.header}>
         <div style={styles.headerContainer} className="header-container">
-          <div style={styles.userProfile}>
-            <div style={styles.avatar}>{user.avatar}</div>
+              <div style={styles.userProfile}>
+                <div style={styles.avatar}>{user?.avatar}</div>
             <div style={styles.userInfo}>
-              <h1 style={styles.userName}>Welcome back, {user.name}!</h1>
-              <p style={styles.userEmail}>{user.email}</p>
+                  <h1 style={styles.userName}>Welcome back, {user?.name}!</h1>
+                  <p style={styles.userEmail}>{user?.email}</p>
               <div style={styles.userMeta}>
-                <span>📅 Member since {user.joinDate}</span>
-                <span>🏢 {user.company}</span>
+                    <span>📅 Member since {user?.joinDate}</span>
+                    <span>🏢 {user?.company}</span>
               </div>
             </div>
           </div>
           <div style={styles.headerStats} className="header-stats">
             <div style={styles.statCard}>
-              <span style={styles.statNumber}>{user.totalIdeas}</span>
+                  <span style={styles.statNumber}>{stats.totalIdeas}</span>
               <span style={styles.statLabel}>Total Ideas</span>
             </div>
             <div style={styles.statCard}>
-              <span style={styles.statNumber}>{user.publishedIdeas}</span>
+                  <span style={styles.statNumber}>{stats.publishedIdeas}</span>
               <span style={styles.statLabel}>Published</span>
             </div>
             <div style={styles.statCard}>
-              <span style={styles.statNumber}>{user.pendingIdeas}</span>
+                  <span style={styles.statNumber}>{stats.pendingIdeas}</span>
               <span style={styles.statLabel}>Pending</span>
             </div>
           </div>
@@ -941,10 +1074,14 @@ const UserDashboard = () => {
               </div>
             </li>
             <li style={styles.navItem}>
-              <Link to="/" style={{...styles.navLink, textDecoration: 'none'}}>
-                <span style={styles.navIcon}>🏠</span>
-                Back to Website
-              </Link>
+              <div
+                style={{...styles.navLink, textDecoration: 'none'}}
+                className="nav-link"
+                onClick={handleLogout}
+              >
+                <span style={styles.navIcon}>🚪</span>
+                Logout
+              </div>
             </li>
           </ul>
         </div>

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import apiService from '../services/api';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
@@ -12,9 +12,34 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const u = localStorage.getItem('user');
+      return u ? JSON.parse(u) : null;
+    } catch (e) {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem('token'));
+
+  // Normalize base URL and ensure /api suffix when missing
+  const RAW_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+  const API_BASE_URL = (() => {
+    let trimmed = RAW_BASE.replace(/\/$/, '');
+    if (!/\/api(\b|\/)/.test(trimmed)) trimmed = `${trimmed}/api`;
+    return trimmed.endsWith('/') ? trimmed : `${trimmed}/`;
+  })();
+  const http = axios.create({ baseURL: API_BASE_URL, headers: { Accept: 'application/json' } });
+  const getAuthConfig = (overrideToken) => {
+    const tk = overrideToken || localStorage.getItem('token');
+    return {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(tk ? { Authorization: `Bearer ${tk}` } : {})
+      }
+    };
+  };
 
   // Check if user is authenticated on app load
   useEffect(() => {
@@ -24,16 +49,23 @@ export const AuthProvider = ({ children }) => {
       
       if (storedToken && storedUser) {
         try {
-          // Verify token is still valid by making an API call
-          await apiService.healthCheck();
+          // Verify token is still valid by hitting the users dashboard endpoint
+          await http.get('users/dashboard', getAuthConfig(storedToken));
           setToken(storedToken);
           setUser(JSON.parse(storedUser));
         } catch (error) {
-          // Token is invalid, clear storage
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          setToken(null);
-          setUser(null);
+          // Fallback to legacy /auth/me
+          try {
+            await http.get('auth/me', getAuthConfig(storedToken));
+            setToken(storedToken);
+            setUser(JSON.parse(storedUser));
+          } catch (_) {
+            // Token is invalid, clear storage
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            setToken(null);
+            setUser(null);
+          }
         }
       }
       setLoading(false);
@@ -44,65 +76,82 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const response = await apiService.login(credentials);
-      
-      if (response.token && response.user) {
-        const { token: newToken, user: userData } = response;
-        
-        // Store in localStorage
+      let data;
+      try {
+  ({ data } = await http.post('users/login', credentials, getAuthConfig()));
+      } catch (e) {
+        if (e?.response?.status === 404) {
+          const resp = await http.post('auth/login', credentials, getAuthConfig());
+          data = resp?.data;
+        } else {
+          throw e;
+        }
+      }
+      if (data?.token && data?.user) {
+        const { token: newToken, user: userData } = data;
         localStorage.setItem('token', newToken);
         localStorage.setItem('user', JSON.stringify(userData));
-        
-        // Update state
         setToken(newToken);
         setUser(userData);
-        
         return { success: true, user: userData };
-      } else {
-        throw new Error('Invalid response from server');
       }
+      throw new Error('Invalid response from server');
     } catch (error) {
       console.error('Login error:', error);
-      return { 
-        success: false, 
-        error: error.message || 'Login failed. Please try again.' 
-      };
+      return { success: false, error: error?.response?.data?.message || error.message || 'Login failed. Please try again.' };
     }
   };
 
   const register = async (userData) => {
     try {
-      const response = await apiService.register(userData);
-      
-      if (response.success && response.data) {
-        const { token: newToken, user: newUser } = response.data;
-        
-        // Store in localStorage
+      const payload = {
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        email: userData.email,
+        password: userData.password,
+        confirm_password: userData.confirmPassword,
+        phone: userData.phone || '',
+        company: userData.company || '',
+        role: 'user'
+      };
+      let data;
+      try {
+  ({ data } = await http.post('users/signup', payload, getAuthConfig()));
+      } catch (e) {
+        if (e?.response?.status === 404) {
+          const resp = await http.post('auth/register', payload, getAuthConfig());
+          data = resp?.data;
+        } else {
+          throw e;
+        }
+      }
+      const envelope = data || {};
+      const authData = envelope.data || envelope; // support both {data:{...}} and flat
+      if ((envelope.success && authData?.token && authData?.user) || (authData?.token && authData?.user)) {
+        const { token: newToken, user: newUser } = authData;
         localStorage.setItem('token', newToken);
         localStorage.setItem('user', JSON.stringify(newUser));
-        
-        // Update state
         setToken(newToken);
         setUser(newUser);
-        
         return { success: true, user: newUser };
-      } else {
-        throw new Error(response.message || 'Registration failed');
       }
+      throw new Error(envelope.message || 'Registration failed');
     } catch (error) {
       console.error('Registration error:', error);
-      return { 
-        success: false, 
-        error: error.message || 'Registration failed. Please try again.' 
-      };
+      return { success: false, error: error?.response?.data?.message || error.message || 'Registration failed. Please try again.' };
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      // Best-effort call to backend (will succeed only if token present)
+  await http.post('users/logout', {}, getAuthConfig());
+    } catch (_) {
+      // ignore errors
+    }
     // Clear localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    
     // Clear state
     setToken(null);
     setUser(null);

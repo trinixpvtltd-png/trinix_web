@@ -19,18 +19,36 @@ class ApiService {
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
     const config = {
-      headers: this.getAuthHeaders(),
+      headers: {
+        Accept: 'application/json',
+        ...this.getAuthHeaders()
+      },
       ...options
     };
 
     try {
       const response = await fetch(url, config);
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
+      const text = await response.text();
+
+      // Try to parse JSON, otherwise expose raw text (e.g., HTML error page)
+      let data;
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (e) {
+        data = { raw: text };
       }
-      
+
+      if (!response.ok) {
+        const message =
+          (data && (data.message || data.error)) ||
+          response.statusText ||
+          'Request failed';
+        const err = new Error(message);
+        err.status = response.status;
+        err.data = data;
+        throw err;
+      }
+
       return data;
     } catch (error) {
       console.error('API Request failed:', error);
@@ -40,7 +58,7 @@ class ApiService {
 
   // Authentication methods
   async register(userData) {
-    return this.request('/auth/register', {
+    return this.request('/users/signup', {
       method: 'POST',
       body: JSON.stringify({
         first_name: userData.firstName,
@@ -56,15 +74,20 @@ class ApiService {
   }
 
   async login(credentials) {
-    return this.request('/auth/login', {
+    return this.request('/users/login', {
       method: 'POST',
       body: JSON.stringify(credentials)
     });
   }
 
+  async logout() {
+    return this.request('/users/logout', { method: 'POST' });
+  }
+
   // User methods
   async getCurrentUser() {
-    return this.request('/auth/me');
+    // Prefer consolidated dashboard endpoint for user profile
+    return this.request('/users/dashboard');
   }
 
   // Project methods
@@ -144,18 +167,28 @@ class ApiService {
 
   // Dashboard methods
   async getDashboardStats() {
-    return this.request('/dashboard/stats');
+    // Prefer users dashboard summary
+    return this.request('/users/dashboard');
+  }
+
+  async getDashboardUser() {
+    return this.request('/users/dashboard');
   }
 
   async getUserIdeas() {
-    return this.request('/dashboard/ideas');
+    return this.request('/users/ideas');
   }
 
   async submitIdea(ideaData) {
-    return this.request('/dashboard/ideas', {
+    return this.request('/users/ideas', {
       method: 'POST',
       body: JSON.stringify(ideaData)
     });
+  }
+
+  // Users scoped ideas
+  async getMyIdeas() {
+    return this.request('/users/ideas/mine');
   }
 
   // Chat methods
