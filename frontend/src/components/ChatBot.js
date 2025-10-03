@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import apiService from '../services/api';
 
 const ChatBot = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -37,13 +36,10 @@ const ChatBot = () => {
         const currentMessage = inputMessage;
         setInputMessage('');
         setIsTyping(true);
-
+        
         try {
             // Call the backend API using the API service
-            const data = await apiService.sendChatMessage(
-                currentMessage, 
-                'frontend-session-' + Date.now()
-            );
+            const data = "hello"
             
             const botResponse = {
                 id: Date.now() + 1,

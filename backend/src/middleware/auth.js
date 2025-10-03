@@ -1,21 +1,25 @@
 import jwt from 'jsonwebtoken';
 
-export function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'Missing token' });
+// Auth middleware that expects Authorization: Bearer <token> header
+export const authenticateToken = (req, res, next) => {
+  try {
+    const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+    const token = authHeader && authHeader.startsWith('Bearer ')
+      ? authHeader.substring(7)
+      : null;
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ message: 'Invalid token' });
-    req.user = user; // { id, email, role }
+    if (!token) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // Attach minimal user info to request
+    req.user = { id: decoded.id, email: decoded.email, role: decoded.role };
     next();
-  });
-}
-
-export function requireAdmin(req, res, next) {
-  if (!req.user || req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Admin only' });
+  } catch (err) {
+    return res.status(401).json({ success: false, message: 'Invalid or expired token' });
   }
-  next();
-}
+};
 
+// Keep default export for any legacy imports
+export default authenticateToken;

@@ -56,3 +56,29 @@ export const jobSchema = Joi.object({
   is_active: Joi.boolean().optional()
 });
 
+// Idea submission schema matching Project_Idea model
+export const ideaSubmissionSchema = Joi.object({
+  type: Joi.string().valid('research', 'project').required(),
+  title: Joi.string().min(2).max(200).required(),
+  description: Joi.string().min(10).required(),
+  category: Joi.string().valid(
+    'AI & ML',
+    'Healthcare',
+    'Fintech',
+    'Education',
+    'Smart Cities',
+    'Sustainability',
+    'Blockchain',
+    'IoT',
+    'Other'
+  ).required(),
+  tags: Joi.alternatives().try(
+    Joi.array().items(Joi.string()),
+    Joi.string().allow('')
+  ).optional(),
+  priority: Joi.string().valid('low', 'medium', 'high').default('medium'),
+  expected_outcome: Joi.string().allow('', null),
+  resources: Joi.string().allow('', null),
+  status: Joi.string().valid('Draft', 'Prelisted', 'Published').optional()
+});
+

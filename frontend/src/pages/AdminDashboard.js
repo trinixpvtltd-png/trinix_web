@@ -1,39 +1,74 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
-  
-  // Mock data - in real app, this would come from API
-  const [users] = useState([
-    {
-      id: 1,
-      name: 'John Doe',
-      email: 'john.doe@company.com',
-      joinDate: '2024-03-15',
-      lastLogin: '2024-10-01 09:30:00',
-      totalIdeas: 12,
-      status: 'Active'
-    },
-    {
-      id: 2,
-      name: 'Sarah Johnson',
-      email: 'sarah.j@tech.com',
-      joinDate: '2024-02-20',
-      lastLogin: '2024-09-30 14:22:00',
-      totalIdeas: 8,
-      status: 'Active'
-    },
-    {
-      id: 3,
-      name: 'Mike Chen',
-      email: 'mike.chen@startup.io',
-      joinDate: '2024-04-10',
-      lastLogin: '2024-09-28 11:15:00',
-      totalIdeas: 15,
-      status: 'Inactive'
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } finally {
+      navigate('/login');
     }
-  ]);
+  };
+  
+  // Users list fetched from backend
+  const [users, setUsers] = useState([]);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [usersError, setUsersError] = useState('');
+
+  // Axios base (normalize /api)
+  const RAW_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+  const API_BASE_URL = (() => {
+    const trimmed = RAW_BASE.replace(/\/$/, '');
+    return /\/api(\b|\/)/.test(trimmed) ? trimmed : `${trimmed}/api`;
+  })();
+  const http = axios.create({ baseURL: API_BASE_URL, headers: { Accept: 'application/json' } });
+  const getAuthConfig = () => {
+    const token = localStorage.getItem('token');
+    return { headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) } };
+  };
+
+  // Load users when tab is 'users' or on first mount
+  useEffect(() => {
+    let mounted = true;
+    async function loadUsers() {
+      setUsersError('');
+      setUsersLoading(true);
+      try {
+  // Important: don't start with '/' or axios will drop '/api' from baseURL
+  const { data } = await http.get('admin/users', getAuthConfig());
+        const list = Array.isArray(data?.users) ? data.users : [];
+        if (!mounted) return;
+        // Map backend users to table view model
+        const mapped = list.map(u => ({
+          id: u._id || u.id,
+          name: [u.first_name, u.last_name].filter(Boolean).join(' ') || u.email,
+          email: u.email,
+          joinDate: u.created_at ? new Date(u.created_at).toISOString().split('T')[0] : '',
+          lastLogin: u.last_login ? new Date(u.last_login).toISOString().replace('T', ' ').slice(0, 19) : '—',
+          totalIdeas: 0, // Placeholder; can be populated with another endpoint later
+          status: u.verified ? 'Active' : 'Inactive'
+        }));
+        setUsers(mapped);
+      } catch (err) {
+        const msg = err?.response?.data?.message || err.message || 'Failed to load users';
+        setUsersError(msg);
+        // Redirect on auth/permission issues
+        if (err?.response?.status === 401) navigate('/login');
+        if (err?.response?.status === 403) navigate('/dashboard');
+      } finally {
+        if (mounted) setUsersLoading(false);
+      }
+    }
+    loadUsers();
+    return () => { mounted = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [allIdeas] = useState([
     {
@@ -452,6 +487,12 @@ const AdminDashboard = () => {
         return (
           <div>
             <h2 style={styles.contentTitle}>👥 User Management</h2>
+            {usersLoading && (
+              <div style={{marginBottom: '12px', color: '#334155'}}>Loading users...</div>
+            )}
+            {usersError && (
+              <div style={{marginBottom: '12px', color: '#b91c1c'}}>Error: {usersError}</div>
+            )}
             <table style={styles.table}>
               <thead style={styles.tableHeader}>
                 <tr>
@@ -508,6 +549,11 @@ const AdminDashboard = () => {
                     </td>
                   </tr>
                 ))}
+                {!usersLoading && users.length === 0 && (
+                  <tr>
+                    <td style={styles.tableCell} colSpan={7}>No users found.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -751,10 +797,13 @@ const AdminDashboard = () => {
               </div>
             </li>
             <li style={styles.navItem}>
-              <Link to="/" style={styles.navLink}>
-                <span>🏠</span>
+              <div
+                style={styles.navLink}
+                onClick={handleLogout}
+              >
+                <span>🚪</span>
                 Logout
-              </Link>
+              </div>
             </li>
           </ul>
         </div>

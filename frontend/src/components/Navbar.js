@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [user, setUser] = useState(null);
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
 
   // Check for logged in user
   useEffect(() => {
@@ -177,6 +179,11 @@ const Navbar = () => {
     { name: 'Login', path: '/login' }
   ];
 
+  // Hide Login when user is authenticated
+  const visibleNavItems = (typeof isAuthenticated === 'function' && isAuthenticated())
+    ? navItems.filter(i => i.path !== '/login')
+    : navItems;
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     // Prevent body scroll when menu is open
@@ -303,7 +310,7 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <ul style={styles.navLinks}>
-          {navItems.map((item) => (
+          {visibleNavItems.map((item) => (
             <li key={item.path}>
               <Link
                 to={item.path}
@@ -343,7 +350,7 @@ const Navbar = () => {
         {/* Mobile Menu */}
         <div style={styles.mobileMenu}>
           <div style={styles.mobileNavLinks}>
-            {navItems.map((item, index) => (
+            {visibleNavItems.map((item, index) => (
               <Link
                 key={item.path}
                 to={item.path}
