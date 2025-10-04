@@ -958,15 +958,7 @@ const AdminDashboard = () => {
                 Applications
               </div>
             </li>
-            <li style={styles.navItem}>
-              <div
-                style={styles.navLink}
-                onClick={handleLogout}
-              >
-                <span>🚪</span>
-                Logout
-              </div>
-            </li>
+            {/* Logout removed from sidebar to keep navbar responsible for sign-out */}
           </ul>
         </div>
 

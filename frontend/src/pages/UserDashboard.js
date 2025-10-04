@@ -1073,16 +1073,7 @@ const UserDashboard = () => {
                 My Ideas ({userIdeas.length})
               </div>
             </li>
-            <li style={styles.navItem}>
-              <div
-                style={{...styles.navLink, textDecoration: 'none'}}
-                className="nav-link"
-                onClick={handleLogout}
-              >
-                <span style={styles.navIcon}>🚪</span>
-                Logout
-              </div>
-            </li>
+            {/* Logout removed from sidebar to keep navbar responsible for sign-out */}
           </ul>
         </div>
 

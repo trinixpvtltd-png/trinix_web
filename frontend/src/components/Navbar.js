@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = () => {
@@ -7,7 +7,8 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [user, setUser] = useState(null);
   const location = useLocation();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
   // Check for logged in user
   useEffect(() => {
@@ -17,9 +18,21 @@ const Navbar = () => {
     }
   }, []);
 
-  const handleLogout = () => {
+  // Enhanced logout: call context logout (clears token + user), update UI and navigate
+  const performLogout = async () => {
+    try {
+      if (typeof logout === 'function') await logout();
+    } catch (_) {
+      // ignore
+    }
+    // ensure local state cleared
     localStorage.removeItem('user');
     setUser(null);
+    try {
+      navigate('/login');
+    } catch (e) {
+      window.location.href = '/login';
+    }
   };
 
   // Handle scroll effect
@@ -84,6 +97,27 @@ const Navbar = () => {
       listStyle: 'none',
       margin: 0,
       padding: 0
+    },
+    logoutButton: {
+      cursor: 'pointer',
+      border: '1px solid rgba(30,41,59,0.08)',
+      padding: '8px 12px',
+      borderRadius: '10px',
+      background: 'linear-gradient(90deg, rgba(99,102,241,0.06), rgba(139,92,246,0.06))',
+      color: '#1e293b',
+      fontWeight: 600,
+      fontSize: '14px',
+      transition: 'all 0.2s ease',
+      whiteSpace: 'nowrap'
+    },
+    logoutButtonMobile: {
+      textAlign: 'left',
+      padding: '16px 20px',
+      background: 'transparent',
+      border: 'none',
+      color: '#374151',
+      fontWeight: 600,
+      fontSize: '18px'
     },
     navLink: {
       textDecoration: 'none',
@@ -178,6 +212,8 @@ const Navbar = () => {
     
     { name: 'Login', path: '/login' }
   ];
+
+  const isAuth = (typeof isAuthenticated === 'function' && isAuthenticated());
 
   // Hide Login when user is authenticated
   const visibleNavItems = (typeof isAuthenticated === 'function' && isAuthenticated())
@@ -326,6 +362,20 @@ const Navbar = () => {
           ))}
         </ul>
 
+        {/* Logout button (desktop) - shown when authenticated, placed to the right of nav links */}
+        {isAuth && (
+          <div style={{ display: window.innerWidth <= 1024 ? 'none' : 'block' }}>
+            <button
+              onClick={performLogout}
+              style={styles.logoutButton}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              Logout
+            </button>
+          </div>
+        )}
+
         {/* Mobile Menu Button */}
         <button 
           style={styles.mobileMenuButton} 
@@ -365,6 +415,16 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
+
+            {isAuth && (
+              <button
+                onClick={() => { toggleMenu(); performLogout(); }}
+                className="mobile-nav-link-enhanced"
+                style={{ ...styles.logoutButtonMobile }}
+              >
+                Logout
+              </button>
+            )}
           </div>
         </div>
       </div>
