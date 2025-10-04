@@ -1,6 +1,40 @@
 import User from '../models/User_modal.js';
 import ProjectIdea from '../models/Project_Idea_modal.js';
 
+// Admin: get a single user by id
+export const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id).select('first_name last_name email company role verified created_at last_login');
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    return res.json({ success: true, user });
+  } catch (err) {
+    console.error('Admin getUserById error:', err && (err.stack || err));
+    return res.status(500).json({ success: false, message: err?.message || 'Failed to fetch user' });
+  }
+};
+
+// Admin: update a user
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const allowed = ['first_name', 'last_name', 'email', 'company', 'role', 'verified'];
+    const updates = {};
+    for (const k of allowed) {
+      if (Object.prototype.hasOwnProperty.call(req.body, k)) updates[k] = req.body[k];
+    }
+    if (Object.keys(updates).length === 0) return res.status(400).json({ success: false, message: 'No valid fields to update' });
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    Object.assign(user, updates);
+    await user.save();
+    return res.json({ success: true, message: 'User updated', user });
+  } catch (err) {
+    console.error('Admin updateUser error:', err && (err.stack || err));
+    return res.status(500).json({ success: false, message: err?.message || 'Failed to update user' });
+  }
+};
+
 // GET /api/admin/users
 // Requires: authenticateToken + requireAdmin
 // Optional query params: q (search by name/email), page, limit
@@ -97,8 +131,11 @@ export const deleteIdea = async (req, res) => {
     await idea.remove();
     return res.json({ success: true, message: 'Idea deleted' });
   } catch (err) {
-    console.error('Admin deleteIdea error:', err);
-    return res.status(500).json({ success: false, message: 'Failed to delete idea' });
+    // Log full stack for debugging
+    console.error('Admin deleteIdea error:', err && (err.stack || err));
+    // Return the underlying message if available to help frontend debugging (avoid leaking sensitive details in production)
+    const message = err?.message || 'Failed to delete idea';
+    return res.status(500).json({ success: false, message });
   }
 };
 

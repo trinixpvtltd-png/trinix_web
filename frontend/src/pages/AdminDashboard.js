@@ -36,6 +36,10 @@ const AdminDashboard = () => {
   // Selected idea for detail modal
   const [selectedIdea, setSelectedIdea] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  // Selected user for view/edit
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userEditing, setUserEditing] = useState(false);
+  const [userSaving, setUserSaving] = useState(false);
 
   // Axios base (normalize /api)
   const RAW_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -109,14 +113,101 @@ const AdminDashboard = () => {
     if (!window.confirm('Delete this idea? This action cannot be undone.')) return;
     try {
   const safeId = encodeURIComponent(String(id));
-  const url = `${API_ORIGIN}/api/admin/ideas/${safeId}`;
-  console.debug('deleteIdea request:', { url, headers: getAuthConfig().headers });
-  await axios.delete(url, getAuthConfig());
-      setIdeas(prev => prev.filter(i => i.id !== id));
-      setStats(prev => ({ ...prev, totalIdeas: Math.max(0, prev.totalIdeas - 1) }));
+  const urlPath = `admin/ideas/${safeId}`; // relative to http.baseURL
+  console.debug('deleteIdea request:', { urlPath, headers: getAuthConfig().headers });
+  // use the preconfigured http instance so baseURL and headers are consistent
+  await http.delete(urlPath, getAuthConfig());
+  // remove any matching idea (handle either id or _id stored in objects)
+  setIdeas(prev => prev.filter(i => String(i.id || i._id || '') !== String(id)));
+  setStats(prev => ({ ...prev, totalIdeas: Math.max(0, (prev.totalIdeas || 1) - 1) }));
+      // feedback
+      alert('Idea deleted');
     } catch (err) {
       console.error('deleteIdea error', err?.response || err);
       alert('Failed to delete idea: ' + (err?.response?.data?.message || err.message));
+    }
+  };
+
+  // Admin: view user details (fetch by id)
+  const viewUser = async (id) => {
+    try {
+      const safeId = encodeURIComponent(String(id));
+      const urlPath = `admin/users/${safeId}`;
+      console.debug('viewUser request:', { urlPath, headers: getAuthConfig().headers });
+      const { data } = await http.get(urlPath, getAuthConfig());
+      const u = data?.user || data;
+      setSelectedUser({
+        id: u._id || u.id,
+        first_name: u.first_name,
+        last_name: u.last_name,
+        email: u.email,
+        company: u.company,
+        role: u.role,
+        verified: !!u.verified,
+        created_at: u.created_at,
+        last_login: u.last_login
+      });
+      setUserEditing(false);
+    } catch (err) {
+      console.error('viewUser error', err?.response || err);
+      const status = err?.response?.status;
+      // fallback: if admin detail endpoint isn't available (404) or authorization fails, use local list
+      if ((status === 404 || status === 401 || status === 403) && Array.isArray(users)) {
+        const local = users.find(u => String(u.id) === String(id) || String(u._id || '') === String(id));
+        if (local) {
+          setSelectedUser({
+            id: local.id,
+            first_name: local.name ? local.name.split(' ')[0] : '',
+            last_name: local.name ? local.name.split(' ').slice(1).join(' ') : '',
+            email: local.email,
+            company: local.company || '',
+            role: local.role || 'user',
+            verified: local.status === 'Active',
+            created_at: local.joinDate,
+            last_login: local.lastLogin
+          });
+          return setUserEditing(false);
+        }
+      }
+      alert('Failed to load user: ' + (err?.response?.data?.message || err.message));
+    }
+  };
+
+  const closeUserModal = () => setSelectedUser(null);
+
+  const startEditUser = (id) => {
+    // if this user is already loaded, switch to edit mode; otherwise fetch then edit
+    if (selectedUser && String(selectedUser.id) === String(id)) {
+      setUserEditing(true);
+      return;
+    }
+    viewUser(id).then(() => setUserEditing(true));
+  };
+
+  const saveUser = async () => {
+    if (!selectedUser) return;
+    setUserSaving(true);
+    try {
+      const safeId = encodeURIComponent(String(selectedUser.id));
+      const payload = {
+        first_name: selectedUser.first_name,
+        last_name: selectedUser.last_name,
+        email: selectedUser.email,
+        company: selectedUser.company,
+        role: selectedUser.role,
+        verified: !!selectedUser.verified
+      };
+      const { data } = await http.put(`admin/users/${safeId}`, payload, getAuthConfig());
+      alert(data?.message || 'User updated');
+      // refresh list
+      setUsers(prev => prev.map(u => String(u.id) === String(selectedUser.id) ? ({ ...u, name: [selectedUser.first_name, selectedUser.last_name].filter(Boolean).join(' '), email: selectedUser.email, status: selectedUser.verified ? 'Active' : 'Inactive' }) : u));
+      setUserEditing(false);
+      setSelectedUser(null);
+    } catch (err) {
+      console.error('saveUser error', err?.response || err);
+      alert('Failed to save user: ' + (err?.response?.data?.message || err.message));
+    } finally {
+      setUserSaving(false);
     }
   };
 
@@ -557,10 +648,10 @@ const AdminDashboard = () => {
                       </span>
                     </td>
                     <td style={styles.tableCell}>
-                      <button style={{...styles.actionButton, ...styles.viewButton}} className="action-button view-button">
+                      <button onClick={() => viewUser(user.id)} style={{...styles.actionButton, ...styles.viewButton}} className="action-button view-button">
                         View
                       </button>
-                      <button style={{...styles.actionButton, ...styles.editButton}} className="action-button edit-button">
+                      <button onClick={() => startEditUser(user.id)} style={{...styles.actionButton, ...styles.editButton}} className="action-button edit-button">
                         Edit
                       </button>
                     </td>
@@ -683,6 +774,82 @@ const AdminDashboard = () => {
                   <div style={{display: 'flex', gap: '12px'}}>
                     <div style={{...styles.badge, ...(selectedIdea.status === 'Published' ? styles.badgePublished : styles.badgePending)}}>{selectedIdea.status}</div>
                     <div style={{...styles.badge, ...(selectedIdea.type === 'research' ? styles.badgeResearch : styles.badgeProject)}}>{selectedIdea.type}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* User detail / edit modal */}
+            {selectedUser && (
+              <div style={{position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000}} onClick={closeUserModal}>
+                <div style={{width: '640px', maxWidth: '95%', background: 'white', borderRadius: '10px', padding: '24px'}} onClick={e => e.stopPropagation()}>
+                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px'}}>
+                    <h3 style={{margin: 0}}>{userEditing ? 'Edit User' : 'User Details'}</h3>
+                    <div>
+                      <button onClick={closeUserModal} style={{...styles.actionButton}}>Close</button>
+                    </div>
+                  </div>
+                  <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px'}}>
+                    <div>
+                      <label style={{fontSize: '0.85rem', color: '#64748b'}}>First name</label>
+                      {userEditing ? (
+                        <input value={selectedUser.first_name || ''} onChange={e => setSelectedUser(s => ({ ...s, first_name: e.target.value }))} style={{width: '100%', padding: '8px', marginTop: '6px'}} />
+                      ) : (
+                        <div style={{padding: '8px 0'}}>{selectedUser.first_name}</div>
+                      )}
+                    </div>
+                    <div>
+                      <label style={{fontSize: '0.85rem', color: '#64748b'}}>Last name</label>
+                      {userEditing ? (
+                        <input value={selectedUser.last_name || ''} onChange={e => setSelectedUser(s => ({ ...s, last_name: e.target.value }))} style={{width: '100%', padding: '8px', marginTop: '6px'}} />
+                      ) : (
+                        <div style={{padding: '8px 0'}}>{selectedUser.last_name}</div>
+                      )}
+                    </div>
+                    <div style={{gridColumn: '1 / -1'}}>
+                      <label style={{fontSize: '0.85rem', color: '#64748b'}}>Email</label>
+                      {userEditing ? (
+                        <input value={selectedUser.email || ''} onChange={e => setSelectedUser(s => ({ ...s, email: e.target.value }))} style={{width: '100%', padding: '8px', marginTop: '6px'}} />
+                      ) : (
+                        <div style={{padding: '8px 0'}}>{selectedUser.email}</div>
+                      )}
+                    </div>
+                    <div>
+                      <label style={{fontSize: '0.85rem', color: '#64748b'}}>Company</label>
+                      {userEditing ? (
+                        <input value={selectedUser.company || ''} onChange={e => setSelectedUser(s => ({ ...s, company: e.target.value }))} style={{width: '100%', padding: '8px', marginTop: '6px'}} />
+                      ) : (
+                        <div style={{padding: '8px 0'}}>{selectedUser.company || '—'}</div>
+                      )}
+                    </div>
+                    <div>
+                      <label style={{fontSize: '0.85rem', color: '#64748b'}}>Role</label>
+                      {userEditing ? (
+                        <select value={selectedUser.role || 'user'} onChange={e => setSelectedUser(s => ({ ...s, role: e.target.value }))} style={{width: '100%', padding: '8px', marginTop: '6px'}}>
+                          <option value="user">User</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      ) : (
+                        <div style={{padding: '8px 0'}}>{selectedUser.role}</div>
+                      )}
+                    </div>
+                    <div>
+                      <label style={{display: 'block', fontSize: '0.85rem', color: '#64748b'}}>Verified</label>
+                      {userEditing ? (
+                        <input type="checkbox" checked={!!selectedUser.verified} onChange={e => setSelectedUser(s => ({ ...s, verified: e.target.checked }))} />
+                      ) : (
+                        <div style={{padding: '8px 0'}}>{selectedUser.verified ? 'Yes' : 'No'}</div>
+                      )}
+                    </div>
+                  </div>
+                  <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '16px'}}>
+                    {userEditing ? (
+                      <>
+                        <button onClick={() => { setUserEditing(false); }} style={{...styles.actionButton}}>Cancel</button>
+                        <button onClick={saveUser} disabled={userSaving} style={{...styles.actionButton, ...styles.editButton}}>{userSaving ? 'Saving...' : 'Save'}</button>
+                      </>
+                    ) : (
+                      <button onClick={() => startEditUser(selectedUser.id)} style={{...styles.actionButton, ...styles.editButton}}>Edit</button>
+                    )}
                   </div>
                 </div>
               </div>
