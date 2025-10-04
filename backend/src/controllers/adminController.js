@@ -128,7 +128,8 @@ export const deleteIdea = async (req, res) => {
     console.debug('Admin deleteIdea called by', req.user?.email, 'id=', id);
     const idea = await ProjectIdea.findById(id);
     if (!idea) return res.status(404).json({ success: false, message: 'Idea not found' });
-    await idea.remove();
+    // Use findByIdAndDelete to avoid relying on document.remove (may be removed/deprecated in some Mongoose versions)
+    await ProjectIdea.findByIdAndDelete(id);
     return res.json({ success: true, message: 'Idea deleted' });
   } catch (err) {
     // Log full stack for debugging
