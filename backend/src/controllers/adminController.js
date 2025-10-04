@@ -1,5 +1,6 @@
 import User from '../models/User_modal.js';
 import ProjectIdea from '../models/Project_Idea_modal.js';
+import Job from '../models/Job_model.js';
 
 // Admin: get a single user by id
 export const getUserById = async (req, res) => {
@@ -156,6 +157,106 @@ export const setIdeaPublishState = async (req, res) => {
   } catch (err) {
     console.error('Admin setIdeaPublishState error:', err);
     return res.status(500).json({ success: false, message: 'Failed to update publish state' });
+  }
+};
+
+// ----------------------
+// Job management (admin)
+// ----------------------
+
+// POST /api/jobs  (admin only)
+export const createJob = async (req, res) => {
+  try {
+    const { title, location, type, description, salary, is_active = true } = req.body;
+    if (!title) return res.status(400).json({ success: false, message: 'Title is required' });
+    const job = await Job.create({
+      title,
+      location,
+      type,
+      description,
+      salary,
+      is_active: typeof is_active === 'boolean' ? is_active : true,
+      posted_by: req.user?.id,
+      created_at: new Date()
+    });
+    return res.status(201).json({ success: true, message: 'Job created', job });
+  } catch (err) {
+    console.error('Admin createJob error:', err && (err.stack || err));
+    return res.status(500).json({ success: false, message: 'Failed to create job' });
+  }
+};
+
+// PUT /api/jobs/:id (admin only)
+export const updateJob = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = {};
+    const allowed = ['title', 'location', 'type', 'description', 'salary', 'is_active'];
+    for (const k of allowed) if (Object.prototype.hasOwnProperty.call(req.body, k)) updates[k] = req.body[k];
+    if (Object.keys(updates).length === 0) return res.status(400).json({ success: false, message: 'No valid fields to update' });
+    const job = await Job.findById(id);
+    if (!job) return res.status(404).json({ success: false, message: 'Job not found' });
+    Object.assign(job, updates, { updated_at: new Date() });
+    await job.save();
+    return res.json({ success: true, message: 'Job updated', job });
+  } catch (err) {
+    console.error('Admin updateJob error:', err && (err.stack || err));
+    return res.status(500).json({ success: false, message: 'Failed to update job' });
+  }
+};
+
+// GET /api/admin/jobs (admin list)
+export const getAllJobsAdmin = async (req, res) => {
+  try {
+    // Populate posted_by and nested application user info so admin can review applicants
+    const jobs = await Job.find()
+      .sort({ created_at: -1 })
+      .populate('posted_by', 'first_name last_name email')
+      .populate('applications.user_id', 'first_name last_name email phone');
+
+    // Add a lightweight applicationCount per job and overall totalApplications
+    const jobsWithCounts = jobs.map(j => ({
+      ...j.toObject(),
+      applicationCount: Array.isArray(j.applications) ? j.applications.length : 0
+    }));
+    const totalApplications = jobsWithCounts.reduce((acc, j) => acc + (j.applicationCount || 0), 0);
+
+    return res.json({ success: true, count: jobs.length, totalApplications, jobs: jobsWithCounts });
+  } catch (err) {
+    console.error('Admin getAllJobs error:', err);
+    return res.status(500).json({ success: false, message: 'Failed to fetch jobs' });
+  }
+};
+
+// GET /api/admin/jobs/:id
+export const getJobByIdAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // Populate posted_by and applications' user details so admin sees full applicant info
+    const job = await Job.findById(id)
+      .populate('posted_by', 'first_name last_name email')
+      .populate('applications.user_id', 'first_name last_name email phone');
+    if (!job) return res.status(404).json({ success: false, message: 'Job not found' });
+    const jobObj = job.toObject();
+    jobObj.applicationCount = Array.isArray(jobObj.applications) ? jobObj.applications.length : 0;
+    return res.json({ success: true, job: jobObj });
+  } catch (err) {
+    console.error('Admin getJobById error:', err);
+    return res.status(500).json({ success: false, message: 'Failed to fetch job' });
+  }
+};
+
+// DELETE /api/admin/jobs/:id
+export const deleteJob = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const job = await Job.findById(id);
+    if (!job) return res.status(404).json({ success: false, message: 'Job not found' });
+    await Job.findByIdAndDelete(id);
+    return res.json({ success: true, message: 'Job deleted' });
+  } catch (err) {
+    console.error('Admin deleteJob error:', err && (err.stack || err));
+    return res.status(500).json({ success: false, message: 'Failed to delete job' });
   }
 };
 

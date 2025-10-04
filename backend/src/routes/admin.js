@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth.js';
-import { getAllUsers, getAllIdeas, getIdeaById, deleteIdea, setIdeaPublishState, getUserById, updateUser } from '../controllers/adminController.js';
+import { getAllUsers, getAllIdeas, getIdeaById, deleteIdea, setIdeaPublishState, getUserById, updateUser, createJob, updateJob, getAllJobsAdmin, getJobByIdAdmin, deleteJob } from '../controllers/adminController.js';
 import { seedAll } from '../seeders/seedAll.js';
 
 // Simple role guard: assumes authenticateToken has set req.user.role
@@ -24,6 +24,13 @@ router.get('/ideas', authenticateToken, requireAdmin, getAllIdeas);
 router.get('/ideas/:id', authenticateToken, requireAdmin, getIdeaById);
 router.delete('/ideas/:id', authenticateToken, requireAdmin, deleteIdea);
 router.post('/ideas/:id/publish', authenticateToken, requireAdmin, setIdeaPublishState);
+
+// Admin job management
+router.get('/jobs', authenticateToken, requireAdmin, getAllJobsAdmin);
+router.post('/jobs', authenticateToken, requireAdmin, createJob);
+router.get('/jobs/:id', authenticateToken, requireAdmin, getJobByIdAdmin);
+router.put('/jobs/:id', authenticateToken, requireAdmin, updateJob);
+router.delete('/jobs/:id', authenticateToken, requireAdmin, deleteJob);
 
 // Dev-only: seed test data (POST)
 router.post('/seed-test-data', seedAll);

@@ -145,6 +145,13 @@ class ApiService {
     return this.request('/jobs');
   }
 
+  async applyJob(jobId, applicationData) {
+    return this.request(`/jobs/${jobId}/apply`, {
+      method: 'POST',
+      body: JSON.stringify(applicationData)
+    });
+  }
+
   async createJob(jobData) {
     return this.request('/jobs', {
       method: 'POST',

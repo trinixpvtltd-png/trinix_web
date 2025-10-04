@@ -8,6 +8,7 @@ import mongoose from './models/db.js';
 import authRoutes from './routes/auth.js';
 import usersRoutes from './routes/usersRoute.js';
 import adminRoutes from './routes/admin.js';
+import jobsRoutes from './routes/jobs.js';
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use(morgan('dev'));
 app.use('/api/users', usersRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/jobs', jobsRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

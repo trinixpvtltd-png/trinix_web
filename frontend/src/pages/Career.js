@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Footer from '../components/Footer';
+import api from '../services/api';
 
 const Career = () => {
   const [activeTab, setActiveTab] = useState('full-time');
@@ -15,29 +16,60 @@ const Career = () => {
     coverLetter: ''
   });
 
+  const [jobs, setJobs] = useState([]);
+  const [jobsLoading, setJobsLoading] = useState(false);
+
   const handleApplyClick = (role) => {
     setSelectedRole(role);
     setShowApplicationForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the data to your backend
-    console.log('Application submitted:', { role: selectedRole, ...formData });
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      experience: '',
-      portfolio: '',
-      resume: '',
-      coverLetter: ''
-    });
-    setShowApplicationForm(false);
-    alert('Application submitted successfully! We will contact you soon.');
+    if (!selectedRole || !(selectedRole._id || selectedRole.id)) {
+      alert('No job selected');
+      return;
+    }
+    try {
+      const jobId = selectedRole._id || selectedRole.id;
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        experience: formData.experience,
+        portfolio: formData.portfolio,
+        resume: formData.resume,
+        coverLetter: formData.coverLetter
+      };
+      await api.applyJob(jobId, payload);
+      alert('Application submitted successfully! We will contact you soon.');
+      setFormData({ name: '', email: '', phone: '', experience: '', portfolio: '', resume: '', coverLetter: '' });
+      setShowApplicationForm(false);
+    } catch (err) {
+      console.error('Submit application error', err);
+      alert('Failed to submit application: ' + (err?.message || 'Unknown error'));
+    }
   };
+
+  useEffect(() => {
+    let mounted = true;
+    const loadJobs = async () => {
+      setJobsLoading(true);
+      try {
+        const data = await api.getJobs();
+        if (!mounted) return;
+        const list = Array.isArray(data?.jobs) ? data.jobs : (Array.isArray(data) ? data : []);
+        setJobs(list);
+      } catch (e) {
+        console.error('Failed to load jobs', e);
+      } finally {
+        if (mounted) setJobsLoading(false);
+      }
+    };
+    loadJobs();
+    return () => { mounted = false; };
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -451,19 +483,22 @@ const Career = () => {
 
           {/* Job Listings */}
           <div style={styles.jobGrid}>
-            {jobListings[activeTab]?.map((job, index) => (
-              <div key={index} style={styles.jobCard}>
+            {(jobsLoading ? (jobListings[activeTab] || []) : jobs.filter(j => {
+              if (activeTab === 'full-time') return /full/i.test(j.type || j.title || '');
+              if (activeTab === 'internships') return /intern/i.test(j.type || j.title || '');
+              if (activeTab === 'part-time') return /part/i.test(j.type || j.title || '');
+              return true;
+            })).map((job, index) => (
+              <div key={job._id || job.id || index} style={styles.jobCard}>
                 <h3 style={styles.jobTitle}>{job.title}</h3>
-                <span style={styles.jobType}>{job.type}</span>
-                <p style={{color: 'rgba(255, 255, 255, 0.7)', marginBottom: '16px'}}>
-                  {job.location} • {job.salary}
+                <span style={styles.jobType}>{job.type || 'Position'}</span>
+                <p style={{color: '#64748b', marginBottom: '16px'}}>
+                  {job.location || 'Location'} • {job.salary || ''}
                 </p>
                 <p style={styles.jobDescription}>{job.description}</p>
                 <button 
                   style={styles.applyButton}
                   onClick={() => handleApplyClick(job)}
-                  onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
-                  onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
                 >
                   Apply Now
                 </button>

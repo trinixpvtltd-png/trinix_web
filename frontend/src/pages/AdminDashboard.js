@@ -16,6 +16,25 @@ const AdminDashboard = () => {
     }
   };
   
+  const openAddJob = () => {
+    setJobForm({ title: '', location: '', type: '', description: '', salary: '', is_active: true });
+    setShowJobModal(true);
+  };
+
+  const createJob = async () => {
+    try {
+      const urlPath = `admin/jobs`;
+      const payload = { ...jobForm };
+      const { data } = await http.post(urlPath, payload, getAuthConfig());
+      alert(data?.message || 'Job created');
+      setShowJobModal(false);
+      // Optionally refresh lists or stats
+    } catch (err) {
+      console.error('createJob error', err?.response || err);
+      alert('Failed to create job: ' + (err?.response?.data?.message || err?.message || 'unknown'));
+    }
+  };
+  
   // Users list fetched from backend
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(false);
@@ -40,6 +59,10 @@ const AdminDashboard = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [userEditing, setUserEditing] = useState(false);
   const [userSaving, setUserSaving] = useState(false);
+
+  // Add job modal state
+  const [showJobModal, setShowJobModal] = useState(false);
+  const [jobForm, setJobForm] = useState({ title: '', location: '', type: '', description: '', salary: '', is_active: true });
 
   // Axios base (normalize /api)
   const RAW_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -276,6 +299,46 @@ const AdminDashboard = () => {
     loadUsers();
     return () => { mounted = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Load job applications summary for admin (total and recent/new applications)
+  useEffect(() => {
+    let mounted = true;
+    async function loadJobApplications() {
+      try {
+        const { data } = await http.get('admin/jobs', getAuthConfig());
+        if (!mounted) return;
+        // Backend returns totalApplications when available; fall back to summing job.applicationCount or job.applications
+        let totalApplications = 0;
+        if (typeof data?.totalApplications === 'number') {
+          totalApplications = data.totalApplications;
+        } else if (Array.isArray(data?.jobs)) {
+          totalApplications = data.jobs.reduce((sum, j) => sum + (j.applicationCount || (Array.isArray(j.applications) ? j.applications.length : 0)), 0);
+        }
+
+        // Compute new applications in the last 7 days
+        let newApplications = 0;
+        if (Array.isArray(data?.jobs)) {
+          const cutoff = new Date();
+          cutoff.setDate(cutoff.getDate() - 7);
+          data.jobs.forEach(job => {
+            const apps = Array.isArray(job.applications) ? job.applications : [];
+            apps.forEach(a => {
+              const appliedAt = a?.applied_at || a?.appliedAt || a?.appliedAt || a?.appliedAt;
+              const dt = appliedAt ? new Date(appliedAt) : null;
+              if (dt && !isNaN(dt) && dt > cutoff) newApplications += 1;
+            });
+          });
+        }
+
+        setStats(prev => ({ ...prev, totalApplications, newApplications }));
+      } catch (err) {
+        // If admin endpoint not accessible (403/401), ignore and keep zeros — other parts handle redirects
+        console.debug('loadJobApplications error', err?.response || err?.message || err);
+      }
+    }
+    loadJobApplications();
+    return () => { mounted = false; };
   }, []);
 
   // Load idea stats (public endpoint)
@@ -703,7 +766,25 @@ const AdminDashboard = () => {
       case 'applications':
         return (
           <div>
-            <h2 style={styles.contentTitle}>📋 Job Applications</h2>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <h2 style={styles.contentTitle}>📋 Job Applications</h2>
+              <div>
+                <button
+                  onClick={openAddJob}
+                  style={{
+                    background: 'linear-gradient(135deg, #10b981, #06b6d4)',
+                    color: 'white',
+                    padding: '8px 14px',
+                    borderRadius: '10px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontWeight: 600
+                  }}
+                >
+                  + Add Job
+                </button>
+              </div>
+            </div>
             <div style={{marginBottom: '12px', color: '#475569'}}>
               The backend doesn't expose a job applications list yet. This section displays summary counts when available.
             </div>
@@ -819,6 +900,7 @@ const AdminDashboard = () => {
               <span style={styles.statNumber}>{stats.totalIdeas}</span>
               <span style={styles.statLabel}>Ideas</span>
             </div>
+          
           </div>
         </div>
       </div>
@@ -986,6 +1068,45 @@ const AdminDashboard = () => {
                 ) : (
                   <button type="button" onClick={() => startEditUser(selectedUser.id)} style={{...styles.actionButton, ...styles.editButton}}>Edit</button>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+        {/* Add Job modal */}
+        {showJobModal && (
+          <div style={{position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000}} onClick={() => setShowJobModal(false)}>
+            <div style={{width: '760px', maxWidth: '95%', background: 'white', borderRadius: '10px', padding: '24px'}} onClick={e => e.stopPropagation()}>
+              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px'}}>
+                <h3 style={{margin: 0}}>Create Job</h3>
+                <div>
+                  <button type="button" onClick={() => setShowJobModal(false)} style={{...styles.actionButton}}>Close</button>
+                </div>
+              </div>
+              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px'}}>
+                <div>
+                  <label style={{fontSize: '0.85rem', color: '#64748b'}}>Title</label>
+                  <input value={jobForm.title} onChange={e => setJobForm(f => ({ ...f, title: e.target.value }))} style={{width: '100%', padding: '8px', marginTop: '6px'}} />
+                </div>
+                <div>
+                  <label style={{fontSize: '0.85rem', color: '#64748b'}}>Location</label>
+                  <input value={jobForm.location} onChange={e => setJobForm(f => ({ ...f, location: e.target.value }))} style={{width: '100%', padding: '8px', marginTop: '6px'}} />
+                </div>
+                <div>
+                  <label style={{fontSize: '0.85rem', color: '#64748b'}}>Type</label>
+                  <input value={jobForm.type} onChange={e => setJobForm(f => ({ ...f, type: e.target.value }))} style={{width: '100%', padding: '8px', marginTop: '6px'}} />
+                </div>
+                <div>
+                  <label style={{fontSize: '0.85rem', color: '#64748b'}}>Salary</label>
+                  <input value={jobForm.salary} onChange={e => setJobForm(f => ({ ...f, salary: e.target.value }))} style={{width: '100%', padding: '8px', marginTop: '6px'}} />
+                </div>
+                <div style={{gridColumn: '1 / -1'}}>
+                  <label style={{fontSize: '0.85rem', color: '#64748b'}}>Description</label>
+                  <textarea value={jobForm.description} onChange={e => setJobForm(f => ({ ...f, description: e.target.value }))} style={{width: '100%', padding: '8px', marginTop: '6px'}} rows={6} />
+                </div>
+              </div>
+              <div style={{display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '16px'}}>
+                <button type="button" onClick={() => setShowJobModal(false)} style={{...styles.actionButton}}>Cancel</button>
+                <button type="button" onClick={createJob} style={{...styles.actionButton, ...styles.editButton}}>Create Job</button>
               </div>
             </div>
           </div>

@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User_modal.js';
 import ProjectIdea from '../models/Project_Idea_modal.js';
 import { registerSchema, loginSchema, ideaSubmissionSchema } from '../utils/validators.js';
+import Job from '../models/Job_model.js';
 
 // POST /api/users/signup (or mount where appropriate)
 // Body schema: registerSchema (first_name, last_name, email, password, confirm_password, phone, company, role)
@@ -283,3 +284,46 @@ export const getMyProjectIdeas = async (req, res) => {
 };
 
 //job post
+
+// POST /api/jobs/:id/apply  -> handle job application (accepts optional auth token)
+export const applyToJob = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const job = await Job.findById(id);
+		if (!job) return res.status(404).json({ success: false, message: 'Job not found' });
+
+		const { name, email, phone, experience, portfolio, resume, coverLetter } = req.body;
+		if (!name || !email || !phone || !resume) return res.status(400).json({ success: false, message: 'Missing required applicant fields' });
+
+		// optional user id from Authorization header
+		let userId = undefined;
+		try {
+			const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+			const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
+			if (token) {
+				const decoded = jwt.verify(token, process.env.JWT_SECRET);
+				userId = decoded?.id;
+			}
+		} catch (e) {
+			// ignore token errors; treat as anonymous application
+		}
+
+		const application = {
+			user_id: userId,
+			name,
+			email,
+			phone,
+			experience,
+			portfolio,
+			resume,
+			coverLetter,
+			applied_at: new Date()
+		};
+		job.applications.push(application);
+		await job.save();
+		return res.status(201).json({ success: true, message: 'Application received', application });
+	} catch (err) {
+		console.error('applyToJob error:', err && (err.stack || err));
+		return res.status(500).json({ success: false, message: 'Failed to submit application' });
+	}
+};
