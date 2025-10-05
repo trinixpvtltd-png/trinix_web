@@ -52,6 +52,10 @@ const AdminDashboard = () => {
   const [ideas, setIdeas] = useState([]);
   const [ideasLoading, setIdeasLoading] = useState(false);
   const [ideasError, setIdeasError] = useState('');
+  const [jobs, setJobs] = useState([]);
+  const [jobsLoading, setJobsLoading] = useState(false);
+  const [jobsError, setJobsError] = useState('');
+  const [selectedJobForApplicants, setSelectedJobForApplicants] = useState(null);
   // Selected idea for detail modal
   const [selectedIdea, setSelectedIdea] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -331,7 +335,9 @@ const AdminDashboard = () => {
           });
         }
 
-        setStats(prev => ({ ...prev, totalApplications, newApplications }));
+  setStats(prev => ({ ...prev, totalApplications, newApplications }));
+  // store jobs for admin views
+  if (Array.isArray(data?.jobs)) setJobs(data.jobs);
       } catch (err) {
         // If admin endpoint not accessible (403/401), ignore and keep zeros — other parts handle redirects
         console.debug('loadJobApplications error', err?.response || err?.message || err);
@@ -786,7 +792,7 @@ const AdminDashboard = () => {
               </div>
             </div>
             <div style={{marginBottom: '12px', color: '#475569'}}>
-              The backend doesn't expose a job applications list yet. This section displays summary counts when available.
+              Below is the jobs list — click "View Applicants" to see applicants for a job. Approve or reject applicants from the modal.
             </div>
             <div style={styles.statsGrid}>
               <div style={styles.statCard}>
@@ -798,6 +804,98 @@ const AdminDashboard = () => {
                 <div style={styles.statCardLabel}>New Applications</div>
               </div>
             </div>
+
+            <div style={{marginTop: '18px'}}>
+              <h3 style={{marginBottom: '8px'}}>Jobs</h3>
+              <table style={styles.table}>
+                <thead style={styles.tableHeader}><tr>
+                  <th style={styles.tableHeaderCell}>Title</th>
+                  <th style={styles.tableHeaderCell}>Location</th>
+                  <th style={styles.tableHeaderCell}>Type</th>
+                  <th style={styles.tableHeaderCell}>Applicants</th>
+                  <th style={styles.tableHeaderCell}>Actions</th>
+                </tr></thead>
+                <tbody>
+                  {Array.isArray(jobs) && jobs.map(j => (
+                    <tr key={j._id || j.id} style={styles.tableRow}>
+                      <td style={styles.tableCell}>{j.title}</td>
+                      <td style={styles.tableCell}>{j.location}</td>
+                      <td style={styles.tableCell}>{j.type}</td>
+                      <td style={styles.tableCell}>{Array.isArray(j.applications) ? j.applications.length : 0}</td>
+                      <td style={styles.tableCell}><button onClick={() => setSelectedJobForApplicants(j)} style={{...styles.actionButton, ...styles.viewButton}}>View Applicants</button></td>
+                    </tr>
+                  ))}
+                  {!jobsLoading && Array.isArray(jobs) && jobs.length === 0 && (
+                    <tr><td style={styles.tableCell} colSpan={5}>No jobs found.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Applicants modal */}
+            {selectedJobForApplicants && (
+              <div style={{position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000}} onClick={() => setSelectedJobForApplicants(null)}>
+                <div style={{width: '900px', maxWidth: '98%', background: 'white', borderRadius: '10px', padding: '20px'}} onClick={e => e.stopPropagation()}>
+                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px'}}>
+                    <h3 style={{margin: 0}}>Applicants for: {selectedJobForApplicants.title}</h3>
+                    <div><button onClick={() => setSelectedJobForApplicants(null)} style={{...styles.actionButton}}>Close</button></div>
+                  </div>
+                  <div style={{maxHeight: '60vh', overflow: 'auto'}}>
+                    <table style={styles.table}>
+                      <thead style={styles.tableHeader}><tr>
+                        <th style={styles.tableHeaderCell}>Name</th>
+                        <th style={styles.tableHeaderCell}>Email</th>
+                        <th style={styles.tableHeaderCell}>Phone</th>
+                        <th style={styles.tableHeaderCell}>Applied At</th>
+                        <th style={styles.tableHeaderCell}>Status</th>
+                        <th style={styles.tableHeaderCell}>Actions</th>
+                      </tr></thead>
+                      <tbody>
+                        {(Array.isArray(selectedJobForApplicants.applications) ? selectedJobForApplicants.applications : []).map(app => (
+                          <tr key={app._id || app.id} style={styles.tableRow}>
+                            <td style={styles.tableCell}>{app.name}</td>
+                            <td style={styles.tableCell}>{app.email}</td>
+                            <td style={styles.tableCell}>{app.phone}</td>
+                            <td style={styles.tableCell}>{app.applied_at ? new Date(app.applied_at).toLocaleString() : ''}</td>
+                            <td style={styles.tableCell}><span style={{...styles.badge, ...(app.status === 'approved' ? styles.badgePublished : app.status === 'rejected' ? styles.badgeInactive : styles.badgePending)}}>{app.status}</span></td>
+                            <td style={styles.tableCell}>
+                              <div style={{display: 'flex', gap: '8px'}}>
+                                {app.status !== 'approved' && <button onClick={async () => {
+                                  try {
+                                    const url = `admin/jobs/${selectedJobForApplicants._id}/applications/${app._id}/review`;
+                                    await http.patch(url, { action: 'approve' }, getAuthConfig());
+                                    // update local UI
+                                    const updated = (selectedJobForApplicants.applications || []).map(a => a._id === app._id ? { ...a, status: 'approved', reviewed_at: new Date().toISOString() } : a);
+                                    setSelectedJobForApplicants(prev => ({ ...prev, applications: updated }));
+                                    setJobs(prevJobs => prevJobs.map(jj => (jj._id === selectedJobForApplicants._id ? { ...jj, applications: updated } : jj)));
+                                  } catch (err) {
+                                    alert('Failed to approve: ' + (err?.response?.data?.message || err.message || 'Unknown'));
+                                  }
+                                }} style={{...styles.actionButton, ...styles.viewButton}}>Approve</button>}
+                                {app.status !== 'rejected' && <button onClick={async () => {
+                                  try {
+                                    const url = `admin/jobs/${selectedJobForApplicants._id}/applications/${app._id}/review`;
+                                    await http.patch(url, { action: 'reject' }, getAuthConfig());
+                                    const updatedR = (selectedJobForApplicants.applications || []).map(a => a._id === app._id ? { ...a, status: 'rejected', reviewed_at: new Date().toISOString() } : a);
+                                    setSelectedJobForApplicants(prev => ({ ...prev, applications: updatedR }));
+                                    setJobs(prevJobs => prevJobs.map(jj => (jj._id === selectedJobForApplicants._id ? { ...jj, applications: updatedR } : jj)));
+                                  } catch (err) {
+                                    alert('Failed to reject: ' + (err?.response?.data?.message || err.message || 'Unknown'));
+                                  }
+                                }} style={{...styles.actionButton, ...styles.deleteButton}}>Reject</button>}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                        {(!selectedJobForApplicants.applications || selectedJobForApplicants.applications.length === 0) && (
+                          <tr><td style={styles.tableCell} colSpan={6}>No applicants yet.</td></tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         );
 

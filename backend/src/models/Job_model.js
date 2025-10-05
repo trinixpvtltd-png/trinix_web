@@ -9,7 +9,10 @@ const applicationSchema = new mongoose.Schema({
   portfolio: { type: String },
   resume: { type: String },
   coverLetter: { type: String },
-  applied_at: { type: Date, default: Date.now }
+  applied_at: { type: Date, default: Date.now },
+  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+  reviewed_by: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
+  reviewed_at: { type: Date, required: false }
 });
 
 const jobSchema = new mongoose.Schema({

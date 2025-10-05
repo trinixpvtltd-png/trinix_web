@@ -260,6 +260,39 @@ export const deleteJob = async (req, res) => {
   }
 };
 
+// PATCH /api/admin/jobs/:jobId/applications/:appId/review
+// Body: { action: 'approve'|'reject' }
+export const reviewJobApplication = async (req, res) => {
+  try {
+    const { jobId, appId } = req.params;
+    const { action } = req.body;
+    if (!['approve', 'reject'].includes(action)) return res.status(400).json({ success: false, message: 'Invalid action' });
+    const job = await Job.findById(jobId);
+    if (!job) return res.status(404).json({ success: false, message: 'Job not found' });
+
+    const appIndex = job.applications.findIndex(a => String(a._id) === String(appId) || String(a.id) === String(appId));
+    if (appIndex === -1) return res.status(404).json({ success: false, message: 'Application not found' });
+
+    const app = job.applications[appIndex];
+    app.status = action === 'approve' ? 'approved' : 'rejected';
+    app.reviewed_by = req.user?.id;
+    app.reviewed_at = new Date();
+
+    // Set the modified subdocument and save
+    job.markModified('applications');
+    await job.save();
+
+    // Populate applicant user data if present
+    const populated = await Job.findById(jobId).populate('applications.user_id', 'first_name last_name email phone');
+    const updatedApp = populated.applications.id(app._id);
+
+    return res.json({ success: true, message: `Application ${action}d`, application: updatedApp });
+  } catch (err) {
+    console.error('reviewJobApplication error:', err && (err.stack || err));
+    return res.status(500).json({ success: false, message: 'Failed to review application' });
+  }
+};
+
 export default { getAllUsers };
 
 
