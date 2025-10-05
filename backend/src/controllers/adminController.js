@@ -266,6 +266,7 @@ export const reviewJobApplication = async (req, res) => {
   try {
     const { jobId, appId } = req.params;
     const { action } = req.body;
+    console.debug('reviewJobApplication called by', req.user?.email || req.user?.id, { jobId, appId, action });
     if (!['approve', 'reject'].includes(action)) return res.status(400).json({ success: false, message: 'Invalid action' });
     const job = await Job.findById(jobId);
     if (!job) return res.status(404).json({ success: false, message: 'Job not found' });

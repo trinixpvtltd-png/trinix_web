@@ -20,7 +20,7 @@ const corsOptions = {
     ? ['https://your-frontend-domain.com'] // Replace with actual frontend domain
     : ['http://localhost:3000', 'http://127.0.0.1:3000'], // Allow React dev server
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };
 
