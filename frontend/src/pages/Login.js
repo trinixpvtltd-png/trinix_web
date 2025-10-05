@@ -438,21 +438,7 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Social Login */}
-        <div style={styles.divider}>
-          <div style={styles.dividerLine}></div>
-          <span style={styles.dividerText}>Or continue with</span>
-          <div style={styles.dividerLine}></div>
-        </div>
 
-        <div style={styles.socialButtons}>
-          <button style={styles.socialButton} className="social-button">
-            <span>🔍</span> Google
-          </button>
-          <button style={styles.socialButton} className="social-button">
-            <span>💼</span> LinkedIn
-          </button>
-        </div>
 
         {/* Register Link */}
         <div style={styles.registerLink}>

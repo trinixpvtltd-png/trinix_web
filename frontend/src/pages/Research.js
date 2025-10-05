@@ -507,7 +507,7 @@ const Research = () => {
                   }
                 }}
               >
-                Prelisting
+                Prelist
               </button>
               <button
                 aria-pressed={statusFilter === 'published'}
