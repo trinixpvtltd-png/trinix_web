@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import ComingSoon from '../components/ComingSoon';
 const EventifyDetails = () => {
   const styles = {
     pageContainer: {
@@ -316,120 +317,132 @@ const EventifyDetails = () => {
           </p>
         </div>
       </section>
+    
+      {/* 
+        Key Features Section - Commented Out
+        <section style={styles.section}>
+          <div style={styles.container}>
+            <h2 style={styles.sectionTitle}>Key Features</h2>
+            
+            <div style={styles.featuresGrid}>
+              {features.map((feature, index) => (
+                <div 
+                  key={index} 
+                  style={styles.featureCard}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-8px)';
+                    e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.12)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
+                  }}
+                >
+                  <div style={styles.featureIcon}>
+                    {feature.icon}
+                  </div>
+                  <h3 style={styles.featureTitle}>{feature.title}</h3>
+                  <p style={styles.featureDescription}>{feature.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      */}
 
-      {/* Key Features Section */}
-      <section style={styles.section}>
-        <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>Key Features</h2>
-          
-          <div style={styles.featuresGrid}>
-            {features.map((feature, index) => (
-              <div 
-                key={index} 
-                style={styles.featureCard}
+      {/* 
+        Experience Section - Commented Out
+        <section style={styles.experienceSection}>
+          <div style={styles.container}>
+            <div style={styles.experienceContainer}>
+              <div style={styles.experienceContent}>
+                <h2 style={styles.experienceTitle}>Experience the Future of Event Discovery</h2>
+                <p style={styles.experienceDescription}>
+                  Join thousands of users who are already discovering amazing events and venues 
+                  through our platform. Whether you're looking for a night out, planning a special 
+                  celebration, or exploring new experiences, Eventify makes it all possible.
+                </p>
+                
+                <div style={styles.statsContainer}>
+                  <div style={styles.statItem}>
+                    <span style={styles.statIcon}>✅</span>
+                    <span style={styles.statText}>1,250+ Venues</span>
+                  </div>
+                  <div style={styles.statItem}>
+                    <span style={styles.statIcon}>✅</span>
+                    <span style={styles.statText}>3,400+ Events</span>
+                  </div>
+                  <div style={styles.statItem}>
+                    <span style={styles.statIcon}>✅</span>
+                    <span style={styles.statText}>4.8★ Rating</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <img 
+                  src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="Event dining experience" 
+                  style={styles.experienceImage}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      */}
+
+      {/* Coming Soon Banner Component */}
+      <ComingSoon 
+        title="🚀 COMING SOON..!"
+        description="We're working hard to bring you an amazing event discovery experience. Stay tuned for exciting updates and new features!"
+      />
+
+      {/* 
+        CTA Section - Commented Out
+        <section style={styles.ctaSection}>
+          <div style={styles.container}>
+            <h2 style={styles.ctaTitle}>Ready to Get Started?</h2>
+            <p style={styles.ctaDescription}>
+              Join the thousands of users who are already discovering amazing events and venues 
+              through Eventify. Start your journey today!
+            </p>
+            
+            <div style={styles.buttonContainer}>
+              <a 
+                href="https://eventify-platform.netlify.app/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={styles.primaryButton}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.12)';
+                  e.target.style.transform = 'translateY(-3px)';
+                  e.target.style.boxShadow = '0 8px 32px rgba(14, 165, 233, 0.4)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = 'none';
                 }}
               >
-                <div style={styles.featureIcon}>
-                  {feature.icon}
-                </div>
-                <h3 style={styles.featureTitle}>{feature.title}</h3>
-                <p style={styles.featureDescription}>{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Experience Section */}
-      <section style={styles.experienceSection}>
-        <div style={styles.container}>
-          <div style={styles.experienceContainer}>
-            <div style={styles.experienceContent}>
-              <h2 style={styles.experienceTitle}>Experience the Future of Event Discovery</h2>
-              <p style={styles.experienceDescription}>
-                Join thousands of users who are already discovering amazing events and venues 
-                through our platform. Whether you're looking for a night out, planning a special 
-                celebration, or exploring new experiences, Eventify makes it all possible.
-              </p>
-              
-              <div style={styles.statsContainer}>
-                <div style={styles.statItem}>
-                  <span style={styles.statIcon}>✅</span>
-                  <span style={styles.statText}>1,250+ Venues</span>
-                </div>
-                <div style={styles.statItem}>
-                  <span style={styles.statIcon}>✅</span>
-                  <span style={styles.statText}>3,400+ Events</span>
-                </div>
-                <div style={styles.statItem}>
-                  <span style={styles.statIcon}>✅</span>
-                  <span style={styles.statText}>4.8★ Rating</span>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <img 
-                src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                alt="Event dining experience" 
-                style={styles.experienceImage}
-              />
+                Get Started →
+              </a>
+              <a 
+                href="https://eventify-platform.netlify.app/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={styles.secondaryButton}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                }}
+              >
+                Visit Project →
+              </a>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section style={styles.ctaSection}>
-        <div style={styles.container}>
-          <h2 style={styles.ctaTitle}>Ready to Get Started?</h2>
-          <p style={styles.ctaDescription}>
-            Join the thousands of users who are already discovering amazing events and venues 
-            through Eventify. Start your journey today!
-          </p>
-          
-          <div style={styles.buttonContainer}>
-            <a 
-              href="https://eventify-platform.netlify.app/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              style={styles.primaryButton}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-3px)';
-                e.target.style.boxShadow = '0 8px 32px rgba(14, 165, 233, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = 'none';
-              }}
-            >
-              Get Started →
-            </a>
-            <a 
-              href="https://eventify-platform.netlify.app/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              style={styles.secondaryButton}
-              onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-              }}
-            >
-              Visit Project →
-            </a>
-          </div>
-        </div>
-      </section>
-
+        </section>
+      */}
+    
       <Footer />
     </div>
   );

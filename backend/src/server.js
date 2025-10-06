@@ -10,6 +10,8 @@ import usersRoutes from './routes/usersRoute.js';
 import adminRoutes from './routes/admin.js';
 import jobsRoutes from './routes/jobs.js';
 
+import { chattingGPT } from './controllers/chatControllerGpt.js'; //GPT wallah
+
 const app = express();
 
 app.use(helmet());
@@ -34,6 +36,20 @@ app.use('/api/users', usersRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/jobs', jobsRoutes);
+
+// Chat route (preserved)
+app.post('/chat', async (req, res) => {
+  const { question } = req.body;
+  if (!question) {
+    return res.status(400).json({ error: 'Question is required' });
+  }
+  try {
+    const answer = await chattingGPT(question);
+    res.json({ answer });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

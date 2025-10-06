@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import ComingSoon from '../components/ComingSoon';
 const MedGoDetails = () => {
   const [email, setEmail] = useState('');
 
@@ -374,181 +375,199 @@ const MedGoDetails = () => {
         </div>
       </section>
 
-      {/* Healthcare Made Simple Section */}
-      <section style={styles.featuresSection}>
-        <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>Healthcare Made Simple</h2>
-          <p style={styles.sectionSubtitle}>
-            MedGo connects you with verified healthcare professionals, making it easy to find the right doctor and book appointments that fit your schedule.
-          </p>
-          
-          <div style={styles.featuresGrid}>
-            {features.map((feature, index) => (
-              <div 
-                key={index} 
-                style={styles.featureItem}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.12)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
-                }}
-              >
-                <span style={styles.featureIcon}>{feature.icon}</span>
-                <h3 style={styles.featureTitle}>{feature.title}</h3>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section style={styles.statsSection}>
-        <div style={styles.container}>
-          <div style={styles.statsGrid}>
-            <div style={styles.statItem}>
-              <span style={styles.statNumber}>850+</span>
-              <span style={styles.statLabel}>Verified Doctors</span>
-            </div>
-            <div style={styles.statItem}>
-              <span style={styles.statNumber}>25K+</span>
-              <span style={styles.statLabel}>Happy Patients</span>
-            </div>
-            <div style={styles.statItem}>
-              <span style={styles.statNumber}>4.8</span>
-              <span style={styles.statLabel}>Average Rating</span>
-            </div>
-            <div style={styles.statItem}>
-              <span style={styles.statNumber}>15min</span>
-              <span style={styles.statLabel}>Avg Wait Time</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose MedGo Section */}
-      <section style={styles.section}>
-        <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>Why Choose MedGo</h2>
-          <p style={styles.sectionSubtitle}>
-            Comprehensive healthcare solutions designed for modern patients.
-          </p>
-          
-          <div style={styles.whyChooseGrid}>
-            {whyChooseFeatures.map((feature, index) => (
-              <div 
-                key={index} 
-                style={styles.whyChooseCard}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.12)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
-                }}
-              >
-                <div style={styles.whyChooseIcon}>
-                  {feature.icon}
+      {/* 
+        Healthcare Made Simple Section - Commented Out
+        <section style={styles.featuresSection}>
+          <div style={styles.container}>
+            <h2 style={styles.sectionTitle}>Healthcare Made Simple</h2>
+            <p style={styles.sectionSubtitle}>
+              MedGo connects you with verified healthcare professionals, making it easy to find the right doctor and book appointments that fit your schedule.
+            </p>
+            
+            <div style={styles.featuresGrid}>
+              {features.map((feature, index) => (
+                <div 
+                  key={index} 
+                  style={styles.featureItem}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-8px)';
+                    e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.12)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
+                  }}
+                >
+                  <span style={styles.featureIcon}>{feature.icon}</span>
+                  <h3 style={styles.featureTitle}>{feature.title}</h3>
                 </div>
-                <h3 style={styles.whyChooseTitle}>{feature.title}</h3>
-                <p style={styles.whyChooseDescription}>{feature.description}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      */}
 
-      {/* Medical Specialties Section */}
-      <section style={styles.featuresSection}>
-        <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>Medical Specialties</h2>
-          <p style={styles.sectionSubtitle}>
-            Access to specialists across all major medical fields.
-          </p>
-          
-          <div style={styles.specialtiesGrid}>
-            {specialties.map((specialty, index) => (
-              <div 
-                key={index} 
-                style={styles.specialtyCard}
+      {/* 
+        Stats Section - Commented Out
+        <section style={styles.statsSection}>
+          <div style={styles.container}>
+            <div style={styles.statsGrid}>
+              <div style={styles.statItem}>
+                <span style={styles.statNumber}>850+</span>
+                <span style={styles.statLabel}>Verified Doctors</span>
+              </div>
+              <div style={styles.statItem}>
+                <span style={styles.statNumber}>25K+</span>
+                <span style={styles.statLabel}>Happy Patients</span>
+              </div>
+              <div style={styles.statItem}>
+                <span style={styles.statNumber}>4.8</span>
+                <span style={styles.statLabel}>Average Rating</span>
+              </div>
+              <div style={styles.statItem}>
+                <span style={styles.statNumber}>15min</span>
+                <span style={styles.statLabel}>Avg Wait Time</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      */}
+
+      {/* 
+        Why Choose MedGo Section - Commented Out
+        <section style={styles.section}>
+          <div style={styles.container}>
+            <h2 style={styles.sectionTitle}>Why Choose MedGo</h2>
+            <p style={styles.sectionSubtitle}>
+              Comprehensive healthcare solutions designed for modern patients.
+            </p>
+            
+            <div style={styles.whyChooseGrid}>
+              {whyChooseFeatures.map((feature, index) => (
+                <div 
+                  key={index} 
+                  style={styles.whyChooseCard}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-8px)';
+                    e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.12)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
+                  }}
+                >
+                  <div style={styles.whyChooseIcon}>
+                    {feature.icon}
+                  </div>
+                  <h3 style={styles.whyChooseTitle}>{feature.title}</h3>
+                  <p style={styles.whyChooseDescription}>{feature.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      */}
+
+      {/* 
+        Medical Specialties Section - Commented Out
+        <section style={styles.featuresSection}>
+          <div style={styles.container}>
+            <h2 style={styles.sectionTitle}>Medical Specialties</h2>
+            <p style={styles.sectionSubtitle}>
+              Access to specialists across all major medical fields.
+            </p>
+            
+            <div style={styles.specialtiesGrid}>
+              {specialties.map((specialty, index) => (
+                <div 
+                  key={index} 
+                  style={styles.specialtyCard}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.borderColor = '#10b981';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.borderColor = '#e2e8f0';
+                  }}
+                >
+                  <div style={{fontSize: '2rem'}}>{specialty.icon}</div>
+                  <h4 style={styles.specialtyTitle}>{specialty.title}</h4>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      */}
+
+      {/* 
+        How It Works Section - Commented Out
+        <section style={styles.howItWorksSection}>
+          <div style={styles.container}>
+            <h2 style={styles.sectionTitle}>How It Works</h2>
+            <p style={styles.sectionSubtitle}>
+              Simple three-step process to get the care you need.
+            </p>
+            
+            <div style={styles.stepsGrid}>
+              {steps.map((step, index) => (
+                <div key={index} style={styles.stepCard}>
+                  <div style={styles.stepNumber}>{step.number}</div>
+                  <h3 style={styles.stepTitle}>{step.title}</h3>
+                  <p style={styles.stepDescription}>{step.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      */}
+
+      {/* Coming Soon Component for MedGo */}
+      <ComingSoon 
+        title="🏥 MedGo COMING SOON..!"
+        description="We're revolutionizing healthcare with cutting-edge technology. Get ready for seamless doctor appointments, instant consultations, and personalized healthcare management."
+      />
+
+      {/* 
+        Early Access Section - Commented Out
+        <section style={styles.earlyAccessSection}>
+          <div style={styles.container}>
+            <h2 style={styles.earlyAccessTitle}>Get Early Access</h2>
+            <p style={styles.earlyAccessDescription}>
+              Be among the first to experience the future of healthcare. Sign up for early access and exclusive updates.
+            </p>
+            
+            <form onSubmit={handleEmailSubmit} style={styles.emailForm}>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={styles.emailInput}
+                required
+              />
+              <button 
+                type="submit" 
+                style={styles.signupButton}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                  e.currentTarget.style.borderColor = '#10b981';
+                  e.target.style.transform = 'translateY(-3px)';
+                  e.target.style.boxShadow = '0 8px 32px rgba(16, 185, 129, 0.4)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.borderColor = '#e2e8f0';
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = 'none';
                 }}
               >
-                <div style={{fontSize: '2rem'}}>{specialty.icon}</div>
-                <h4 style={styles.specialtyTitle}>{specialty.title}</h4>
-              </div>
-            ))}
+                Sign Up
+              </button>
+            </form>
+            
+            <p style={styles.disclaimer}>
+              We'll notify you when MedGo is available in your area
+            </p>
           </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section style={styles.howItWorksSection}>
-        <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>How It Works</h2>
-          <p style={styles.sectionSubtitle}>
-            Simple three-step process to get the care you need.
-          </p>
-          
-          <div style={styles.stepsGrid}>
-            {steps.map((step, index) => (
-              <div key={index} style={styles.stepCard}>
-                <div style={styles.stepNumber}>{step.number}</div>
-                <h3 style={styles.stepTitle}>{step.title}</h3>
-                <p style={styles.stepDescription}>{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Early Access Section */}
-      <section style={styles.earlyAccessSection}>
-        <div style={styles.container}>
-          <h2 style={styles.earlyAccessTitle}>Get Early Access</h2>
-          <p style={styles.earlyAccessDescription}>
-            Be among the first to experience the future of healthcare. Sign up for early access and exclusive updates.
-          </p>
-          
-          <form onSubmit={handleEmailSubmit} style={styles.emailForm}>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={styles.emailInput}
-              required
-            />
-            <button 
-              type="submit" 
-              style={styles.signupButton}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-3px)';
-                e.target.style.boxShadow = '0 8px 32px rgba(16, 185, 129, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = 'none';
-              }}
-            >
-              Sign Up
-            </button>
-          </form>
-          
-          <p style={styles.disclaimer}>
-            We'll notify you when MedGo is available in your area
-          </p>
-        </div>
-      </section>
+        </section>
+      */}
         <Footer/>
     </div>
   );

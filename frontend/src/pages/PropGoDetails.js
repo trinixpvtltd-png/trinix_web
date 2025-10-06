@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import ComingSoon from '../components/ComingSoon';
 const PropGoDetails = () => {
   const styles = {
     pageContainer: {
@@ -270,106 +271,116 @@ const PropGoDetails = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section style={styles.section}>
-        <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>Key Features</h2>
-          <p style={styles.sectionSubtitle}>
-            Our platform offers a comprehensive suite of features designed to make real estate 
-            transactions secure, efficient, and transparent.
-          </p>
-          
-          <div style={styles.featuresGrid}>
-            {features.map((feature, index) => (
-              <div 
-                key={index} 
-                style={styles.featureCard}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.12)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
-                }}
-              >
-                <div style={styles.featureIcon}>
-                  {feature.icon}
-                </div>
-                <h3 style={styles.featureTitle}>{feature.title}</h3>
-                <p style={styles.featureDescription}>{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-     
-
-      {/* Problem & Solution Section */}
-      <section style={styles.problemSolutionSection}>
-        <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>Problems & Solutions</h2>
-          <p style={styles.sectionSubtitle}>
-            We've identified key challenges in the real estate market and developed 
-            innovative solutions to address them.
-          </p>
-          
-          <div style={styles.problemSolutionGrid}>
-            <div style={styles.problemCard}>
-              <h3 style={styles.cardTitle}>Current Challenges</h3>
-              <ul style={styles.bulletList}>
-                {problems.map((problem, index) => (
-                  <li key={index} style={styles.bulletItem}>
-                    <span style={styles.bulletIcon}>⚠️</span>
-                    <span>{problem}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+      {/* 
+        Features Section - Commented Out
+        <section style={styles.section}>
+          <div style={styles.container}>
+            <h2 style={styles.sectionTitle}>Key Features</h2>
+            <p style={styles.sectionSubtitle}>
+              Our platform offers a comprehensive suite of features designed to make real estate 
+              transactions secure, efficient, and transparent.
+            </p>
             
-            <div style={styles.problemCard}>
-              <h3 style={styles.cardTitle}>Our Solutions</h3>
-              <ul style={styles.bulletList}>
-                {solutions.map((solution, index) => (
-                  <li key={index} style={styles.bulletItem}>
-                    <span style={styles.bulletIcon}>✓</span>
-                    <span>{solution}</span>
-                  </li>
-                ))}
-              </ul>
+            <div style={styles.featuresGrid}>
+              {features.map((feature, index) => (
+                <div 
+                  key={index} 
+                  style={styles.featureCard}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-8px)';
+                    e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.12)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
+                  }}
+                >
+                  <div style={styles.featureIcon}>
+                    {feature.icon}
+                  </div>
+                  <h3 style={styles.featureTitle}>{feature.title}</h3>
+                  <p style={styles.featureDescription}>{feature.description}</p>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      */}
 
-      {/* CTA Section */}
-      <section style={styles.ctaSection}>
-        <div style={styles.container}>
-          <h2 style={styles.ctaTitle}>Ready to Transform Your Real Estate Business?</h2>
-          <p style={styles.ctaDescription}>
-            Join thousands of satisfied property owners and agents who are already 
-            benefiting from our platform.
-          </p>
-          
-          <a 
-            href="https://propgo-platform.trinix.com/signup" 
-            target="_blank"
-            rel="noopener noreferrer"
-            style={styles.ctaButton}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-3px)';
-              e.target.style.boxShadow = '0 8px 32px rgba(99, 102, 241, 0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = 'none';
-            }}
-          >
-            Get Started →
-          </a>
-        </div>
-      </section>
+      {/* 
+        Problem & Solution Section - Commented Out
+        <section style={styles.problemSolutionSection}>
+          <div style={styles.container}>
+            <h2 style={styles.sectionTitle}>Problems & Solutions</h2>
+            <p style={styles.sectionSubtitle}>
+              We've identified key challenges in the real estate market and developed 
+              innovative solutions to address them.
+            </p>
+            
+            <div style={styles.problemSolutionGrid}>
+              <div style={styles.problemCard}>
+                <h3 style={styles.cardTitle}>Current Challenges</h3>
+                <ul style={styles.bulletList}>
+                  {problems.map((problem, index) => (
+                    <li key={index} style={styles.bulletItem}>
+                      <span style={styles.bulletIcon}>⚠️</span>
+                      <span>{problem}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div style={styles.problemCard}>
+                <h3 style={styles.cardTitle}>Our Solutions</h3>
+                <ul style={styles.bulletList}>
+                  {solutions.map((solution, index) => (
+                    <li key={index} style={styles.bulletItem}>
+                      <span style={styles.bulletIcon}>✓</span>
+                      <span>{solution}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      */}
+
+      {/* Coming Soon Component for PropGo */}
+      <ComingSoon 
+        title="🏠 PropGo COMING SOON..!"
+        description="We're building the future of real estate with innovative technology. Get ready for verified listings, seamless transactions, and direct agent connections."
+      />
+
+      {/* 
+        CTA Section - Commented Out
+        <section style={styles.ctaSection}>
+          <div style={styles.container}>
+            <h2 style={styles.ctaTitle}>Ready to Transform Your Real Estate Business?</h2>
+            <p style={styles.ctaDescription}>
+              Join thousands of satisfied property owners and agents who are already 
+              benefiting from our platform.
+            </p>
+            
+            <a 
+              href="https://propgo-platform.trinix.com/signup" 
+              target="_blank"
+              rel="noopener noreferrer"
+              style={styles.ctaButton}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-3px)';
+                e.target.style.boxShadow = '0 8px 32px rgba(99, 102, 241, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = 'none';
+              }}
+            >
+              Get Started →
+            </a>
+          </div>
+        </section>
+      */}
         <Footer />
     </div>
   );

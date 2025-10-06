@@ -59,79 +59,87 @@ const AboutUs = () => {
       height: '400px',
       objectFit: 'cover'
     },
-    statsGrid: {
-      display: 'grid',
-      gridTemplateColumns: window.innerWidth <= 768 ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
-      gap: '32px'
-    },
-    statCard: {
-      background: 'white',
-      padding: '40px 24px',
-      borderRadius: '16px',
-      textAlign: 'center',
-      border: '1px solid #e5e7eb',
-      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-    },
-    statNumber: {
-      fontSize: '3rem',
-      fontWeight: '800',
-      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      backgroundClip: 'text',
-      display: 'block',
-      marginBottom: '8px'
-    },
-    statLabel: {
-      fontSize: '0.875rem',
-      color: '#6b7280',
-      fontWeight: '500'
-    },
 
-    // Updated Timeline Section Styles - Light Theme
+    // STUNNING PROFESSIONAL TIMELINE SECTION
     timelineSection: {
-      background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%)',
-      padding: '100px 0',
+      background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f0f4f8 100%)',
+      padding: '120px 0 140px',
       position: 'relative',
       overflow: 'hidden'
     },
+    timelineBackgroundPattern: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundImage: `
+        radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.02) 0%, transparent 80%)
+      `,
+      pointerEvents: 'none'
+    },
     timelineSectionTitle: {
-      fontSize: window.innerWidth <= 768 ? '2.5rem' : '3.5rem',
-      fontWeight: '800',
+      fontSize: window.innerWidth <= 768 ? '2.5rem' : '4rem',
+      fontWeight: '900',
       textAlign: 'center',
-      marginBottom: '16px',
-      color: '#1e293b'
+      marginBottom: '24px',
+      color: '#0f172a',
+      letterSpacing: '-0.02em',
+      position: 'relative',
+      zIndex: 2
     },
     timelineSectionSubtitle: {
-      fontSize: '1.25rem',
+      fontSize: '1.375rem',
       textAlign: 'center',
-      marginBottom: '80px',
-      color: '#64748b',
-      maxWidth: '600px',
-      margin: '0 auto 80px'
+      marginBottom: '100px',
+      color: '#475569',
+      maxWidth: '700px',
+      margin: '0 auto 100px',
+      lineHeight: '1.7',
+      fontWeight: '400'
     },
     timelineContainer: {
       position: 'relative',
-      maxWidth: '900px',
+      maxWidth: '1100px',
       margin: '0 auto',
-      padding: '0 20px'
+      padding: '0 40px'
     },
+    
+    // ENHANCED TIMELINE LINE WITH GRADIENT AND GLOW
     timelineLine: {
       position: 'absolute',
       left: '50%',
       top: '0',
       bottom: '0',
       width: '4px',
-      background: 'linear-gradient(180deg, #e2e8f0, #6366f1, #e2e8f0)',
+      background: 'linear-gradient(180deg, rgba(99, 102, 241, 0.1) 0%, #6366f1 20%, #8b5cf6 50%, #6366f1 80%, rgba(99, 102, 241, 0.1) 100%)',
       transform: 'translateX(-50%)',
-      borderRadius: '2px'
+      borderRadius: '2px',
+      boxShadow: '0 0 20px rgba(99, 102, 241, 0.3)',
+      zIndex: 1
     },
+    timelineGlowLine: {
+      position: 'absolute',
+      left: '50%',
+      top: '0',
+      bottom: '0',
+      width: '8px',
+      background: 'linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.1) 20%, rgba(139, 92, 246, 0.15) 50%, rgba(99, 102, 241, 0.1) 80%, transparent 100%)',
+      transform: 'translateX(-50%)',
+      borderRadius: '4px',
+      filter: 'blur(4px)',
+      zIndex: 0
+    },
+    
     timelineItem: {
       position: 'relative',
-      marginBottom: '100px',
+      marginBottom: '120px',
       display: 'flex',
       alignItems: 'center',
-      width: '100%'
+      width: '100%',
+      zIndex: 3
     },
     timelineItemLeft: {
       justifyContent: 'flex-end'
@@ -139,15 +147,28 @@ const AboutUs = () => {
     timelineItemRight: {
       justifyContent: 'flex-start'
     },
+    
+    // PREMIUM TIMELINE CARDS WITH GLASS MORPHISM
     timelineCard: {
-      background: 'white',
-      border: '1px solid #e2e8f0',
-      borderRadius: '20px',
-      padding: '32px',
-      width: '380px',
+      background: 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(20px)',
+      border: '1px solid rgba(255, 255, 255, 0.3)',
+      borderRadius: '24px',
+      padding: '40px 36px',
+      width: '460px',
       position: 'relative',
-      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
-      transition: 'all 0.3s ease'
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
+      transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+      overflow: 'hidden'
+    },
+    timelineCardGradient: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      height: '4px',
+      background: 'linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4)',
+      borderRadius: '24px 24px 0 0'
     },
     timelineCardLeft: {
       marginRight: '80px'
@@ -155,39 +176,37 @@ const AboutUs = () => {
     timelineCardRight: {
       marginLeft: '80px'
     },
-    timelineDot: {
-      position: 'absolute',
-      left: '50%',
-      width: '3px',
-      height: '30px',
-      background: '#e2e8f0',
-      transform: 'translateX(-50%)',
-      zIndex: 2
-    },
+    
+    // BEAUTIFUL TYPOGRAPHY WITH ENHANCED STYLING
     timelineYear: {
-      fontSize: '1.5rem',
+      fontSize: '1.25rem',
       fontWeight: '800',
       background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text',
       marginBottom: '12px',
-      display: 'block'
+      display: 'block',
+      letterSpacing: '0.5px',
+      textTransform: 'uppercase'
     },
     timelineTitle: {
-      fontSize: '1.25rem',
-      fontWeight: '700',
-      color: '#1e293b',
-      marginBottom: '12px',
-      lineHeight: '1.3'
+      fontSize: '1.5rem',
+      fontWeight: '800',
+      color: '#0f172a',
+      marginBottom: '16px',
+      lineHeight: '1.3',
+      letterSpacing: '-0.01em'
     },
     timelineDescription: {
-      fontSize: '1rem',
-      color: '#64748b',
-      lineHeight: '1.6'
+      fontSize: '1.0625rem',
+      color: '#475569',
+      lineHeight: '1.7',
+      fontWeight: '400',
+      letterSpacing: '0.01em'
     },
 
-    // Mobile Timeline Styles - Light Theme
+    // MOBILE TIMELINE WITH ENHANCED STYLING
     timelineMobile: {
       display: window.innerWidth <= 768 ? 'block' : 'none'
     },
@@ -195,35 +214,39 @@ const AboutUs = () => {
       display: window.innerWidth <= 768 ? 'none' : 'block'
     },
     timelineMobileItem: {
-      marginBottom: '40px',
-      paddingLeft: '60px',
+      marginBottom: '60px',
+      paddingLeft: '80px',
       position: 'relative'
     },
     timelineMobileLine: {
       position: 'absolute',
-      left: '20px',
+      left: '30px',
       top: '0',
-      bottom: '0',
-      width: '2px',
-      background: '#e2e8f0'
-    },
-    timelineMobileDot: {
-      position: 'absolute',
-      left: '12px',
-      top: '8px',
-      width: '16px',
-      height: '16px',
-      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-      borderRadius: '50%',
-      border: '3px solid white',
-      boxShadow: '0 2px 8px rgba(99, 102, 241, 0.2)'
+      bottom: '-20px',
+      width: '4px',
+      background: 'linear-gradient(180deg, rgba(99, 102, 241, 0.2) 0%, #6366f1 30%, #8b5cf6 70%, rgba(99, 102, 241, 0.2) 100%)',
+      borderRadius: '2px',
+      boxShadow: '0 0 10px rgba(99, 102, 241, 0.2)'
     },
     timelineMobileCard: {
-      background: 'white',
-      border: '1px solid #e2e8f0',
-      borderRadius: '16px',
-      padding: '24px',
-      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)'
+      background: 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(16px)',
+      border: '1px solid rgba(255, 255, 255, 0.3)',
+      borderRadius: '20px',
+      padding: '32px 28px',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
+      transition: 'all 0.3s ease',
+      position: 'relative',
+      overflow: 'hidden'
+    },
+    timelineMobileCardGradient: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      height: '3px',
+      background: 'linear-gradient(90deg, #6366f1, #8b5cf6)',
+      borderRadius: '20px 20px 0 0'
     }
   };
 
@@ -231,28 +254,96 @@ const AboutUs = () => {
     {
       year: '2008',
       title: 'Company Founded',
-      description: 'Trinix was established with a vision to revolutionize digital solutions.',
+      description: 'Trinix was established with a vision to revolutionize digital solutions and create innovative platforms for the modern world.',
       position: 'left'
     },
     {
       year: '2012',
       title: 'First Major Platform',
-      description: 'Launched our first enterprise platform serving 10,000+ users.',
+      description: 'Launched our first enterprise platform, marking our entry into large-scale digital solutions serving 10,000+ users.',
       position: 'right'
     },
     {
       year: '2018',
       title: 'International Expansion',
-      description: 'Expanded operations to 15+ countries across Asia and Europe.',
+      description: 'Expanded operations globally, establishing presence in 15+ countries across Asia and Europe with localized solutions.',
       position: 'left'
     },
     {
       year: '2023',
       title: 'Platform Evolution',
-      description: 'Introduced Eventify, SOS, and MedGo platforms serving 50,000+ users.',
+      description: 'Introduced revolutionary platforms - Eventify, SOS, and MedGo - serving 50,000+ users with cutting-edge technology.',
       position: 'right'
+    },
+    {
+      year: '2025',
+      title: 'Innovation Leadership',
+      description: 'Leading the industry with AI-powered solutions and sustainable technology initiatives, shaping the future of digital transformation.',
+      position: 'left'
     }
   ];
+
+  // Add CSS animations
+  React.useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes timelinePulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7), 0 4px 16px rgba(99, 102, 241, 0.3);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(99, 102, 241, 0), 0 4px 16px rgba(99, 102, 241, 0.3);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(99, 102, 241, 0), 0 4px 16px rgba(99, 102, 241, 0.3);
+        }
+      }
+      
+      @keyframes timelineRing {
+        0% {
+          transform: translate(-50%, -50%) scale(0.8);
+          opacity: 0.8;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.2);
+          opacity: 0.3;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(0.8);
+          opacity: 0.8;
+        }
+      }
+      
+      @keyframes mobilePulse {
+        0% {
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3), 0 0 0 0 rgba(99, 102, 241, 0.5);
+        }
+        70% {
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3), 0 0 0 8px rgba(99, 102, 241, 0);
+        }
+        100% {
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3), 0 0 0 0 rgba(99, 102, 241, 0);
+        }
+      }
+      
+      .timeline-card-hover:hover {
+        transform: translateY(-12px) scale(1.02) !important;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 32px rgba(99, 102, 241, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+        border-color: rgba(99, 102, 241, 0.3) !important;
+      }
+      
+      .timeline-mobile-card-hover:hover {
+        transform: translateY(-8px) scale(1.01) !important;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      if (document.head.contains(style)) {
+        document.head.removeChild(style);
+      }
+    };
+  }, []);
 
   return (
     <div style={styles.pageContainer}>
@@ -300,8 +391,9 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Timeline Section - Light Theme */}
+      {/* STUNNING PROFESSIONAL TIMELINE SECTION */}
       <section style={styles.timelineSection}>
+        <div style={styles.timelineBackgroundPattern}></div>
         <div style={styles.container}>
           <h2 style={styles.timelineSectionTitle}>
             Our <span style={styles.highlight}>Journey</span>
@@ -310,9 +402,10 @@ const AboutUs = () => {
             Key milestones that have shaped our growth and success over the years.
           </p>
 
-          {/* Desktop Timeline */}
+          {/* ENHANCED DESKTOP TIMELINE */}
           <div style={styles.timelineDesktop}>
             <div style={styles.timelineContainer}>
+              <div style={styles.timelineGlowLine}></div>
               <div style={styles.timelineLine}></div>
               {timelineData.map((item, index) => (
                 <div 
@@ -323,39 +416,30 @@ const AboutUs = () => {
                   }}
                 >
                   <div 
+                    className="timeline-card-hover"
                     style={{
                       ...styles.timelineCard,
                       ...(item.position === 'left' ? styles.timelineCardLeft : styles.timelineCardRight)
                     }}
-                    onMouseEnter={(e) => {
-                      e.target.style.transform = 'translateY(-8px)';
-                      e.target.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.12)';
-                      e.target.style.borderColor = '#6366f1';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
-                      e.target.style.borderColor = '#e2e8f0';
-                    }}
                   >
+                    <div style={styles.timelineCardGradient}></div>
                     <span style={styles.timelineYear}>{item.year}</span>
                     <h3 style={styles.timelineTitle}>{item.title}</h3>
                     <p style={styles.timelineDescription}>{item.description}</p>
                   </div>
-                  <div style={styles.timelineDot}></div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Mobile Timeline */}
+          {/* ENHANCED MOBILE TIMELINE */}
           <div style={styles.timelineMobile}>
             <div style={styles.timelineContainer}>
               <div style={styles.timelineMobileLine}></div>
               {timelineData.map((item, index) => (
                 <div key={index} style={styles.timelineMobileItem}>
-                  <div style={styles.timelineMobileDot}></div>
-                  <div style={styles.timelineMobileCard}>
+                  <div className="timeline-mobile-card-hover" style={styles.timelineMobileCard}>
+                    <div style={styles.timelineMobileCardGradient}></div>
                     <span style={styles.timelineYear}>{item.year}</span>
                     <h3 style={styles.timelineTitle}>{item.title}</h3>
                     <p style={styles.timelineDescription}>{item.description}</p>
@@ -365,8 +449,8 @@ const AboutUs = () => {
             </div>
           </div>
         </div>
-         
       </section>
+      
       <Footer />
     </div>
   );

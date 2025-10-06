@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import ComingSoon from '../components/ComingSoon';
 const SOSDetails = () => {
   const [expandedFeature, setExpandedFeature] = useState(null);
 
@@ -436,141 +437,7 @@ const SOSDetails = () => {
         </div>
       </section>
 
-      {/* Software Features Section */}
-      <section style={styles.section}>
-        <div style={styles.container}>
-          <h2 style={styles.sectionTitle}>Software Features</h2>
-          <p style={styles.sectionSubtitle}>
-            Five core software segments working together to create a comprehensive emergency response ecosystem.
-          </p>
-          
-          <div style={styles.featuresGrid}>
-            {softwareFeatures.map((feature) => (
-              <div 
-                key={feature.id} 
-                style={{
-                  ...styles.featureCard,
-                  ...(expandedFeature === feature.id ? styles.featureCardExpanded : {})
-                }}
-                onClick={() => toggleFeature(feature.id)}
-              >
-                <div style={styles.featureHeader}>
-                  <h3 style={styles.featureTitle}>
-                    <span style={styles.featureIcon}>{feature.icon}</span>
-                    {feature.title}
-                  </h3>
-                  <span style={{
-                    ...styles.expandIcon,
-                    ...(expandedFeature === feature.id ? styles.expandIconRotated : {})
-                  }}>
-                    ▼
-                  </span>
-                </div>
-                <p style={styles.featureDescription}>{feature.description}</p>
-                <div style={{
-                  ...styles.featureContent,
-                  ...(expandedFeature === feature.id ? styles.featureContentExpanded : {})
-                }}>
-                  <p style={{color: '#4b5563', lineHeight: '1.6'}}>{feature.content}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Complete Workflow Section */}
-      <section style={styles.workflowSection}>
-        <div style={styles.container}>
-          <h2 style={styles.workflowTitle}>Complete Workflow</h2>
-          <p style={styles.workflowSubtitle}>
-            End-to-end emergency response process from trigger to resolution
-          </p>
-          
-          <div style={styles.workflowSteps}>
-            {workflowSteps.map((step, index) => (
-              <div key={index} style={styles.workflowStep}>
-                <div style={styles.stepNumber}>{index + 1}</div>
-                <h4 style={styles.stepTitle}>{step.title}</h4>
-                <p style={{color: '#64748b', fontSize: '0.875rem'}}>{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SOS Smart Bracelet Section */}
-      <section style={styles.braceletSection}>
-        <div style={styles.container}>
-          <h2 style={styles.braceletTitle}>SOS Smart Bracelet: Always-On Safety</h2>
-          <p style={styles.braceletSubtitle}>
-            Our innovative hardware extension ensures safety even in low-connectivity or phone-less contexts, 
-            making emergency response accessible to everyone regardless of their technological access. The SOS 
-            Smart Bracelet operates independently of smartphones, providing continuous monitoring and instant 
-            emergency response capabilities through three distinct tiers designed for different needs and accessibility levels.
-          </p>
-          
-          <div style={styles.tiersGrid}>
-            {braceletTiers.map((tier, index) => (
-              <div key={index} style={styles.tierCard}>
-                <span style={{
-                  ...styles.tierBadge,
-                  ...(tier.badgeStyle === 'premium' ? styles.tierBadgePremium :
-                      tier.badgeStyle === 'standard' ? styles.tierBadgeStandard : styles.tierBadgeBasic)
-                }}>
-                  {tier.badge}
-                </span>
-                <h3 style={styles.tierTitle}>{tier.title}</h3>
-                <p style={styles.tierSubtitle}>{tier.subtitle}</p>
-                <p style={styles.tierDescription}>{tier.description}</p>
-                <button style={styles.tierButton}>View Details</button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section style={styles.ctaSection}>
-        <div style={styles.container}>
-          <h2 style={styles.ctaTitle}>Join the Mission</h2>
-          <p style={styles.ctaDescription}>
-            Be part of the solution. Whether you're a volunteer, NGO, supporter, or someone who believes 
-            in making communities safer, there's a place for you in the SOS network.
-          </p>
-          
-          <div style={styles.buttonContainer}>
-            <a 
-              href="https://sos-platform.netlify.app/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              style={styles.primaryButton}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-3px)';
-                e.target.style.boxShadow = '0 8px 32px rgba(220, 38, 38, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = 'none';
-              }}
-            >
-              🚀 Start Your Journey
-            </a>
-            <Link 
-              to="/contact" 
-              style={styles.secondaryButton}
-              onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-              }}
-            >
-              🤝 Get Involved
-            </Link>
-          </div>
-        </div>
-      </section>
+     
         <Footer />
     </div>
   );
