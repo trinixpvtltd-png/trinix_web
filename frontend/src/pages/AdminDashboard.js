@@ -68,6 +68,12 @@ const AdminDashboard = () => {
   const [showJobModal, setShowJobModal] = useState(false);
   const [jobForm, setJobForm] = useState({ title: '', location: '', type: '', description: '', salary: '', is_active: true });
 
+  // Ideas filter state
+  const [ideaFilter, setIdeaFilter] = useState('all'); // 'all', 'project', 'research'
+
+  // Applicants filter state
+  const [applicantFilter, setApplicantFilter] = useState('all'); // 'all', 'pending', 'approved', 'rejected'
+
   // Axios base (normalize /api)
   const RAW_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
   const API_BASE_URL = (() => {
@@ -259,6 +265,23 @@ const AdminDashboard = () => {
       }
     } finally {
       setUserSaving(false);
+    }
+  };
+
+  // Delete job function
+  const deleteJob = async (jobId) => {
+    if (!window.confirm('Are you sure you want to delete this job? This action cannot be undone.')) return;
+    try {
+      const safeId = encodeURIComponent(String(jobId));
+      const urlPath = `admin/jobs/${safeId}`;
+      console.debug('deleteJob request:', { urlPath, headers: getAuthConfig().headers });
+      await http.delete(urlPath, getAuthConfig());
+      // Remove job from local state
+      setJobs(prev => prev.filter(j => String(j._id || j.id) !== String(jobId)));
+      alert('Job deleted successfully');
+    } catch (err) {
+      console.error('deleteJob error', err?.response || err);
+      alert('Failed to delete job: ' + (err?.response?.data?.message || err.message));
     }
   };
 
@@ -822,7 +845,12 @@ const AdminDashboard = () => {
                       <td style={styles.tableCell}>{j.location}</td>
                       <td style={styles.tableCell}>{j.type}</td>
                       <td style={styles.tableCell}>{Array.isArray(j.applications) ? j.applications.length : 0}</td>
-                      <td style={styles.tableCell}><button onClick={() => setSelectedJobForApplicants(j)} style={{...styles.actionButton, ...styles.viewButton}}>View Applicants</button></td>
+                      <td style={styles.tableCell}>
+                        <div style={{display: 'flex', gap: '8px'}}>
+                          <button onClick={() => setSelectedJobForApplicants(j)} style={{...styles.actionButton, ...styles.viewButton}}>View Applicants</button>
+                          <button onClick={() => deleteJob(j._id || j.id)} style={{...styles.actionButton, ...styles.deleteButton}}>Delete</button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                   {!jobsLoading && Array.isArray(jobs) && jobs.length === 0 && (
@@ -836,43 +864,156 @@ const AdminDashboard = () => {
             {selectedJobForApplicants && (
               <div style={{position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000}} onClick={() => setSelectedJobForApplicants(null)}>
                 <div style={{width: '900px', maxWidth: '98%', background: 'white', borderRadius: '10px', padding: '20px'}} onClick={e => e.stopPropagation()}>
-                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px'}}>
+                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
                     <h3 style={{margin: 0}}>Applicants for: {selectedJobForApplicants.title}</h3>
-                    <div><button onClick={() => setSelectedJobForApplicants(null)} style={{...styles.actionButton}}>Close</button></div>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+                      <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                        <label style={{fontSize: '0.875rem', color: '#64748b', fontWeight: '500'}}>Filter:</label>
+                        <select 
+                          value={applicantFilter} 
+                          onChange={(e) => setApplicantFilter(e.target.value)}
+                          style={{
+                            padding: '6px 10px',
+                            borderRadius: '6px',
+                            border: '1px solid #e2e8f0',
+                            fontSize: '0.875rem',
+                            background: 'white',
+                            cursor: 'pointer',
+                            minWidth: '100px'
+                          }}
+                        >
+                          <option value="all">All Status</option>
+                          <option value="pending">Pending</option>
+                          <option value="approved">Approved</option>
+                          <option value="rejected">Rejected</option>
+                        </select>
+                      </div>
+                      <button onClick={() => setSelectedJobForApplicants(null)} style={{...styles.actionButton}}>Close</button>
+                    </div>
                   </div>
-                  <div style={{maxHeight: '60vh', overflow: 'auto'}}>
-                    <table style={styles.table}>
-                      <thead style={styles.tableHeader}><tr>
-                        <th style={styles.tableHeaderCell}>Name</th>
-                        <th style={styles.tableHeaderCell}>Email</th>
-                        <th style={styles.tableHeaderCell}>Phone</th>
-                        <th style={styles.tableHeaderCell}>Applied At</th>
-                        <th style={styles.tableHeaderCell}>Status</th>
-                        <th style={styles.tableHeaderCell}>Actions</th>
-                      </tr></thead>
-                      <tbody>
-                        {(Array.isArray(selectedJobForApplicants.applications) ? selectedJobForApplicants.applications : []).map(app => (
-                          <tr key={app._id || app.id} style={styles.tableRow}>
-                            <td style={styles.tableCell}>{app.name}</td>
-                            <td style={styles.tableCell}>{app.email}</td>
-                            <td style={styles.tableCell}>{app.phone}</td>
-                            <td style={styles.tableCell}>{app.applied_at ? new Date(app.applied_at).toLocaleString() : ''}</td>
-                            <td style={styles.tableCell}><span style={{...styles.badge, ...(app.status === 'approved' ? styles.badgePublished : app.status === 'rejected' ? styles.badgeInactive : styles.badgePending)}}>{app.status}</span></td>
-                            <td style={styles.tableCell}>
-                              <div style={{display: 'flex', gap: '8px'}}>
-                                {app.status !== 'approved' && <button onClick={async () => {
+                  <div style={{maxHeight: '70vh', overflow: 'auto'}}>
+                    <div style={{display: 'grid', gap: '16px'}}>
+                      {(Array.isArray(selectedJobForApplicants.applications) ? selectedJobForApplicants.applications : [])
+                        .filter(app => applicantFilter === 'all' || app.status === applicantFilter)
+                        .map(app => (
+                        <div key={app._id || app.id} style={{
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '12px',
+                          padding: '20px',
+                          background: '#f8fafc'
+                        }}>
+                          <div style={{display: 'grid', gridTemplateColumns: '1fr auto', gap: '16px', alignItems: 'start'}}>
+                            <div>
+                              <div style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px'}}>
+                                <div style={{
+                                  width: '48px',
+                                  height: '48px',
+                                  borderRadius: '50%',
+                                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  color: 'white',
+                                  fontSize: '1.25rem',
+                                  fontWeight: '600'
+                                }}>
+                                  {app.name ? app.name.split(' ').map(n => n[0]).join('').substring(0, 2) : '?'}
+                                </div>
+                                <div>
+                                  <h4 style={{margin: 0, fontSize: '1.125rem', fontWeight: '600', color: '#1e293b'}}>{app.name}</h4>
+                                  <p style={{margin: 0, color: '#64748b', fontSize: '0.875rem'}}>{app.email}</p>
+                                </div>
+                                <span style={{...styles.badge, ...(app.status === 'approved' ? styles.badgePublished : app.status === 'rejected' ? styles.badgeInactive : styles.badgePending)}}>{app.status}</span>
+                              </div>
+                              
+                              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '16px'}}>
+                                <div>
+                                  <label style={{fontSize: '0.75rem', fontWeight: '600', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Phone</label>
+                                  <p style={{margin: '4px 0 0 0', color: '#374151'}}>{app.phone || '—'}</p>
+                                </div>
+                                <div>
+                                  <label style={{fontSize: '0.75rem', fontWeight: '600', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Applied</label>
+                                  <p style={{margin: '4px 0 0 0', color: '#374151'}}>{app.applied_at ? new Date(app.applied_at).toLocaleDateString() : '—'}</p>
+                                </div>
+                                <div>
+                                  <label style={{fontSize: '0.75rem', fontWeight: '600', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Experience</label>
+                                  <p style={{margin: '4px 0 0 0', color: '#374151'}}>{app.experience || '—'}</p>
+                                </div>
+                              </div>
+
+                              {/* Always show additional information section */}
+                              <div style={{marginBottom: '16px'}}>
+                                <label style={{fontSize: '0.75rem', fontWeight: '600', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '8px'}}>Additional Information</label>
+                                <div style={{display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-start'}}>
+                                  {/* Portfolio Link */}
+                                  <div style={{minWidth: '120px'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: '600', color: '#64748b', display: 'block', marginBottom: '4px'}}>Portfolio</label>
+                                    {app.portfolio ? (
+                                      <a href={app.portfolio} target="_blank" rel="noopener noreferrer" style={{
+                                        ...styles.actionButton,
+                                        ...styles.viewButton,
+                                        textDecoration: 'none',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '4px',
+                                        marginRight: '0'
+                                      }}>📁 View Portfolio</a>
+                                    ) : (
+                                      <span style={{fontSize: '0.875rem', color: '#94a3b8'}}>Not provided</span>
+                                    )}
+                                  </div>
+
+                                  {/* Resume Link */}
+                                  <div style={{minWidth: '120px'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: '600', color: '#64748b', display: 'block', marginBottom: '4px'}}>Resume</label>
+                                    {app.resume ? (
+                                      <a href={app.resume} target="_blank" rel="noopener noreferrer" style={{
+                                        ...styles.actionButton,
+                                        ...styles.viewButton,
+                                        textDecoration: 'none',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '4px',
+                                        marginRight: '0'
+                                      }}>📄 View Resume</a>
+                                    ) : (
+                                      <span style={{fontSize: '0.875rem', color: '#94a3b8'}}>Not provided</span>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Cover Letter Section */}
+                                <div style={{marginTop: '16px'}}>
+                                  <label style={{fontSize: '0.75rem', fontWeight: '600', color: '#64748b', display: 'block', marginBottom: '8px'}}>Cover Letter</label>
+                                  {app.coverLetter ? (
+                                    <div style={{fontSize: '0.875rem', color: '#374151', background: 'white', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', lineHeight: '1.5'}}>
+                                      {app.coverLetter.length > 300 ? app.coverLetter.substring(0, 300) + '...' : app.coverLetter}
+                                    </div>
+                                  ) : (
+                                    <div style={{fontSize: '0.875rem', color: '#94a3b8', fontStyle: 'italic', padding: '12px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0'}}>
+                                      No cover letter provided
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
+                              {app.status !== 'approved' && (
+                                <button onClick={async () => {
                                   try {
                                     const url = `admin/jobs/${selectedJobForApplicants._id}/applications/${app._id}/review`;
                                     await http.patch(url, { action: 'approve' }, getAuthConfig());
-                                    // update local UI
                                     const updated = (selectedJobForApplicants.applications || []).map(a => a._id === app._id ? { ...a, status: 'approved', reviewed_at: new Date().toISOString() } : a);
                                     setSelectedJobForApplicants(prev => ({ ...prev, applications: updated }));
                                     setJobs(prevJobs => prevJobs.map(jj => (jj._id === selectedJobForApplicants._id ? { ...jj, applications: updated } : jj)));
                                   } catch (err) {
                                     alert('Failed to approve: ' + (err?.response?.data?.message || err.message || 'Unknown'));
                                   }
-                                }} style={{...styles.actionButton, ...styles.viewButton}}>Approve</button>}
-                                {app.status !== 'rejected' && <button onClick={async () => {
+                                }} style={{...styles.actionButton, ...styles.viewButton}}>✓ Approve</button>
+                              )}
+                              {app.status !== 'rejected' && (
+                                <button onClick={async () => {
                                   try {
                                     const url = `admin/jobs/${selectedJobForApplicants._id}/applications/${app._id}/review`;
                                     await http.patch(url, { action: 'reject' }, getAuthConfig());
@@ -882,16 +1023,22 @@ const AdminDashboard = () => {
                                   } catch (err) {
                                     alert('Failed to reject: ' + (err?.response?.data?.message || err.message || 'Unknown'));
                                   }
-                                }} style={{...styles.actionButton, ...styles.deleteButton}}>Reject</button>}
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                        {(!selectedJobForApplicants.applications || selectedJobForApplicants.applications.length === 0) && (
-                          <tr><td style={styles.tableCell} colSpan={6}>No applicants yet.</td></tr>
-                        )}
-                      </tbody>
-                    </table>
+                                }} style={{...styles.actionButton, ...styles.deleteButton}}>✗ Reject</button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      {(!selectedJobForApplicants.applications || 
+                        selectedJobForApplicants.applications.length === 0 || 
+                        selectedJobForApplicants.applications.filter(app => applicantFilter === 'all' || app.status === applicantFilter).length === 0) && (
+                        <div style={{textAlign: 'center', padding: '40px', color: '#64748b'}}>
+                          {(!selectedJobForApplicants.applications || selectedJobForApplicants.applications.length === 0) 
+                            ? 'No applicants yet.' 
+                            : `No ${applicantFilter} applicants found.`}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -902,7 +1049,29 @@ const AdminDashboard = () => {
       case 'ideas':
         return (
           <div>
-            <h2 style={styles.contentTitle}>💡 Ideas Management</h2>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px'}}>
+              <h2 style={styles.contentTitle}>💡 Ideas Management</h2>
+              <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                <label style={{fontSize: '0.875rem', color: '#64748b', fontWeight: '500'}}>Filter by Type:</label>
+                <select 
+                  value={ideaFilter} 
+                  onChange={(e) => setIdeaFilter(e.target.value)}
+                  style={{
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem',
+                    background: 'white',
+                    cursor: 'pointer',
+                    minWidth: '120px'
+                  }}
+                >
+                  <option value="all">All Types</option>
+                  <option value="project">Project</option>
+                  <option value="research">Research</option>
+                </select>
+              </div>
+            </div>
             {ideasLoading && <div style={{marginBottom: '12px', color: '#334155'}}>Loading ideas...</div>}
             {ideasError && <div style={{marginBottom: '12px', color: '#b91c1c'}}>Error: {ideasError}</div>}
             <table style={styles.table}>
@@ -918,7 +1087,9 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {ideas.map(i => (
+                {ideas
+                  .filter(i => ideaFilter === 'all' || i.type === ideaFilter)
+                  .map(i => (
                   <tr key={i.id} style={styles.tableRow} className="table-row">
                     <td style={styles.tableCell}>
                       <div>
@@ -964,9 +1135,11 @@ const AdminDashboard = () => {
                     </td>
                   </tr>
                 ))}
-                {!ideasLoading && ideas.length === 0 && (
+                {!ideasLoading && ideas.filter(i => ideaFilter === 'all' || i.type === ideaFilter).length === 0 && (
                   <tr>
-                    <td style={styles.tableCell} colSpan={7}>No ideas found.</td>
+                    <td style={styles.tableCell} colSpan={7}>
+                      {ideaFilter === 'all' ? 'No ideas found.' : `No ${ideaFilter} ideas found.`}
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -1183,7 +1356,12 @@ const AdminDashboard = () => {
                 </div>
                 <div>
                   <label style={{fontSize: '0.85rem', color: '#64748b'}}>Type</label>
-                  <input value={jobForm.type} onChange={e => setJobForm(f => ({ ...f, type: e.target.value }))} style={{width: '100%', padding: '8px', marginTop: '6px'}} />
+                  <select value={jobForm.type} onChange={e => setJobForm(f => ({ ...f, type: e.target.value }))} style={{width: '100%', padding: '8px', marginTop: '6px'}}>
+                    <option value="">Select job type</option>
+                    <option value="full-time">Full-Time</option>
+                    <option value="internship">Internship</option>
+                    <option value="part-time">Part-Time</option>
+                  </select>
                 </div>
                 <div>
                   <label style={{fontSize: '0.85rem', color: '#64748b'}}>Salary</label>

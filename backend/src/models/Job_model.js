@@ -18,7 +18,7 @@ const applicationSchema = new mongoose.Schema({
 const jobSchema = new mongoose.Schema({
   title: { type: String, required: true, trim: true },
   location: { type: String, trim: true },
-  type: { type: String, trim: true },
+  type: { type: String, enum: ['full-time', 'internship', 'part-time'], required: true, trim: true },
   description: { type: String },
   salary: { type: String },
   is_active: { type: Boolean, default: true },

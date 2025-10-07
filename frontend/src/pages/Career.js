@@ -484,14 +484,18 @@ const Career = () => {
           {/* Job Listings */}
           <div style={styles.jobGrid}>
             {(jobsLoading ? (jobListings[activeTab] || []) : jobs.filter(j => {
-              if (activeTab === 'full-time') return /full/i.test(j.type || j.title || '');
-              if (activeTab === 'internships') return /intern/i.test(j.type || j.title || '');
-              if (activeTab === 'part-time') return /part/i.test(j.type || j.title || '');
+              if (activeTab === 'full-time') return j.type === 'full-time';
+              if (activeTab === 'internships') return j.type === 'internship';
+              if (activeTab === 'part-time') return j.type === 'part-time';
               return true;
             })).map((job, index) => (
               <div key={job._id || job.id || index} style={styles.jobCard}>
                 <h3 style={styles.jobTitle}>{job.title}</h3>
-                <span style={styles.jobType}>{job.type || 'Position'}</span>
+                <span style={styles.jobType}>
+                  {job.type === 'full-time' ? 'Full-Time' : 
+                   job.type === 'internship' ? 'Internship' : 
+                   job.type === 'part-time' ? 'Part-Time' : 'Position'}
+                </span>
                 <p style={{color: '#64748b', marginBottom: '16px'}}>
                   {job.location || 'Location'} • {job.salary || ''}
                 </p>
