@@ -26,9 +26,24 @@ const AdminDashboard = () => {
       const urlPath = `admin/jobs`;
       const payload = { ...jobForm };
       const { data } = await http.post(urlPath, payload, getAuthConfig());
+      
+      // Add the newly created job to the local state
+      const newJob = data?.job || {
+        ...jobForm,
+        _id: data?._id || Date.now().toString(), // Fallback ID if none provided
+        id: data?.id || data?._id || Date.now().toString(),
+        applications: [],
+        applicationCount: 0,
+        createdAt: new Date().toISOString()
+      };
+      
+      setJobs(prevJobs => [newJob, ...prevJobs]);
+      
       alert(data?.message || 'Job created');
       setShowJobModal(false);
-      // Optionally refresh lists or stats
+      
+      // Reset job form
+      setJobForm({ title: '', location: '', type: '', description: '', salary: '', is_active: true });
     } catch (err) {
       console.error('createJob error', err?.response || err);
       alert('Failed to create job: ' + (err?.response?.data?.message || err?.message || 'unknown'));

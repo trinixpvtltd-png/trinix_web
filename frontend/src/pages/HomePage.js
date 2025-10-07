@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import trinixVideo from './video.mp4';
 import Footer from '../components/Footer';
+import api from '../services/api';
 
 const HomePage = () => {
     const [isVisible, setIsVisible] = useState({});
@@ -964,32 +965,34 @@ const HomePage = () => {
         }
     ];
 
-    const careerHighlights = [
-        {
-            title: 'Senior Full Stack Developer',
-            type: 'Full-Time',
-            location: 'Remote / Silicon Valley',
-            salary: '$120k - $180k',
-            description: 'Join our engineering team to build scalable web applications and drive technical innovation with cutting-edge technologies.',
-            skills: ['React', 'Node.js', 'TypeScript', 'AWS', 'MongoDB']
-        },
-        {
-            title: 'Software Engineering Intern',
-            type: 'Summer 2025',
-            location: 'Hybrid / Silicon Valley',
-            salary: '$5k - $8k/month',
-            description: 'Work alongside senior engineers to develop features for our core platform. Perfect opportunity to gain real-world experience.',
-            skills: ['JavaScript', 'Python', 'Git', 'Problem Solving']
-        },
-        {
-            title: 'UX/UI Designer',
-            type: 'Full-Time',
-            location: 'Remote / Silicon Valley',
-            salary: '$100k - $150k',
-            description: 'Create intuitive and beautiful user experiences for our digital products while conducting user research and prototyping solutions.',
-            skills: ['Figma', 'Adobe Creative Suite', 'User Research', 'Prototyping']
-        }
-    ];
+    const [jobs, setJobs] = useState([]);
+    const [jobsLoading, setJobsLoading] = useState(true);
+    
+    // Fetch jobs from backend
+    useEffect(() => {
+        const fetchJobs = async () => {
+            try {
+                const data = await api.getJobs();
+                const jobsList = Array.isArray(data?.jobs) ? data.jobs : (Array.isArray(data) ? data : []);
+                
+                // Get one job from each category
+                const fullTimeJob = jobsList.find(job => job.type === 'full-time') || null;
+                const internshipJob = jobsList.find(job => job.type === 'internship') || null;
+                const partTimeJob = jobsList.find(job => job.type === 'part-time') || null;
+                
+                // Filter out null values and limit to 3 jobs
+                const selectedJobs = [fullTimeJob, internshipJob, partTimeJob].filter(job => job !== null);
+                setJobs(selectedJobs);
+            } catch (error) {
+                console.error('Failed to fetch jobs:', error);
+                setJobs([]);
+            } finally {
+                setJobsLoading(false);
+            }
+        };
+        
+        fetchJobs();
+    }, []);
 
     return (
         <div style={styles.pageContainer}>
@@ -1450,70 +1453,89 @@ const HomePage = () => {
                     </div>
 
                     <div style={styles.cardGrid}>
-                        {careerHighlights.map((job, index) => (
-                            <div
-                                key={index}
-                                style={styles.card}
-                                data-animate
-                                id={`job-${index}`}
-                                className={isVisible[`job-${index}`] ? 'visible' : ''}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-8px)';
-                                    e.currentTarget.style.boxShadow = '0 10px 30px 0 rgba(0, 0, 0, 0.1)';
-                                    e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0, 0, 0, 0.04)';
-                                    e.currentTarget.style.borderColor = '#f1f5f9';
-                                }}
-                            >
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                                    <div>
-                                        <h3 style={styles.cardTitle}>{job.title}</h3>
-                                        <p style={{ color: '#64748b', marginBottom: '8px', fontSize: '0.9375rem' }}>
-                                            {job.location} • {job.salary}
-                                        </p>
-                                    </div>
-                                    <span style={{
-                                        background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                                        color: 'white',
-                                        padding: '4px 12px',
-                                        borderRadius: '12px',
-                                        fontSize: '0.75rem',
-                                        fontWeight: '600'
-                                    }}>{job.type}</span>
+                        {jobsLoading ? (
+                            // Loading state
+                            Array(3).fill(0).map((_, index) => (
+                                <div key={index} style={{...styles.card, opacity: 0.7}}>
+                                    <div style={{width: '80%', height: '24px', background: '#f1f5f9', marginBottom: '12px'}}></div>
+                                    <div style={{width: '40%', height: '12px', background: '#f1f5f9', marginBottom: '16px'}}></div>
+                                    <div style={{width: '100%', height: '80px', background: '#f1f5f9', marginBottom: '16px'}}></div>
+                                    <div style={{width: '100%', height: '40px', background: '#f1f5f9'}}></div>
                                 </div>
-                                <p style={styles.cardDescription}>{job.description}</p>
-                                <div style={{ marginBottom: '16px' }}>
-                                    <p style={{ fontSize: '0.875rem', fontWeight: '600', marginBottom: '8px', color: '#1e293b' }}>Required Skills:</p>
-                                    {job.skills.map((skill, idx) => (
-                                        <span key={idx} style={{
-                                            background: '#f1f5f9',
-                                            color: '#64748b',
-                                            padding: '4px 8px',
-                                            borderRadius: '6px',
+                            ))
+                        ) : (
+                            // Display fetched jobs
+                            jobs.map((job, index) => (
+                                <div
+                                    key={job._id || job.id || index}
+                                    style={styles.card}
+                                    data-animate
+                                    id={`job-${index}`}
+                                    className={isVisible[`job-${index}`] ? 'visible' : ''}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(-8px)';
+                                        e.currentTarget.style.boxShadow = '0 10px 30px 0 rgba(0, 0, 0, 0.1)';
+                                        e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(0)';
+                                        e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0, 0, 0, 0.04)';
+                                        e.currentTarget.style.borderColor = '#f1f5f9';
+                                    }}
+                                >
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                                        <div>
+                                            <h3 style={styles.cardTitle}>{job.title}</h3>
+                                            <p style={{ color: '#64748b', marginBottom: '8px', fontSize: '0.9375rem' }}>
+                                                {job.location || 'Location'} • {job.salary || ''}
+                                            </p>
+                                        </div>
+                                        <span style={{
+                                            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                                            color: 'white',
+                                            padding: '4px 12px',
+                                            borderRadius: '12px',
                                             fontSize: '0.75rem',
-                                            marginRight: '6px',
-                                            marginBottom: '6px',
-                                            display: 'inline-block'
-                                        }}>{skill}</span>
-                                    ))}
+                                            fontWeight: '600',
+                                            whiteSpace: 'nowrap'
+                                        }}>
+                                            {job.type === 'full-time' ? 'Full-Time' : 
+                                             job.type === 'internship' ? 'Internship' : 
+                                             job.type === 'part-time' ? 'Part-Time' : 'Position'}
+                                        </span>
+                                    </div>
+                                    <p style={styles.cardDescription}>{job.description}</p>
+                                    <Link
+                                        to="/career"
+                                        style={{
+                                            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                                            color: 'white',
+                                            padding: '12px 24px',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            fontSize: '0.9375rem',
+                                            fontWeight: '600',
+                                            cursor: 'pointer',
+                                            width: '100%',
+                                            transition: 'all 0.2s ease',
+                                            display: 'inline-block',
+                                            textAlign: 'center',
+                                            textDecoration: 'none'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.transform = 'translateY(-2px)';
+                                            e.target.style.boxShadow = '0 4px 12px rgba(99, 102, 241, 0.4)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.transform = 'translateY(0)';
+                                            e.target.style.boxShadow = 'none';
+                                        }}
+                                    >
+                                        Apply Now
+                                    </Link>
                                 </div>
-                                <button style={{
-                                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                                    color: 'white',
-                                    padding: '12px 24px',
-                                    borderRadius: '8px',
-                                    border: 'none',
-                                    fontSize: '0.9375rem',
-                                    fontWeight: '600',
-                                    cursor: 'pointer',
-                                    width: '100%',
-                                    transition: 'all 0.2s ease'
-                                }}>Apply Now</button>
-                            </div>
-                        ))}
+                            ))
+                        )}
                     </div>
 
                     <div style={styles.centerButton}>
