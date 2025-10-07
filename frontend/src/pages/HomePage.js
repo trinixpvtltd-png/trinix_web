@@ -941,34 +941,26 @@ const HomePage = () => {
 
     const researchPapers = [
         {
-            category: 'AI & ML',
-            title: 'Enhancing Natural Language Processing with Transformer-Based Architectures in Enterprise Applications',
-            desc: 'This paper explores the implementation of advanced transformer architectures in enterprise-level natural language processing applications, demonstrating significant improvements in accuracy and efficiency across multiple domains including customer service automation, document analysis, and real-time language translation.',
-            authors: 'Sarah Johnson, Michael Chen, David Kim',
+            category: 'Monetary Theory',
+            title: 'Reimagining Global Monetary Standards: A Lifespan-Linked and Contribution-Based Framework for Post-Fiat Reserve Currencies',
+            desc: 'The foundations of global finance are increasingly strained by the volatility of fiat systems, geopolitical dominance in currency valuation, and the speculative nature of reserve accumulation. This paper proposes a technologically grounded and ethically structured alternative: the Standard Crypto Reserve (SCR), a decentralised, contribution-indexed, and lifespan-anchored reserve currency system. Drawing on institutional economics, modern monetary theory, and blockchain-based governance, SCR redefines reserve legitimacy not through GDP or capital holdings, but through verified human lifespan and measurable national contributions in education, innovation, governance, sustainability, and many such parameters.',
+            authors: 'Saurav and Sanjay Kumar Sharma',
             date: 'September 2025',
-            downloads: 1247,
-            citations: 23,
-            keywords: ['NLP', 'Transformers', 'Enterprise AI', 'Language Models']
+            downloads: 1547,
+            citations: 45,
+            keywords: ['SCR', 'Post-Fiat', 'Monetary Reform', 'Blockchain Governance'],
+            link: 'https://cnsejournals.org/wp-content/uploads/2025/09/2-MS3AI-2476R1.pdf'
         },
         {
-            category: 'Security',
-            title: 'Zero-Trust Architecture Implementation: A Comprehensive Framework for Modern Enterprise Security',
-            desc: 'A detailed analysis of zero-trust security implementation strategies, including practical frameworks and case studies from enterprise deployments across multiple industries. This research provides actionable insights for organizations looking to implement comprehensive security models.',
-            authors: 'Robert Chang, Emily Rodriguez, James Wilson',
-            date: 'August 2025',
-            downloads: 892,
-            citations: 31,
-            keywords: ['Zero Trust', 'Enterprise Security', 'Architecture', 'Implementation']
-        },
-        {
-            category: 'Cloud',
-            title: 'Serverless Computing Optimization: Performance Analysis and Cost-Effective Scaling Strategies',
-            desc: 'This research presents comprehensive optimization techniques for serverless computing environments, focusing on performance metrics and cost reduction strategies. The study includes real-world case studies and benchmarking results from major cloud providers.',
-            authors: 'Michael Chen, Lisa Thompson, David Kim',
-            date: 'July 2025',
-            downloads: 1156,
-            citations: 18,
-            keywords: ['Serverless', 'Cloud Computing', 'Performance', 'Cost Optimization']
+            category: 'Financial Technology',
+            title: 'A Theoretical and Quantitative Analysis of the Feasibility and Economic Implications of a Standard Crypto Reserve (SCR) as a Global Financial Standard with respect to the present technology',
+            desc: 'This paper explores the concept of the Standard Crypto Reserve (SCR) an AI-driven medium as a global financial standard, replacing traditional fiat currencies while ensuring economic stability and sustainability. It evaluates SCR\'s potential impact on inflation, deflation, currency valuation, and international trade. Unlike fiat systems prone to inflation and deflation, SCR eliminates these risks by tying monetary valuation to a universal and immutable metric: Time. The paper also discusses mechanisms to prevent speculation, ensure accessibility, and drive global economic growth.',
+            authors: 'Saurav and Sanjay Kumar Sharma',
+            date: 'April 2025',
+            downloads: 1203,
+            citations: 38,
+            keywords: ['SCR', 'Global Financial Standard', 'UPI Integration', 'Time-based Valuation'],
+            link: 'https://cnsejournals.org/wp-content/uploads/2025/04/2-MS3AI-2461.pdf'
         }
     ];
 
@@ -1320,11 +1312,22 @@ const HomePage = () => {
                         </p>
                     </div>
 
-                    <div style={styles.cardGrid}>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(2, 1fr)',
+                        gap: '32px',
+                        marginBottom: '80px'
+                    }}>
                         {researchPapers.map((paper, index) => (
                             <div
                                 key={index}
-                                style={styles.card}
+                                style={{
+                                    ...styles.card,
+                                    height: '100%',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    minHeight: '600px'
+                                }}
                                 data-animate
                                 id={`paper-${index}`}
                                 className={isVisible[`paper-${index}`] ? 'visible' : ''}
@@ -1342,52 +1345,75 @@ const HomePage = () => {
                                 <span style={{
                                     background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
                                     color: 'white',
-                                    padding: '6px 12px',
-                                    borderRadius: '12px',
-                                    fontSize: '0.75rem',
+                                    padding: '2px 6px',
+                                    borderRadius: '4px',
+                                    fontSize: '0.6rem',
                                     fontWeight: '600',
                                     textTransform: 'uppercase',
                                     marginBottom: '16px',
-                                    display: 'inline-block'
+                                    display: 'inline-block',
+                                    width: 'fit-content'
                                 }}>{paper.category}</span>
-                                <h3 style={styles.cardTitle}>{paper.title}</h3>
-                                <p style={{ color: '#6366f1', fontSize: '0.875rem', fontWeight: '500', marginBottom: '12px' }}>By {paper.authors}</p>
-                                <p style={styles.cardDescription}>{paper.desc}</p>
-                                <div style={{ marginBottom: '16px' }}>
-                                    {paper.keywords.map((keyword, idx) => (
-                                        <span key={idx} style={{
-                                            background: '#f1f5f9',
-                                            color: '#64748b',
-                                            padding: '2px 8px',
-                                            borderRadius: '6px',
-                                            fontSize: '0.75rem',
-                                            marginRight: '6px',
-                                            marginBottom: '6px',
-                                            display: 'inline-block'
-                                        }}>{keyword}</span>
-                                    ))}
+                                <h3 style={{...styles.cardTitle, fontSize: '1.25rem', lineHeight: '1.3'}}>{paper.title}</h3>
+                                <p style={{ color: '#6366f1', fontSize: '0.875rem', fontWeight: '500', marginBottom: '16px' }}>By {paper.authors}</p>
+                                <div style={{ flex: '1', display: 'flex', flexDirection: 'column' }}>
+                                    <p style={{ 
+                                        ...styles.cardDescription, 
+                                        flex: '1',
+                                        lineHeight: '1.6',
+                                        marginBottom: '20px'
+                                    }}>{paper.desc}</p>
+                                    <div style={{ marginBottom: '20px' }}>
+                                        {paper.keywords.map((keyword, idx) => (
+                                            <span key={idx} style={{
+                                                background: '#f1f5f9',
+                                                color: '#64748b',
+                                                padding: '4px 10px',
+                                                borderRadius: '6px',
+                                                fontSize: '0.75rem',
+                                                marginRight: '8px',
+                                                marginBottom: '8px',
+                                                display: 'inline-block',
+                                                fontWeight: '500'
+                                            }}>{keyword}</span>
+                                        ))}
+                                    </div>
                                 </div>
                                 <div style={{
                                     display: 'flex',
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
-                                    paddingTop: '16px',
-                                    borderTop: '1px solid #f1f5f9'
+                                    paddingTop: '20px',
+                                    borderTop: '1px solid #f1f5f9',
+                                    marginTop: 'auto'
                                 }}>
                                     <div style={{ fontSize: '0.875rem', color: '#64748b' }}>
-                                        <div>{paper.date}</div>
-                                        <div>{paper.downloads} downloads • {paper.citations} citations</div>
+                                        <div>By {paper.authors}</div>
                                     </div>
-                                    <button style={{
-                                        background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                                        color: 'white',
-                                        padding: '6px 12px',
-                                        borderRadius: '6px',
-                                        border: 'none',
-                                        fontSize: '0.75rem',
-                                        fontWeight: '500',
-                                        cursor: 'pointer'
-                                    }}>Download PDF</button>
+                                    <button 
+                                        style={{
+                                            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                                            color: 'white',
+                                            padding: '8px 16px',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            fontSize: '0.875rem',
+                                            fontWeight: '600',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                        onClick={() => window.open(paper.link, '_blank')}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.transform = 'translateY(-2px)';
+                                            e.target.style.boxShadow = '0 4px 12px rgba(99, 102, 241, 0.4)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.transform = 'translateY(0)';
+                                            e.target.style.boxShadow = 'none';
+                                        }}
+                                    >
+                                        Read Full Article
+                                    </button>
                                 </div>
                             </div>
                         ))}

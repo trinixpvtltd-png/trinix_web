@@ -142,22 +142,25 @@ const Research = () => {
     },
     paperGrid: {
       display: 'grid',
-      gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(auto-fit, minmax(400px, 1fr))',
-      gap: '32px'
+      gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(2, 1fr)',
+      gap: '24px',
+      maxWidth: '1000px',
+      margin: '0 auto'
     },
     paperCard: {
       background: 'white',
-      borderRadius: '16px',
-      padding: '32px',
+      borderRadius: '12px',
+      padding: '24px',
       border: '1px solid #e5e7eb',
       transition: 'all 0.2s ease',
-      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+      height: 'fit-content'
     },
     paperCategory: {
-      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+      background: '#6366f1',
       color: 'white',
       padding: '4px 12px',
-      borderRadius: '12px',
+      borderRadius: '4px',
       fontSize: '0.75rem',
       fontWeight: '600',
       textTransform: 'uppercase',
@@ -166,37 +169,45 @@ const Research = () => {
       marginBottom: '16px'
     },
     paperTitle: {
-      fontSize: '1.25rem',
-      fontWeight: '600',
+      fontSize: '1.125rem',
+      fontWeight: '700',
       color: '#111827',
       marginBottom: '12px',
       lineHeight: '1.4'
     },
     paperAuthors: {
       color: '#6366f1',
-      fontSize: '0.9375rem',
+      fontSize: '0.875rem',
       marginBottom: '16px',
       fontWeight: '500'
     },
     paperAbstract: {
       color: '#4b5563',
       lineHeight: '1.6',
-      fontSize: '0.9375rem',
+      fontSize: '0.875rem',
       marginBottom: '20px'
     },
-    paperMeta: {
+    paperFooter: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingTop: '16px',
-      borderTop: '1px solid #f3f4f6'
+      marginTop: 'auto'
     },
-    paperDate: {
-      color: '#6b7280',
-      fontSize: '0.875rem'
+    paperTags: {
+      display: 'flex',
+      gap: '8px',
+      flexWrap: 'wrap'
     },
-    downloadButton: {
-      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+    paperTag: {
+      background: '#f3f4f6',
+      color: '#4b5563',
+      padding: '2px 8px',
+      borderRadius: '4px',
+      fontSize: '0.75rem',
+      fontWeight: '500'
+    },
+    readButton: {
+      background: '#6366f1',
       color: 'white',
       padding: '8px 16px',
       borderRadius: '6px',
@@ -336,73 +347,36 @@ const Research = () => {
 
   const categories = [
     { id: 'all', label: 'All Research' },
-    { id: 'ai', label: 'AI & ML' },
-    { id: 'security', label: 'Cybersecurity' },
-    { id: 'cloud', label: 'Cloud Computing' },
-    { id: 'data', label: 'Data Analytics' },
-    { id: 'web', label: 'Web Development' }
+    { id: 'monetary', label: 'Monetary Theory' },
+    { id: 'fintech', label: 'Financial Technology' }
   ];
 
   const researchPapers = [
     {
       status: 'published',
-      category: 'ai',
-      categoryLabel: 'AI & Machine Learning',
-      title: 'Enhancing Natural Language Processing with Transformer-Based Architectures in Enterprise Applications',
-      authors: 'Sarah Johnson, Michael Chen, David Kim',
-      abstract: 'This paper explores the implementation of advanced transformer architectures in enterprise-level natural language processing applications, demonstrating significant improvements in accuracy and efficiency across multiple domains including customer service automation, document analysis, and real-time language translation.',
-      date: 'September 2025',
-      downloads: 1247
+      category: 'monetary',
+      categoryLabel: 'MONETARY THEORY',
+      title: 'Reimagining Global Monetary Standards: A Lifespan-Linked and Contribution-Based Framework for Post-Fiat Reserve Currencies',
+      authors: 'Saurav and Sanjay Kumar Sharma',
+      abstract: 'The foundations of global finance are increasingly strained by the volatility of fiat systems, geopolitical dominance in currency valuation, and the speculative nature of reserve accumulation. This paper proposes a technologically grounded and ethically structured alternative: the Standard Crypto Reserve (SCR), a decentralised, contribution-indexed, and lifespan-anchored reserve currency system. Drawing on institutional economics, modern monetary theory, and blockchain-based governance, SCR redefines reserve legitimacy not through GDP or capital holdings, but through verified human lifespan and measurable national contributions in education, innovation, governance, sustainability, and many such parameters. The proposed framework introduces a dual-vault architecture, comprising global and national reserves, with algorithmically regulated issuance based on a Contribution Index (CI). National currencies are valued proportionally to their SCR reserve and performance across socio-economic indicators. The study contrasts SCR with central bank digital currencies (CBDCs), the IMF\'s Special Drawing Rights (SDRs), and commodity-backed systems, arguing for SCR\'s superiority in terms of structural transparency, ethical scarcity, and economic inclusivity. Empirical support is proposed through dynamic general equilibrium modelling and comparative scenario simulations across pre- and post-crisis economies. By anchoring monetary value to verifiable life and contribution, SCR offers a globally interoperable and inflation-resilient standard, empowering emerging economies through performance-based inclusion and algorithmic trust. This paper advances the discourse on post-fiat reform and proposes SCR as a viable path toward equitable and resilient financial architecture.',
+      date: '',
+      downloads: 0,
+      link: 'https://cnsejournals.org/wp-content/uploads/2025/09/2-MS3AI-2476R1.pdf',
+      hideMetadata: true,
+      tags: ['SCR', 'Post-Fiat', 'Monetary Reform', 'Blockchain Governance']
     },
     {
       status: 'published',
-      category: 'security',
-      categoryLabel: 'Cybersecurity',
-      title: 'Zero-Trust Architecture Implementation: A Comprehensive Framework for Modern Enterprise Security',
-      authors: 'Robert Chang, Emily Rodriguez',
-      abstract: 'A detailed analysis of zero-trust security implementation strategies, including practical frameworks and case studies from enterprise deployments. This research provides actionable insights for organizations looking to implement comprehensive security models.',
-      date: 'August 2025',
-      downloads: 892
-    },
-    {
-      status: 'prelisting',
-      category: 'cloud',
-      categoryLabel: 'Cloud Computing',
-      title: 'Serverless Computing Optimization: Performance Analysis and Cost-Effective Scaling Strategies',
-      authors: 'Michael Chen, Lisa Thompson',
-      abstract: 'This research presents comprehensive optimization techniques for serverless computing environments, focusing on performance metrics and cost reduction strategies. The study includes real-world case studies and benchmarking results.',
-      date: 'July 2025',
-      downloads: 1156
-    },
-    {
-      status: 'published',
-      category: 'data',
-      categoryLabel: 'Data Analytics',
-      title: 'Real-Time Data Processing at Scale: Advanced Techniques for High-Velocity Data Streams',
-      authors: 'Sophie Williams, David Kim, James Wilson',
-      abstract: 'An in-depth exploration of real-time data processing methodologies, presenting novel approaches to handle high-velocity data streams with minimal latency. The paper includes performance comparisons and implementation guidelines.',
-      date: 'June 2025',
-      downloads: 743
-    },
-    {
-      status: 'prelisting',
-      category: 'web',
-      categoryLabel: 'Web Development',
-      title: 'Modern Frontend Architecture: Component-Based Design Patterns for Scalable Web Applications',
-      authors: 'James Wilson, Emily Rodriguez',
-      abstract: 'This paper examines contemporary frontend architecture patterns, providing guidelines for building maintainable and scalable web applications. It covers state management, component design, and performance optimization strategies.',
-      date: 'May 2025',
-      downloads: 1389
-    },
-    {
-      status: 'published',
-      category: 'ai',
-      categoryLabel: 'AI & Machine Learning',
-      title: 'Cross-Platform Mobile Development: Performance Optimization and User Experience Enhancement',
-      authors: 'Lisa Thompson, David Kim',
-      abstract: 'A comprehensive study of cross-platform mobile development frameworks, focusing on performance optimization techniques and UX best practices. The research includes comparative analysis of different frameworks and their trade-offs.',
-      date: 'April 2025',
-      downloads: 967
+      category: 'fintech',
+      categoryLabel: 'FINANCIAL TECHNOLOGY',
+      title: 'A Theoretical and Quantitative Analysis of the Feasibility and Economic Implications of a Standard Crypto Reserve (SCR) as a Global Financial Standard with respect to the present technology',
+      authors: 'Saurav and Sanjay Kumar Sharma',
+      abstract: 'This paper explores the concept of the Standard Crypto Reserve (SCR) an AI-driven medium as a global financial standard, replacing traditional fiat currencies while ensuring economic stability and sustainability. It evaluates SCR\'s potential impact on inflation, deflation, currency valuation, and international trade. Unlike fiat systems prone to inflation and deflation, SCR eliminates these risks by tying monetary valuation to a universal and immutable metric: Time. The paper also discusses mechanisms to prevent speculation, ensure accessibility, and drive global economic growth.',
+      date: '',
+      downloads: 0,
+      link: 'https://cnsejournals.org/wp-content/uploads/2025/04/2-MS3AI-2461.pdf',
+      hideMetadata: true,
+      tags: ['SCR', 'Global Financial Standard', 'UPI Integration', 'Time-based Valuation']
     }
   ];
 
@@ -507,7 +481,7 @@ const Research = () => {
                   }
                 }}
               >
-                Prelist
+                Preprint
               </button>
               <button
                 aria-pressed={statusFilter === 'published'}
@@ -535,8 +509,7 @@ const Research = () => {
               </button>
             </div>
           </div>
-
-          {/* Simplified Category Buttons - No Filter Box */}
+          {/*  
           <div style={styles.categorySection}>
             <div style={styles.categoryButtons}>
               {categories.map((category) => (
@@ -567,6 +540,7 @@ const Research = () => {
               ))}
             </div>
           </div>
+          */}
 
           {/* Results Count */}
           <div style={styles.resultsCount}>
@@ -598,17 +572,34 @@ const Research = () => {
                 <h3 style={styles.paperTitle}>{paper.title}</h3>
                 <p style={styles.paperAuthors}>By {paper.authors}</p>
                 <p style={styles.paperAbstract}>{paper.abstract}</p>
-                <div style={styles.paperMeta}>
-                  <span style={styles.paperDate}>{paper.date} • {paper.downloads} downloads</span>
+                <div style={styles.paperFooter}>
+                  <div style={styles.paperTags}>
+                    {paper.tags && paper.tags.map((tag, tagIndex) => (
+                      <span key={tagIndex} style={styles.paperTag}>{tag}</span>
+                    ))}
+                  </div>
                   <button 
-                    style={styles.downloadButton}
-                    onMouseEnter={(e) => e.target.style.transform = 'translateY(-1px)'}
-                    onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
-                    onClick={() => alert('Research paper download started!')}
+                    style={styles.readButton}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'translateY(-1px)';
+                      e.target.style.background = '#5855eb';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.background = '#6366f1';
+                    }}
+                    onClick={() => window.open(paper.link, '_blank')}
                   >
-                    Download PDF
+                    Read Full Article
                   </button>
                 </div>
+                {!paper.hideMetadata && paper.date && (
+                  <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #f3f4f6' }}>
+                    <span style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                      {paper.date} • {paper.downloads} downloads
+                    </span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
