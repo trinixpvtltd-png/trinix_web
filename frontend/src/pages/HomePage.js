@@ -39,37 +39,22 @@ const HomePage = () => {
             color: '#334155'
         },
 
-        // Hero Section with background video and overlay
+        // Hero Section with Clerk's exact background styling
         heroSection: {
-            background: 'black',
+            background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 20%, #f1f5f9 100%)',
             padding: '160px 0 120px',
             marginTop: '64px',
             position: 'relative',
             overflow: 'hidden',
             minHeight: '80vh'
         },
-        heroVideo: {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            zIndex: 0,
-            filter: 'brightness(0.45)'
-        },
         heroContainer: {
             maxWidth: '1200px',
             margin: '0 auto',
-            padding: '0 24px 40px 24px',
+            padding: '0 24px',
             textAlign: 'center',
             position: 'relative',
-            zIndex: 10,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            minHeight: '80vh'
+            zIndex: 10
         },
         heroTitle: {
             fontSize: window.innerWidth <= 768 ? '3.5rem' : '4.8rem',
@@ -98,7 +83,7 @@ const HomePage = () => {
             gap: '16px',
             justifyContent: 'center',
             flexWrap: 'wrap',
-            marginBottom: '0'
+            marginBottom: '80px'
         },
         primaryButton: {
             background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
@@ -1014,16 +999,6 @@ const HomePage = () => {
             {/* Hero Section with Clerk-Style Background */}
             <section style={styles.heroSection}>
                 {/* Background overlay */}
-                {/* Background video */}
-                <video
-                    style={styles.heroVideo}
-                    src={trinixVideo}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="auto"
-                />
                 <div style={styles.heroOverlay}></div>
 
                 {/* Floating geometric decorative elements */}
@@ -1083,7 +1058,14 @@ const HomePage = () => {
                 </div>
 
                 <div style={styles.heroContainer}>
-                    
+                    <h1 style={styles.heroTitle}>
+                        More than development, <br />
+                        <span style={styles.heroHighlight}>Complete Digital Solutions</span>
+                    </h1>
+                    <p style={styles.heroSubtitle}>
+                        Need more than just a website? Trinix gives you full-stack digital transformation
+                        and business solutions — so you can launch faster, scale easier, and stay focused on building your business.
+                    </p>
                     <div style={styles.heroButtons}>
                         <Link
                             to="/contact"

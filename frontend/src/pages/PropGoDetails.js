@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
-import ComingSoon from '../components/ComingSoon';
 const PropGoDetails = () => {
   const styles = {
     pageContainer: {
@@ -254,6 +253,31 @@ const PropGoDetails = () => {
 
   return (
     <div style={styles.pageContainer}>
+      <style>
+        {`
+          @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+          }
+          .animated-card {
+            animation: fadeInUp 0.7s ease both;
+          }
+          .animated-scale {
+            animation: scaleIn 0.6s ease both;
+          }
+          .hover-lift {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+          }
+          .hover-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+          }
+        `}
+      </style>
       {/* Hero Section */}
       <section style={styles.heroSection}>
         <div style={styles.container}>
@@ -271,116 +295,117 @@ const PropGoDetails = () => {
         </div>
       </section>
 
-      {/* 
-        Features Section - Commented Out
-        <section style={styles.section}>
-          <div style={styles.container}>
-            <h2 style={styles.sectionTitle}>Key Features</h2>
-            <p style={styles.sectionSubtitle}>
-              Our platform offers a comprehensive suite of features designed to make real estate 
-              transactions secure, efficient, and transparent.
-            </p>
-            
-            <div style={styles.featuresGrid}>
-              {features.map((feature, index) => (
-                <div 
-                  key={index} 
+
+      {/* Key Features Grid */}
+      <section style={styles.section}>
+        <div style={styles.container}>
+          <h2 style={styles.sectionTitle} className="animated-scale">Key Capabilities</h2>
+          <p style={styles.sectionSubtitle}>Distributed into focused, easy-to-digest cards with subtle animations.</p>
+
+          <div style={styles.featuresGrid}>
+            {
+              [
+                {
+                  icon: '🔐',
+                  title: 'Dealer Verification System',
+                  description: 'Admin-verification flow ensures only credible, trusted dealers gain access.'
+                },
+                {
+                  icon: '🏡',
+                  title: 'Verified Property Listings',
+                  description: 'Each property is reviewed and approved by a verifier before it goes live.'
+                },
+                {
+                  icon: '🤝',
+                  title: 'Dealer Collaboration',
+                  description: 'Explore, share, and partner on genuine listings within a verified network.'
+                },
+                {
+                  icon: '🛠️',
+                  title: 'Admin Control Panel',
+                  description: 'Approve dealers, manage verification statuses, and oversee the entire system.'
+                },
+                {
+                  icon: '🔍',
+                  title: 'Smart Property Search',
+                  description: 'Filter by location, price, and property type to find the right deals quickly.'
+                },
+                {
+                  icon: '📱',
+                  title: 'Modern Dealer Dashboard',
+                  description: 'Clean, intuitive interface to manage listings and track verification status.'
+                }
+              ].map((f) => (
+                <div
+                  key={f.title}
                   style={styles.featureCard}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-8px)';
-                    e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.12)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
-                  }}
+                  className={`animated-card hover-lift`}
                 >
-                  <div style={styles.featureIcon}>
-                    {feature.icon}
-                  </div>
-                  <h3 style={styles.featureTitle}>{feature.title}</h3>
-                  <p style={styles.featureDescription}>{feature.description}</p>
+                  <div style={styles.featureIcon}>{f.icon}</div>
+                  <div style={styles.featureTitle}>{f.title}</div>
+                  <div style={styles.featureDescription}>{f.description}</div>
                 </div>
-              ))}
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      {/* Distributed Detail Sections */}
+      <section style={styles.problemSolutionSection}>
+        <div style={styles.container}>
+          <div style={styles.problemSolutionGrid}>
+            <div style={styles.problemCard} className="animated-card hover-lift">
+              <h3 style={styles.cardTitle}>Dealer Verification System</h3>
+              <ul style={styles.bulletList}>
+                <li style={styles.bulletItem}><span style={styles.bulletIcon}>✔</span> Multi-step admin approval flow for credibility.</li>
+                <li style={styles.bulletItem}><span style={styles.bulletIcon}>✔</span> Role-based access after verification.</li>
+                <li style={styles.bulletItem}><span style={styles.bulletIcon}>✔</span> Status tracking from submission to approval.</li>
+              </ul>
+            </div>
+            <div style={styles.problemCard} className="animated-card hover-lift">
+              <h3 style={styles.cardTitle}>Verified Property Listings</h3>
+              <ul style={styles.bulletList}>
+                <li style={styles.bulletItem}><span style={styles.bulletIcon}>✔</span> Dedicated property verifier workflow.</li>
+                <li style={styles.bulletItem}><span style={styles.bulletIcon}>✔</span> Only approved listings are visible to dealers.</li>
+                <li style={styles.bulletItem}><span style={styles.bulletIcon}>✔</span> Real-time updates on verification status.</li>
+              </ul>
             </div>
           </div>
-        </section>
-      */}
+        </div>
+      </section>
 
-      {/* 
-        Problem & Solution Section - Commented Out
-        <section style={styles.problemSolutionSection}>
-          <div style={styles.container}>
-            <h2 style={styles.sectionTitle}>Problems & Solutions</h2>
-            <p style={styles.sectionSubtitle}>
-              We've identified key challenges in the real estate market and developed 
-              innovative solutions to address them.
-            </p>
-            
-            <div style={styles.problemSolutionGrid}>
-              <div style={styles.problemCard}>
-                <h3 style={styles.cardTitle}>Current Challenges</h3>
-                <ul style={styles.bulletList}>
-                  {problems.map((problem, index) => (
-                    <li key={index} style={styles.bulletItem}>
-                      <span style={styles.bulletIcon}>⚠️</span>
-                      <span>{problem}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              
-              <div style={styles.problemCard}>
-                <h3 style={styles.cardTitle}>Our Solutions</h3>
-                <ul style={styles.bulletList}>
-                  {solutions.map((solution, index) => (
-                    <li key={index} style={styles.bulletItem}>
-                      <span style={styles.bulletIcon}>✓</span>
-                      <span>{solution}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+      <section style={styles.section}>
+        <div style={styles.container}>
+          <div style={styles.problemSolutionGrid}>
+            <div style={styles.problemCard} className="animated-card hover-lift">
+              <h3 style={styles.cardTitle}>Dealer-to-Dealer Collaboration</h3>
+              <ul style={styles.bulletList}>
+                <li style={styles.bulletItem}><span style={styles.bulletIcon}>✔</span> Discover listings from verified peers.</li>
+                <li style={styles.bulletItem}><span style={styles.bulletIcon}>✔</span> Share opportunities and co-broker deals.</li>
+                <li style={styles.bulletItem}><span style={styles.bulletIcon}>✔</span> Private, secure communication channels.</li>
+              </ul>
+            </div>
+            <div style={styles.problemCard} className="animated-card hover-lift">
+              <h3 style={styles.cardTitle}>Admin Control & Smart Search</h3>
+              <ul style={styles.bulletList}>
+                <li style={styles.bulletItem}><span style={styles.bulletIcon}>✔</span> Approve dealers and audit platform activity.</li>
+                <li style={styles.bulletItem}><span style={styles.bulletIcon}>✔</span> Advanced filters by location, price, type.</li>
+                <li style={styles.bulletItem}><span style={styles.bulletIcon}>✔</span> Fast, relevant results for better discovery.</li>
+              </ul>
             </div>
           </div>
-        </section>
-      */}
+        </div>
+      </section>
 
-      {/* Coming Soon Component for PropGo */}
-      <ComingSoon 
-        title="🏠 PropGo COMING SOON..!"
-        description="We're building the future of real estate with innovative technology. Get ready for verified listings, seamless transactions, and direct agent connections."
-      />
-
-      {/* 
-        CTA Section - Commented Out
-        <section style={styles.ctaSection}>
-          <div style={styles.container}>
-            <h2 style={styles.ctaTitle}>Ready to Transform Your Real Estate Business?</h2>
-            <p style={styles.ctaDescription}>
-              Join thousands of satisfied property owners and agents who are already 
-              benefiting from our platform.
-            </p>
-            
-            <a 
-              href="https://propgo-platform.trinix.com/signup" 
-              target="_blank"
-              rel="noopener noreferrer"
-              style={styles.ctaButton}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-3px)';
-                e.target.style.boxShadow = '0 8px 32px rgba(99, 102, 241, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = 'none';
-              }}
-            >
-              Get Started →
-            </a>
-          </div>
-        </section>
-      */}
+      {/* CTA for interest */}
+      <section style={styles.ctaSection}>
+        <div style={styles.container}>
+          <h2 style={styles.ctaTitle} className="animated-scale">Built For Trusted Real Estate Collaboration</h2>
+          <p style={styles.ctaDescription}>Join a network of verified dealers and list only authentic properties.</p>
+          <a href="#" style={styles.ctaButton} className="hover-lift">Get Notified</a>
+        </div>
+      </section>
         <Footer />
     </div>
   );

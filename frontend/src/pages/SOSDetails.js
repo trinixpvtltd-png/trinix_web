@@ -437,7 +437,12 @@ const SOSDetails = () => {
         </div>
       </section>
 
-     
+     {/* Coming Soon Component for SOS */}
+     <ComingSoon 
+       title="🆘 SOS COMING SOON..!"
+       description="We're building a comprehensive emergency response and transparency platform. Stay tuned for verified alerts, social coordination, and resource tracking."
+     />
+
         <Footer />
     </div>
   );

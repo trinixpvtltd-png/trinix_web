@@ -459,25 +459,62 @@ const Projects = () => {
                   </div>
 
                   <div style={styles.projectActions}>
-                    {project.liveUrl && (
-                      <Link 
-                        to={
-                          project.title === "PropGo Platform" ? "/projects/propgo" :
-                          project.liveUrl
+                    {(() => {
+                      const getProjectRoute = (title) => {
+                        switch (title) {
+                          case 'Eventify Platform':
+                            return '/projects/eventify';
+                          case 'PropGo Platform':
+                            return '/projects/propgo';
+                          case 'SOS Emergency Network':
+                            return '/projects/sos';
+                          case 'MedGO Healthcare':
+                            return '/projects/medgo';
+                          default:
+                            return null;
                         }
-                        style={styles.primaryAction}
-                        onMouseEnter={(e) => {
-                          e.target.style.transform = 'translateY(-2px)';
-                          e.target.style.boxShadow = '0 8px 25px 0 rgba(99, 102, 241, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.transform = 'translateY(0)';
-                          e.target.style.boxShadow = 'none';
-                        }}
-                      >
-                        Learn More
-                      </Link>
-                    )}
+                      };
+                      const route = getProjectRoute(project.title);
+                      if (route) {
+                        return (
+                          <Link
+                            to={route}
+                            style={styles.primaryAction}
+                            onMouseEnter={(e) => {
+                              e.target.style.transform = 'translateY(-2px)';
+                              e.target.style.boxShadow = '0 8px 25px 0 rgba(99, 102, 241, 0.4)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.transform = 'translateY(0)';
+                              e.target.style.boxShadow = 'none';
+                            }}
+                          >
+                            Learn More
+                          </Link>
+                        );
+                      }
+                      if (project.liveUrl) {
+                        return (
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={styles.primaryAction}
+                            onMouseEnter={(e) => {
+                              e.target.style.transform = 'translateY(-2px)';
+                              e.target.style.boxShadow = '0 8px 25px 0 rgba(99, 102, 241, 0.4)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.transform = 'translateY(0)';
+                              e.target.style.boxShadow = 'none';
+                            }}
+                          >
+                            Learn More
+                          </a>
+                        );
+                      }
+                      return null;
+                    })()}
                     {project.githubUrl && (
                       <a 
                         href={project.githubUrl}

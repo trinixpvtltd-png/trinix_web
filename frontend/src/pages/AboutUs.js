@@ -347,33 +347,38 @@ const AboutUs = () => {
 
   const timelineData = [
     {
-      year: '2008',
-      title: 'Company Founded',
-      description: 'Trinix was established with a vision to revolutionize digital solutions and create innovative platforms for the modern world.',
+      year: 'October 2024',
+      title: 'First Project: SOS',
+      description:
+        'We began our journey with the launch of Sankatmochan Outreach Service (SOS), our first major project aimed at building a social-impact platform to connect NGOs, businesses, and communities.',
       position: 'left'
     },
     {
-      year: '2012',
-      title: 'First Major Platform',
-      description: 'Launched our first enterprise platform, marking our entry into large-scale digital solutions serving 10,000+ users.',
+      year: 'March 2025',
+      title: 'First Fintech Research Publication',
+      description:
+        'Our team published its first fintech research paper, exploring innovative models for digital finance and global monetary systems.',
       position: 'right'
     },
     {
-      year: '2018',
-      title: 'International Expansion',
-      description: 'Expanded operations globally, establishing presence in 15+ countries across Asia and Europe with localized solutions.',
+      year: 'July 2025',
+      title: 'First Subsidiary: Webstitch',
+      description:
+        'We established Webstitch, our first subsidiary, focused on web development and digital services to support businesses and individuals.',
       position: 'left'
     },
     {
-      year: '2023',
-      title: 'Platform Evolution',
-      description: 'Introduced revolutionary platforms - Eventify, SOS, and MedGo - serving 50,000+ users with cutting-edge technology.',
+      year: 'August 2025',
+      title: 'Birth of Trinix Private Limited',
+      description:
+        'Recognizing the growing scale of our initiatives, we officially founded Trinix Private Limited as the parent company to bring all our projects and subsidiaries under one unified vision.',
       position: 'right'
     },
     {
-      year: '2025',
-      title: 'Innovation Leadership',
-      description: 'Leading the industry with AI-powered solutions and sustainable technology initiatives, shaping the future of digital transformation.',
+      year: 'September 2025',
+      title: 'Second Fintech Research Publication',
+      description:
+        'We achieved another milestone by releasing our second fintech research paper, furthering our contributions to innovative financial technologies and research-driven solutions.',
       position: 'left'
     }
   ];
@@ -421,6 +426,18 @@ const AboutUs = () => {
         }
       }
       
+      /* Scroll-in reveal animation */
+      .timeline-reveal { opacity: 0; transform: translateY(18px); transition: opacity 600ms ease, transform 600ms ease; }
+      .timeline-reveal.visible { opacity: 1; transform: translateY(0); }
+
+      /* Subtle shimmer on the center line */
+      @keyframes lineShimmer {
+        0% { box-shadow: 0 0 10px rgba(99,102,241,0.2); }
+        50% { box-shadow: 0 0 26px rgba(139,92,246,0.35); }
+        100% { box-shadow: 0 0 10px rgba(99,102,241,0.2); }
+      }
+      .timeline-line-animated { animation: lineShimmer 2.8s ease-in-out infinite; }
+
       .timeline-card-hover:hover {
         transform: translateY(-12px) scale(1.02) !important;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 32px rgba(99, 102, 241, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
@@ -431,6 +448,11 @@ const AboutUs = () => {
         transform: translateY(-8px) scale(1.01) !important;
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
       }
+
+      /* Team message card animations */
+      .team-card-hover { transition: transform 420ms ease, box-shadow 420ms ease, border-color 420ms ease; }
+      .team-card-hover:hover { transform: translateY(-10px); box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18); }
+      .team-card-gradient { height: 4px; width: 100%; background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4); border-radius: 10px 10px 0 0; }
     `;
     document.head.appendChild(style);
     return () => {
@@ -438,6 +460,27 @@ const AboutUs = () => {
         document.head.removeChild(style);
       }
     };
+  }, []);
+
+  // Observe timeline items to add 'visible' class on scroll
+  React.useEffect(() => {
+    const items = document.querySelectorAll('.js-timeline-item');
+    if (items.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: '0px 0px -10% 0px', threshold: 0.2 }
+    );
+
+    items.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -472,15 +515,11 @@ const AboutUs = () => {
                 <div>
                   <div style={styles.missionTitle}>Our Mission</div>
                   <div style={styles.missionText}>
-                    <strong>To preserve, research, and disseminate the ancient wisdom of Vedic
-                    sciences, making this knowledge accessible to modern scholars,
-                    researchers, and enthusiasts while maintaining the authenticity and
-                    depth of traditional understanding.</strong>
-                    <br />
-                    <br />
-                    We strive to bridge the gap between ancient Vedic knowledge and
-                    contemporary scientific understanding, fostering a deeper appreciation
-                    for India's rich intellectual heritage.
+                    To preserve, research, and disseminate the ancient wisdomTrinix Private Limited is a dynamic, innovation-driven company dedicated to building transformative solutions 
+                    and fostering a culture of progress. We work on a wide range of in-house projects and lead a growing network 
+                    of subsidiaries that span industries such as web services, technology development, digital platforms, and 
+                    research-driven innovation. Our multidisciplinary approach allows us to combine creativity, cutting-edge 
+                    technology, and rigorous research to deliver impactful solutions that address real-world challenges.
                   </div>
                 </div>
               </div>
@@ -497,14 +536,12 @@ const AboutUs = () => {
                 <div>
                   <div style={styles.missionTitle}>Our Vision</div>
                   <div style={styles.missionText}>
-                    <strong>"To become a leading authority in the preservation and interpretation
-                    of Vedic Science, integrating it into modern academic and cultural
-                    frameworks."</strong>
-                    <br />
-                    <br />
-                    We envision a world where Vedic knowledge is recognized as a valuable
-                    resource for addressing contemporary challenges, contributing to global
-                    understanding of science, philosophy, and human potential.
+                  we believe innovation flourishes when people are empowered. We actively encourage our employees and 
+                  teams to transform their ideas into ventures by providing them with logistical support, research infrastructure, 
+                  and operational guidance under the Trinix umbrella. This collaborative ecosystem not only nurtures new 
+                  startups but also fuels our mission to be a launchpad for pioneering technologies, scientific exploration, and 
+                  sustainable business growth. Together, we aim to shape a future where research, creativity, and 
+                  entrepreneurship drive meaningful change across industries and communities.
                   </div>
                 </div>
               </div>
@@ -514,32 +551,27 @@ const AboutUs = () => {
       </section>
 
 
-      {/* FOUNDERS / MESSAGE SECTION */}
+      {/* TEAM MESSAGE - Single Animated Card */}
       <section style={styles.foundersSection}>
         <div style={styles.container}>
-          <div style={styles.foundersHeader}>
-            <h2 style={{fontSize: '2rem', fontWeight: 800, margin: 0}}>Message from our founders</h2>
-            <div style={styles.foundersSubtitle}>A message from the visionary leaders behind Trinix</div>
-          </div>
-
-          <div style={styles.founderCardWrap}>
-            <div>
-              <img src="/logo192.png" alt="Founder" style={styles.founderImage} />
-            </div>
-            <div style={styles.founderContent}>
-              <div style={styles.founderName}>Dr. Sanjay Kumar Sharma</div>
-              <div style={styles.founderTitle}>President</div>
-              <div style={styles.founderHeading}>Our Vision for Vedic Sciences</div>
-              <p style={styles.founderParagraph}>
-                The Vedic knowledge system represents one of humanity's most profound intellectual
-                achievements. <strong>Our mission at Trinix is to ensure that this ancient wisdom is not only
-                preserved but also made relevant for contemporary understanding and application.</strong>
+          <div className="timeline-reveal js-timeline-item" style={{...styles.founderCardWrap, padding: 0, display: 'block'}}>
+            <div className="team-card-gradient" aria-hidden></div>
+            <div className="team-card-hover" style={{...styles.founderContent, padding: '32px 40px'}}>
+              <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '8px'}}>
+                <h2 style={{fontSize: '1.75rem', fontWeight: 900, margin: 0, color: '#0f172a'}}>Message from our Team</h2>
+                <span style={{fontWeight: 700, color: '#8b5cf6'}}>Trinix Pvt. Ltd.</span>
+              </div>
+              <p style={{...styles.founderParagraph, marginTop: '10px'}}>
+                At Trinix, we build technology that serves people. Our journey brings together research,
+                engineering, and purposeful design to craft platforms that strengthen communities,
+                accelerate businesses, and expand access to opportunity.
               </p>
               <p style={styles.founderParagraph}>
-                Through rigorous research, comprehensive documentation, and innovative educational
-                programs, we are creating bridges between the ancient and modern worlds. Our work
-                encompasses not just the preservation of texts, but also the interpretation and
-                application of Vedic principles in today's context.
+                From SOS to our fintech research and growing subsidiaries, we remain focused on impact
+                through innovation—delivering solutions that are dependable, scalable, and human-centered.
+              </p>
+              <p style={styles.founderParagraph}>
+                Thank you for being part of our story. We’re just getting started.
               </p>
             </div>
           </div>
@@ -591,7 +623,7 @@ const AboutUs = () => {
           <div style={styles.timelineDesktop}>
             <div style={styles.timelineContainer}>
               <div style={styles.timelineGlowLine}></div>
-              <div style={styles.timelineLine}></div>
+              <div className="timeline-line-animated" style={styles.timelineLine}></div>
               {timelineData.map((item, index) => (
                 <div 
                   key={index} 
@@ -601,10 +633,11 @@ const AboutUs = () => {
                   }}
                 >
                   <div 
-                    className="timeline-card-hover"
+                    className={`timeline-card-hover timeline-reveal js-timeline-item`}
                     style={{
                       ...styles.timelineCard,
-                      ...(item.position === 'left' ? styles.timelineCardLeft : styles.timelineCardRight)
+                      ...(item.position === 'left' ? styles.timelineCardLeft : styles.timelineCardRight),
+                      transitionDelay: `${index * 90}ms`
                     }}
                   >
                     <div style={styles.timelineCardGradient}></div>
@@ -622,7 +655,7 @@ const AboutUs = () => {
             <div style={styles.timelineContainer}>
               <div style={styles.timelineMobileLine}></div>
               {timelineData.map((item, index) => (
-                <div key={index} style={styles.timelineMobileItem}>
+                <div key={index} className={`timeline-reveal js-timeline-item`} style={{...styles.timelineMobileItem, transitionDelay: `${index * 90}ms`}}>
                   <div className="timeline-mobile-card-hover" style={styles.timelineMobileCard}>
                     <div style={styles.timelineMobileCardGradient}></div>
                     <span style={styles.timelineYear}>{item.year}</span>
