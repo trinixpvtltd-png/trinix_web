@@ -6,11 +6,12 @@ const AboutUs = () => {
   const styles = {
     pageContainer: {
       marginTop: '64px',
-      minHeight: '100vh'
+      minHeight: '100vh',
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
     },
     heroSection: {
       background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
-      padding: '120px 0 80px',
+      padding: '20px 0 20px',
       textAlign: 'center'
     },
     container: {
@@ -36,7 +37,101 @@ const AboutUs = () => {
       color: '#6b7280',
       maxWidth: '768px',
       margin: '0 auto 60px',
-      lineHeight: '1.6'
+      lineHeight: '1.6',
+      fontWeight: 600
+    },
+    // MISSION / VISION ROW (matches screenshot layout)
+    missionSection: {
+      background: '#fff',
+      padding: '48px 0',
+      borderBottom: '1px solid rgba(0,0,0,0.03)'
+    },
+    missionRow: {
+      display: 'grid',
+      gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : '1fr 1fr',
+      gap: '40px',
+      alignItems: 'start'
+    },
+    missionItem: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      gap: '20px'
+    },
+    missionIcon: {
+      minWidth: '56px',
+      height: '56px',
+      borderRadius: '50%',
+      background: 'linear-gradient(90deg, #6366f1, #8b5cf6)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'white',
+      fontWeight: '700',
+      boxShadow: '0 8px 20px rgba(99,102,241,0.12)'
+    },
+    missionTitle: {
+      fontSize: '1.25rem',
+      fontWeight: '800',
+      color: '#0f172a',
+      marginBottom: '8px'
+    },
+    missionText: {
+      color: '#475569',
+      lineHeight: '1.7',
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+    },
+    // FOUNDERS / MESSAGE SECTION
+    foundersSection: {
+      background: '#f7fafc',
+      padding: '60px 0'
+    },
+    foundersHeader: {
+      textAlign: 'center',
+      marginBottom: '28px'
+    },
+    foundersSubtitle: {
+      color: '#6b7280',
+      marginTop: '8px'
+    },
+    founderCardWrap: {
+      maxWidth: '1100px',
+      margin: '0 auto',
+      background: 'white',
+      borderRadius: '12px',
+      boxShadow: '0 12px 30px rgba(2,6,23,0.08)',
+      overflow: 'hidden',
+      display: 'grid',
+      gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : '320px 1fr',
+      gap: '0'
+    },
+    founderImage: {
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      display: 'block'
+    },
+    founderContent: {
+      padding: '28px 40px'
+    },
+    founderName: {
+      fontSize: '1.375rem',
+      fontWeight: 800,
+      color: '#0f172a'
+    },
+    founderTitle: {
+      color: '#8b5cf6',
+      fontWeight: 700,
+      margin: '8px 0 18px'
+    },
+    founderHeading: {
+      fontSize: '1.125rem',
+      fontWeight: 700,
+      color: '#0f172a',
+      marginBottom: '12px'
+    },
+    founderParagraph: {
+      color: '#475569',
+      lineHeight: '1.7'
     },
     section: {
       padding: '80px 0'
@@ -350,14 +445,104 @@ const AboutUs = () => {
       {/* Hero Section */}
       <section style={styles.heroSection}>
         <div style={styles.container}>
-          <h1 style={styles.title}>
+          <h3 style={styles.title}>
             About <span style={styles.highlight}>Trinix</span>
-          </h1>
+          </h3>
           <p style={styles.subtitle}>
             We're building the future of digital solutions, one innovation at a time. 
             Discover our journey, meet our team, and learn about our mission to transform 
             how people connect and collaborate in the digital age.
           </p>
+        </div>
+      </section>
+
+      {/* MISSION / VISION ROW (matches screenshot) */}
+      <section style={styles.missionSection}>
+        <div style={styles.container}>
+          <div style={styles.missionRow}>
+            <div>
+              <div style={styles.missionItem}>
+                <div style={styles.missionIcon} aria-hidden>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                    <circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.9)" strokeWidth="1.3" />
+                    <circle cx="12" cy="12" r="5" stroke="rgba(255,255,255,0.95)" strokeWidth="1.3" />
+                    <circle cx="12" cy="12" r="2" fill="white" />
+                  </svg>
+                </div>
+                <div>
+                  <div style={styles.missionTitle}>Our Mission</div>
+                  <div style={styles.missionText}>
+                    <strong>To preserve, research, and disseminate the ancient wisdom of Vedic
+                    sciences, making this knowledge accessible to modern scholars,
+                    researchers, and enthusiasts while maintaining the authenticity and
+                    depth of traditional understanding.</strong>
+                    <br />
+                    <br />
+                    We strive to bridge the gap between ancient Vedic knowledge and
+                    contemporary scientific understanding, fostering a deeper appreciation
+                    for India's rich intellectual heritage.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div style={styles.missionItem}>
+                <div style={styles.missionIcon} aria-hidden>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                    <path d="M12 4C7.03 4 2.73 7.11 1 11.5c1.73 4.39 6.03 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.11 16.97 4 12 4z" stroke="rgba(255,255,255,0.95)" strokeWidth="1.2" fill="none" />
+                    <circle cx="12" cy="11.5" r="2" fill="white" />
+                  </svg>
+                </div>
+                <div>
+                  <div style={styles.missionTitle}>Our Vision</div>
+                  <div style={styles.missionText}>
+                    <strong>"To become a leading authority in the preservation and interpretation
+                    of Vedic Science, integrating it into modern academic and cultural
+                    frameworks."</strong>
+                    <br />
+                    <br />
+                    We envision a world where Vedic knowledge is recognized as a valuable
+                    resource for addressing contemporary challenges, contributing to global
+                    understanding of science, philosophy, and human potential.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {/* FOUNDERS / MESSAGE SECTION */}
+      <section style={styles.foundersSection}>
+        <div style={styles.container}>
+          <div style={styles.foundersHeader}>
+            <h2 style={{fontSize: '2rem', fontWeight: 800, margin: 0}}>Message from our founders</h2>
+            <div style={styles.foundersSubtitle}>A message from the visionary leaders behind Trinix</div>
+          </div>
+
+          <div style={styles.founderCardWrap}>
+            <div>
+              <img src="/logo192.png" alt="Founder" style={styles.founderImage} />
+            </div>
+            <div style={styles.founderContent}>
+              <div style={styles.founderName}>Dr. Sanjay Kumar Sharma</div>
+              <div style={styles.founderTitle}>President</div>
+              <div style={styles.founderHeading}>Our Vision for Vedic Sciences</div>
+              <p style={styles.founderParagraph}>
+                The Vedic knowledge system represents one of humanity's most profound intellectual
+                achievements. <strong>Our mission at Trinix is to ensure that this ancient wisdom is not only
+                preserved but also made relevant for contemporary understanding and application.</strong>
+              </p>
+              <p style={styles.founderParagraph}>
+                Through rigorous research, comprehensive documentation, and innovative educational
+                programs, we are creating bridges between the ancient and modern worlds. Our work
+                encompasses not just the preservation of texts, but also the interpretation and
+                application of Vedic principles in today's context.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -370,7 +555,7 @@ const AboutUs = () => {
                 Our <span style={styles.highlight}>Story</span>
               </h2>
               <p style={{fontSize: '1.125rem', lineHeight: '1.7', marginBottom: '24px', color: '#4b5563'}}>
-                Founded in 2008, Trinix Pvt. Ltd. has been at the forefront of digital 
+                <strong>Founded in 2008, Trinix Pvt. Ltd. has been at the forefront of digital</strong>
                 innovation, creating solutions that bridge the gap between technology and human needs.
               </p>
               <p style={{fontSize: '1.125rem', lineHeight: '1.7', marginBottom: '24px', color: '#4b5563'}}>

@@ -207,6 +207,20 @@ const Projects = () => {
       textDecoration: 'none',
       display: 'inline-block'
     },
+    comingSoon: {
+      background: 'linear-gradient(135deg, #f59e0b, #f97316)',
+      color: 'white',
+      padding: '12px 20px',
+      borderRadius: '10px',
+      border: 'none',
+      fontSize: '0.9375rem',
+      fontWeight: '700',
+      cursor: 'not-allowed',
+      transition: 'all 0.2s ease',
+      display: 'inline-block',
+      textDecoration: 'none',
+      opacity: 0.95
+    },
     secondaryAction: {
       background: 'white',
       color: '#6366f1',
@@ -242,7 +256,7 @@ const Projects = () => {
       description: 'Comprehensive event management platform featuring multi-user roles (owners, managers, agents), venue search functionality, booking management, and real-time dashboard analytics. Built with modern React architecture and scalable backend infrastructure.',
       icon: '🎪',
       image: 'https://cdn.pixabay.com/photo/2017/07/21/23/57/concert-2527495_1280.jpg',
-      status: 'Live',
+      status: 'Coming soon',
       features: [
         'Multi-role user management system',
         'Advanced venue search & filtering',
@@ -284,7 +298,7 @@ const Projects = () => {
       description: 'Emergency response system ensuring rapid assistance and safety. Comprehensive platform connecting emergency responders, dispatchers, and civilians through real-time communication and location-based services for immediate crisis response.',
       icon: '�',
       image: 'https://images.pexels.com/photos/249348/pexels-photo-249348.jpeg',
-      status: 'Live',
+      status: 'Coming soon',
       features: [
         'Real-time emergency alert system',
         'GPS location tracking and mapping',
@@ -304,7 +318,7 @@ const Projects = () => {
       title: 'MedGO Healthcare',
       description: 'HIPAA-compliant telemedicine platform enabling secure video consultations, patient record management, prescription handling, and appointment scheduling. Features end-to-end encryption and healthcare provider verification.',
       icon: '🏥',
-      status: 'Beta Testing',
+      status: 'Comming soon',
       image: 'https://media.istockphoto.com/id/1354898568/photo/shot-of-an-unrecognisable-businesswoman-using-a-smartphone-in-a-modern-office.jpg?b=1&s=612x612&w=0&k=20&c=DE-DP2A_e4TdReJG6MVHppVSvHa7OcOLsnjeTdly4Rk=',
       features: [
         'HIPAA-compliant video consultations',
@@ -448,9 +462,6 @@ const Projects = () => {
                     {project.liveUrl && (
                       <Link 
                         to={
-                          project.title === "Eventify Platform" ? "/projects/eventify" :
-                          project.title === "SOS Emergency Network" ? "/projects/sos" :
-                          project.title === "MedGO Healthcare" ? "/projects/medgo" :
                           project.title === "PropGo Platform" ? "/projects/propgo" :
                           project.liveUrl
                         }
